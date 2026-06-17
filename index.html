@@ -6,7 +6,7 @@
 <title>EletroGo - Rede de Eletropostos</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#111111" />
+<meta name="theme-color" content="#001133" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -36,12 +36,15 @@
           body: ['Inter', 'sans-serif'],
         },
         colors: {
-          brand: { 50:'#f7ffe6',100:'#edffcc',300:'#d4ff7a',400:'#c8ff4d',500:'#aaee1f',600:'#88cc00',700:'#669900',900:'#334d00' },
-          ink:  '#111111',
-          ink2: '#1c1c1c',
-          ink3: '#2a2a2a',
-          muted: '#666666',
-          subtle: '#999999',
+          brand: { 50:'#fff3eb',100:'#ffe4cc',300:'#ffb380',400:'#FF5C00',500:'#E05000',600:'#C04400',700:'#A03A00',900:'#501D00' },
+          ink:   '#001133',
+          ink2:  '#001A4D',
+          ink3:  '#002266',
+          muted: '#8899bb',
+          subtle:'#6677aa',
+          amber: '#FFAB00',
+          electric:'#0052D4',
+          navy:  '#003087',
         }
       }
     }
@@ -50,20 +53,20 @@
 <style>
   /* ── Reset & base ── */
   *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:#0c0c0c;font-family:'Space Grotesk','Inter',sans-serif;}
+  html,body{margin:0;padding:0;background:#000D26;font-family:'Space Grotesk','Inter',sans-serif;}
   button{cursor:pointer;border:none;background:none;font-family:inherit;}
   input,button,select{font-family:'Space Grotesk','Inter',sans-serif;}
 
   /* ── Phone shell ── */
   #phone-wrap{
     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
-    background:#0c0c0c;
+    background:#000D26;
   }
   #phone{
     width:100%;max-width:430px;min-height:850px;max-height:932px;
-    background:#111111;
+    background:#001133;
     border-radius:44px;overflow:hidden;position:relative;
-    box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 0 0 10px #1c1c1c, 0 0 0 11px rgba(255,255,255,.04), 0 32px 80px rgba(0,0,0,.8);
+    box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 0 0 10px #001A4D, 0 0 0 11px rgba(255,255,255,.04), 0 32px 80px rgba(0,0,0,.8);
     display:flex;flex-direction:column;
   }
   @media(max-width:480px){
@@ -72,11 +75,11 @@
   }
 
   /* ── Screen ── */
-  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;background:#111111;}
+  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;background:#001133;}
   .screen::-webkit-scrollbar{width:0;}
   .hscroll::-webkit-scrollbar{height:0;}
 
-  /* ── Animations — only motion, zero glow ── */
+  /* ── Animations ── */
   .fade-in{animation:fadeIn .25s ease-out;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
   .slide-up{animation:slideUp .3s cubic-bezier(.16,1,.3,1);}
@@ -87,41 +90,41 @@
   @keyframes spin{to{transform:rotate(360deg);}}
   @media(prefers-reduced-motion:reduce){.fade-in,.slide-up,.pulse-dot{animation:none;}}
 
-  /* ── Progress ring — no colored glow ── */
+  /* ── Progress ring ── */
   .progress-ring{transition:stroke-dashoffset .6s linear;}
 
   /* ── Cards ── */
-  .card{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .card{background:#001A4D;border:1px solid #002266;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
   .card-hover{transition:border-color .15s,transform .12s;}
-  .card-hover:active{transform:scale(.985);border-color:#3a3a3a;}
+  .card-hover:active{transform:scale(.985);border-color:#003087;}
 
   /* ── Buttons ── */
   .btn-primary{
-    background:#c8ff4d;color:#111111;font-weight:700;font-size:15px;letter-spacing:-.01em;
+    background:#FF5C00;color:#ffffff;font-weight:700;font-size:15px;letter-spacing:-.01em;
     border-radius:14px;padding:15px 20px;
     box-shadow:0 2px 8px rgba(0,0,0,.3);
     transition:opacity .12s,transform .12s;
   }
   .btn-primary:active{opacity:.85;transform:scale(.97);}
   .btn-secondary{
-    background:#1c1c1c;color:#ffffff;font-weight:600;
-    border-radius:14px;padding:14px 20px;border:1.5px solid #2a2a2a;
+    background:#001A4D;color:#ffffff;font-weight:600;
+    border-radius:14px;padding:14px 20px;border:1.5px solid #002266;
     transition:border-color .15s,transform .12s;
   }
-  .btn-secondary:active{border-color:#3a3a3a;transform:scale(.97);}
+  .btn-secondary:active{border-color:#003087;transform:scale(.97);}
 
   /* ── Inputs ── */
   .inp-dark{
     width:100%;border-radius:12px;
-    background:#1c1c1c;border:1.5px solid #2a2a2a;
+    background:#001A4D;border:1.5px solid #002266;
     color:#ffffff;padding:13px 16px;font-size:14px;font-family:inherit;
     outline:none;transition:border-color .15s;
   }
-  .inp-dark:focus{border-color:#c8ff4d;}
-  .inp-dark::placeholder{color:#555555;}
+  .inp-dark:focus{border-color:#FF5C00;}
+  .inp-dark::placeholder{color:#4466aa;}
 
-  /* ── Status dots — flat, no glow ── */
-  .dot-disponivel{background:#c8ff4d;}
+  /* ── Status dots ── */
+  .dot-disponivel{background:#FFAB00;}
   .dot-ocupado{background:#ff6b35;}
   .dot-manutencao{background:#ff3b5c;}
 
@@ -130,13 +133,13 @@
 
   /* ── Section titles ── */
   .sec-title{font-size:13px;font-weight:700;color:#ffffff;letter-spacing:.02em;text-transform:uppercase;}
-  .sec-divider{height:1px;background:#1e1e1e;margin:0 16px;}
+  .sec-divider{height:1px;background:#001A4D;margin:0 16px;}
 
   /* ── Stat card ── */
   .stat-card{border-radius:14px;padding:14px 16px;}
 
   /* ── Nav pill ── */
-  .nav-pill{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:28px;height:2px;border-radius:1px;background:#c8ff4d;}
+  .nav-pill{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:28px;height:2px;border-radius:1px;background:#FF5C00;}
   .nav-item-icon{transition:background .15s,transform .12s;}
 
   /* ── Timeline dot ── */
@@ -146,7 +149,7 @@
   .badge-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
 
   /* ── Progress bar ── */
-  .co2-bar{height:5px;border-radius:3px;background:#c8ff4d;}
+  .co2-bar{height:5px;border-radius:3px;background:#FFAB00;}
 
   /* ── Floating action ── */
   .fab-shadow{box-shadow:0 4px 16px rgba(0,0,0,.5);}
@@ -157,12 +160,12 @@
   /* ── Screen handle ── */
   .screen-handle{width:36px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:0 auto;}
 
-  /* ── Glass — minimal, used only where essential ── */
-  .glass{background:rgba(28,28,28,.9);border:1px solid #2a2a2a;}
-  .glass-dark{background:rgba(17,17,17,.95);border:1px solid #222222;}
+  /* ── Glass ── */
+  .glass{background:rgba(0,26,77,.9);border:1px solid #002266;}
+  .glass-dark{background:rgba(0,17,51,.95);border:1px solid #001A4D;}
 
-  /* ── Connector rings — no color ── */
-  .ring-disponivel{box-shadow:0 0 0 2px rgba(200,255,77,.2);}
+  /* ── Connector rings ── */
+  .ring-disponivel{box-shadow:0 0 0 2px rgba(255,171,0,.25);}
   .ring-ocupado{box-shadow:0 0 0 2px rgba(255,107,53,.2);}
   .ring-manutencao{box-shadow:0 0 0 2px rgba(255,59,92,.15);}
 </style>
@@ -191,9 +194,9 @@ const STATIONS = [
 ];
 
 const INITIAL_COUPONS = [
-  {id:"WELCOME20",title:"Boas-vindas",big:"20% OFF",description:"na sua primeira recarga na rede EletroGo",type:"percent",value:20,used:false,active:false,icon:"🎉",color:"from-accent-500 to-accent-700"},
+  {id:"WELCOME20",title:"Boas-vindas",big:"20% OFF",description:"na sua primeira recarga na rede EletroGo",type:"percent",value:20,used:false,active:false,icon:"🎉",color:"from-[#FF5C00] to-[#E05000]"},
   {id:"HAPPY15",title:"Happy Hour Elétrico",big:"15% OFF",description:"em recargas entre 22h e 06h",type:"percent",value:15,used:false,active:false,icon:"🌙",color:"from-sky-500 to-indigo-600"},
-  {id:"CASHBACK10",title:"Cashback turbo",big:"+R$ 10",description:"de volta em recargas acima de 20 kWh",type:"cashback",value:10,minKwh:20,used:false,active:false,icon:"💰",color:"from-sunset-400 to-sunset-600"},
+  {id:"CASHBACK10",title:"Cashback turbo",big:"+R$ 10",description:"de volta em recargas acima de 20 kWh",type:"cashback",value:10,minKwh:20,used:false,active:false,icon:"💰",color:"from-[#003087] to-[#001A4D]"},
 ];
 
 const HISTORY_SEED = [
@@ -338,7 +341,7 @@ function getTier(pts) { return TIERS.find(t=>pts>=t.min&&pts<=t.max)||TIERS[0]; 
 function getNextTier(pts) { const i=TIERS.findIndex(t=>pts>=t.min&&pts<=t.max); return TIERS[i+1]||null; }
 
 const STATUS_LABEL = {
-  disponivel:{label:"Disponível",dot:"bg-[#c8ff4d]",text:"text-[#aaee1f]"},
+  disponivel:{label:"Disponível",dot:"bg-[#FF5C00]",text:"text-[#FFAB00]"},
   ocupado:{label:"Ocupado",dot:"bg-sunset-500",text:"text-sunset-600"},
   manutencao:{label:"Manutenção",dot:"bg-rose-500",text:"text-rose-600"},
   carregando:{label:"Carregando",dot:"bg-sky-500",text:"text-sky-600"},
@@ -376,18 +379,18 @@ function QRMock({size=152}){
 
 function TopBar({title,onBack,right,dark}){
   return(
-    <div className={"flex items-center justify-between px-4 pt-12 pb-3 sticky top-0 z-10 "+(dark?"bg-transparent":"bg-[#111111]/95 border-b border-[#1e1e1e]")} style={dark?{}:{backdropFilter:"blur(16px)"}}>
+    <div className={"flex items-center justify-between px-4 pt-12 pb-3 sticky top-0 z-10 "+(dark?"bg-transparent":"bg-[#001133]/95 border-b border-[#001A4D]")} style={dark?{}:{backdropFilter:"blur(16px)"}}>
       <div className="flex items-center gap-2.5">
         {onBack&&(
           <button onClick={onBack}
-            className={"w-9 h-9 flex items-center justify-center rounded-full transition active:scale-90 "+(dark?"bg-white/10 hover:bg-white/15 text-white":"bg-[#1c1c1c] hover:bg-[#2a2a2a] text-white/70")}
+            className={"w-9 h-9 flex items-center justify-center rounded-full transition active:scale-90 "+(dark?"bg-white/10 hover:bg-white/15 text-white":"bg-[#001A4D] hover:bg-[#002266] text-white/70")}
             style={{flexShrink:0}}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
         )}
-        <h1 className={"text-[17px] font-bold tracking-tight "+(dark?"text-white":"text-ink")}>{title}</h1>
+        <h1 className="text-[17px] font-bold tracking-tight text-white">{title}</h1>
       </div>
       {right}
     </div>
@@ -396,33 +399,33 @@ function TopBar({title,onBack,right,dark}){
 
 const NAV_ICONS={
   home:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#111111":"none"} stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#ffffff":"none"} stroke={active?"#ffffff":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
-      <path d="M9 21V12h6v9" fill={active?"#fff":undefined} stroke={active?"#111111":"#9ca3af"}/>
+      <path d="M9 21V12h6v9" fill={active?"rgba(255,92,0,.3)":undefined} stroke={active?"#ffffff":"#9ca3af"}/>
     </svg>
   ),
   wallet:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="7" width="20" height="14" rx="2" fill={active?"#111111":undefined}/>
-      <path d="M16 3H5a3 3 0 00-3 3v1" stroke={active?"#111111":"#9ca3af"}/>
-      <circle cx="17" cy="14" r="1.5" fill={active?"#c8ff4d":"#9ca3af"} stroke="none"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#ffffff":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2" fill={active?"#FF5C00":undefined}/>
+      <path d="M16 3H5a3 3 0 00-3 3v1" stroke={active?"#ffffff":"#9ca3af"}/>
+      <circle cx="17" cy="14" r="1.5" fill={active?"#FFAB00":"#9ca3af"} stroke="none"/>
     </svg>
   ),
   charging:(active,highlight)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#111111":"none"} stroke={active?"#111111":highlight?"#ff7a45":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill={active?"#111111":highlight?"rgba(255,122,69,.15)":"none"}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#FF5C00":"none"} stroke={active?"#ffffff":highlight?"#FFAB00":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill={active?"#FF5C00":highlight?"rgba(255,171,0,.2)":"none"}/>
     </svg>
   ),
   history:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" fill={active?"#111111":undefined}/>
-      <polyline points="12 7 12 12 15 15" stroke={active?"#c8ff4d":"#9ca3af"}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#ffffff":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" fill={active?"#FF5C00":undefined}/>
+      <polyline points="12 7 12 12 15 15" stroke={active?"#ffffff":"#9ca3af"}/>
     </svg>
   ),
   profile:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="4" fill={active?"#111111":undefined}/>
-      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" fill={active?"#111111":undefined}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#ffffff":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" fill={active?"#FF5C00":undefined}/>
+      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" fill={active?"rgba(255,92,0,.3)":undefined}/>
     </svg>
   ),
 };
@@ -436,7 +439,7 @@ function BottomNav({screen,setScreen,hasActiveSession}){
     {id:"profile",label:"Perfil"},
   ];
   return(
-    <div style={{background:"rgba(255,255,255,.96)",borderTop:"1px solid rgba(10,14,26,.05)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 -1px 0 rgba(10,14,26,.04),0 -8px 24px rgba(10,14,26,.06)"}}>
+    <div style={{background:"rgba(0,17,51,.96)",borderTop:"1px solid rgba(0,34,102,.8)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 -1px 0 rgba(0,82,212,.15),0 -8px 24px rgba(0,0,0,.4)"}}>
       <div className="flex justify-between px-2 pt-2 pb-6">
         {items.map(it=>{
           const active=screen===it.id;
@@ -446,10 +449,10 @@ function BottomNav({screen,setScreen,hasActiveSession}){
               style={{WebkitTapHighlightColor:"transparent",outline:"none"}}>
               {it.highlight&&<span className="absolute top-0.5 right-[26%] w-2.5 h-2.5 rounded-full bg-sunset-500 border-2 border-white pulse-dot" style={{zIndex:2}}></span>}
               <div className={"nav-item-icon w-11 h-9 rounded-2xl flex items-center justify-center "+(active?"scale-105":"scale-100")}
-                style={active?{background:"#c8ff4d"}:{}}>
+                style={active?{background:"#FF5C00"}:{}}>
                 {NAV_ICONS[it.id]?.(active,it.highlight)}
               </div>
-              <span className={"text-[10px] font-bold tracking-tight transition-colors duration-150 "+(active?"text-[#aaee1f]":"text-gray-400")}>{it.label}</span>
+              <span className={"text-[10px] font-bold tracking-tight transition-colors duration-150 "+(active?"text-[#FF5C00]":"text-gray-500")}>{it.label}</span>
             </button>
           );
         })}
@@ -506,23 +509,23 @@ function NotifPanel({notifs,onRead,onClose}){
         </div>
         <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:"1px solid #f3f5f9"}}>
           <div className="flex items-center gap-2">
-            <p className="font-extrabold text-ink">Notificações</p>
+            <p className="font-extrabold text-[#001133]">Notificações</p>
             {unread>0&&<span className="badge-pill bg-sunset-500 text-white">{unread} nova{unread>1?"s":""}</span>}
           </div>
-          <button onClick={onClose} style={{width:32,height:32,borderRadius:"50%",background:"#111111",border:"none",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",color:"#6b7280"}}>✕</button>
+          <button onClick={onClose} style={{width:32,height:32,borderRadius:"50%",background:"#001133",border:"none",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",color:"#6b7280"}}>✕</button>
         </div>
         <div style={{overflowY:"auto",maxHeight:"calc(72vh - 80px)"}}>
           {notifs.map((n,i)=>(
             <div key={n.id} onClick={()=>onRead(n.id)}
               className="flex gap-3 px-5 py-4 cursor-pointer"
-              style={{opacity:n.read?.5:1,borderBottom:i<notifs.length-1?"1px solid #1e1e1e":"none",background:n.read?"transparent":"rgba(200,255,77,.03)"}}>
-              <div style={{width:40,height:40,borderRadius:14,background:n.read?"#f3f5f9":"#e6fff6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{n.icon}</div>
+              style={{opacity:n.read?.5:1,borderBottom:i<notifs.length-1?"1px solid #f3f5f9":"none",background:n.read?"transparent":"rgba(255,92,0,.04)"}}>
+              <div style={{width:40,height:40,borderRadius:14,background:n.read?"#f3f5f9":"#fff3eb",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{n.icon}</div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-ink">{n.title}</p>
                 <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{n.body}</p>
                 <p className="text-[10px] text-gray-300 mt-1">{n.time}</p>
               </div>
-              {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#c8ff4d",flexShrink:0,marginTop:6}}></div>}
+              {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#FF5C00",flexShrink:0,marginTop:6}}></div>}
             </div>
           ))}
         </div>
@@ -539,27 +542,27 @@ function LGPDScreen({onAccept}){
   return(
     <div className="screen flex flex-col bg-ink text-white px-6 pt-16 pb-10 fade-in overflow-hidden relative">
       <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <div className="w-16 h-16 rounded-2xl bg-[#1c1c1c] border border-[#2a2a2a] flex items-center justify-center text-3xl mb-6">🔒</div>
+        <div className="w-16 h-16 rounded-2xl bg-[#001A4D] border border-[#002266] flex items-center justify-center text-3xl mb-6">🔒</div>
         <h1 className="text-2xl font-extrabold mb-3">Privacidade e Dados</h1>
         <p className="text-sm text-gray-300 leading-relaxed mb-4">
           A EletroGo coleta dados pessoais (nome, e-mail, CPF, localização e histórico de recargas) para operar o serviço, processar pagamentos e personalizar ofertas.
         </p>
         <div className="bg-white/10 border border-white/10 rounded-2xl p-4 space-y-2.5 text-sm text-gray-300">
-          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Tratamento conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong></p>
-          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Dados não são vendidos a terceiros</p>
-          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Você pode solicitar exclusão a qualquer momento</p>
-          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Pagamentos processados com criptografia SSL</p>
+          <p className="flex gap-2"><span className="text-[#FF5C00]">✓</span>Tratamento conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong></p>
+          <p className="flex gap-2"><span className="text-[#FF5C00]">✓</span>Dados não são vendidos a terceiros</p>
+          <p className="flex gap-2"><span className="text-[#FF5C00]">✓</span>Você pode solicitar exclusão a qualquer momento</p>
+          <p className="flex gap-2"><span className="text-[#FF5C00]">✓</span>Pagamentos processados com criptografia SSL</p>
         </div>
         <label className="flex items-start gap-3 mt-6 cursor-pointer" onClick={()=>setChecked(!checked)}>
-          <div className={"w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(checked?"bg-[#c8ff4d] border-[#c8ff4d]":"border-white/30")}>
-            {checked&&<span className="text-ink text-xs font-bold">✓</span>}
+          <div className={"w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(checked?"bg-[#FF5C00] border-[#FF5C00]":"border-white/30")}>
+            {checked&&<span className="text-white text-xs font-bold">✓</span>}
           </div>
-          <p className="text-sm text-gray-300 leading-snug">Li e concordo com a <span className="text-[#c8ff4d] underline">Política de Privacidade</span> e os <span className="text-[#c8ff4d] underline">Termos de Uso</span>.</p>
+          <p className="text-sm text-gray-300 leading-snug">Li e concordo com a <span className="text-[#FF5C00] underline">Política de Privacidade</span> e os <span className="text-[#FF5C00] underline">Termos de Uso</span>.</p>
         </label>
       </div>
       <div className="relative z-10 mt-6">
         <button disabled={!checked} onClick={onAccept}
-          className="w-full py-4 rounded-2xl font-extrabold transition shadow-lg disabled:opacity-40 bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-black/30">
+          className="w-full py-4 rounded-2xl font-extrabold transition shadow-lg disabled:opacity-40 bg-[#FF5C00] text-white shadow-black/30">
           Aceitar e continuar →
         </button>
         <p className="text-center text-[11px] text-gray-500 mt-3">EletroGo · Curitiba, PR · v1.0</p>
@@ -572,9 +575,9 @@ function LGPDScreen({onAccept}){
    TELA: ONBOARDING
 ════════════════════════════ */
 const SLIDES=[
-  {icon:"⚡",title:"Carregue onde quiser",body:"Encontre eletropostos CCS2 e Type 2 em Curitiba. Veja disponibilidade em tempo real e inicie a recarga direto pelo app.",color:"from-[#c8ff4d] to-[#aaee1f]"},
-  {icon:"💰",title:"Pague menos a cada carga",body:"Cashback automático, cupons exclusivos e planos EletroPass que travam sua tarifa. Quanto mais você carrega, mais você economiza.",color:"from-accent-500 to-accent-700"},
-  {icon:"🔒",title:"Simples e seguro",body:"PIX, cartão Mercado Pago ou saldo EletroGo. O conector só é liberado após confirmação do pagamento — você no controle.",color:"from-sunset-400 to-sunset-600"},
+  {icon:"⚡",title:"Carregue onde quiser",body:"Encontre eletropostos CCS2 e Type 2 em Curitiba. Veja disponibilidade em tempo real e inicie a recarga direto pelo app.",color:"from-[#FF5C00] to-[#FFAB00]"},
+  {icon:"💰",title:"Pague menos a cada carga",body:"Cashback automático, cupons exclusivos e planos EletroPass que travam sua tarifa. Quanto mais você carrega, mais você economiza.",color:"from-[#FF5C00] to-[#E05000]"},
+  {icon:"🔒",title:"Simples e seguro",body:"PIX, cartão Mercado Pago ou saldo EletroGo. O conector só é liberado após confirmação do pagamento — você no controle.",color:"from-[#003087] to-[#001A4D]"},
 ];
 function OnboardingScreen({onDone}){
   const [slide,setSlide]=useState(0);
@@ -583,17 +586,17 @@ function OnboardingScreen({onDone}){
   return(
     <div className="screen flex flex-col bg-ink text-white overflow-hidden relative fade-in">
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center relative z-10">
-        <div className={"w-24 h-24 rounded-2xl flex items-center justify-center text-5xl mb-8 bg-[#1c1c1c] border border-[#2a2a2a]"}>{s.icon}</div>
+        <div className={"w-24 h-24 rounded-2xl flex items-center justify-center text-5xl mb-8 bg-[#001A4D] border border-[#002266]"}>{s.icon}</div>
         <h2 className="text-2xl font-extrabold mb-3 leading-tight">{s.title}</h2>
         <p className="text-gray-300 text-sm leading-relaxed max-w-[280px]">{s.body}</p>
         <div className="flex gap-2 mt-10">
           {SLIDES.map((_,i)=>(
-            <div key={i} className={"h-1.5 rounded-full transition-all "+(i===slide?"w-8 bg-[#c8ff4d]":"w-2 bg-white/20")}></div>
+            <div key={i} className={"h-1.5 rounded-full transition-all "+(i===slide?"w-8 bg-[#FF5C00]":"w-2 bg-white/20")}></div>
           ))}
         </div>
       </div>
       <div className="px-6 pb-10 relative z-10 space-y-3">
-        <button onClick={next} className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30">
+        <button onClick={next} className="w-full py-4 rounded-2xl font-extrabold bg-[#FF5C00] text-white shadow-lg shadow-black/30">
           {slide<SLIDES.length-1?"Próximo →":"Começar →"}
         </button>
         {slide<SLIDES.length-1&&<button onClick={onDone} className="w-full py-2 text-sm text-gray-500 font-semibold">Pular</button>}
@@ -605,6 +608,11 @@ function OnboardingScreen({onDone}){
 /* ════════════════════════════
    TELA: LOGIN / REGISTRO / ESQUECI SENHA
 ════════════════════════════ */
+function makeCaptcha(){
+  const a=Math.floor(Math.random()*9)+1;
+  const b=Math.floor(Math.random()*9)+1;
+  return {a,b,ans:a+b};
+}
 function AuthScreen({onLogin}){
   const [tab,setTab]=useState("login");
   const [loginEmail,setLoginEmail]=useState("");
@@ -622,11 +630,16 @@ function AuthScreen({onLogin}){
   const [rLoading,setRLoading]=useState(false);
   const [fEmail,setFEmail]=useState("");
   const [fSent,setFSent]=useState(false);
+  const [captcha,setCaptcha]=useState(()=>makeCaptcha());
+  const [captchaVal,setCaptchaVal]=useState("");
+  const [captchaErr,setCaptchaErr]=useState(false);
+  const refreshCaptcha=()=>{setCaptcha(makeCaptcha());setCaptchaVal("");setCaptchaErr(false);};
 
   const doLogin=async()=>{
     if(!loginEmail){setLoginErr("Informe seu e-mail.");return;}
     if(!loginPass){setLoginErr("Informe sua senha.");return;}
-    setLoginLoading(true);setLoginErr("");
+    if(parseInt(captchaVal)!==captcha.ans){setCaptchaErr(true);refreshCaptcha();return;}
+    setLoginLoading(true);setLoginErr("");setCaptchaErr(false);
     const {user,error}=await SbAuth.login(loginEmail,loginPass);
     setLoginLoading(false);
     if(error){
@@ -643,7 +656,8 @@ function AuthScreen({onLogin}){
     if(rPass!==rPass2){setRErr("As senhas não coincidem.");return;}
     if(rPass.length<8){setRErr("Senha precisa ter ao menos 8 caracteres.");return;}
     if(!rTC){setRErr("Aceite os termos para continuar.");return;}
-    setRLoading(true);setRErr("");
+    if(parseInt(captchaVal)!==captcha.ans){setCaptchaErr(true);refreshCaptcha();return;}
+    setRLoading(true);setRErr("");setCaptchaErr(false);
     const {user,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
     setRLoading(false);
     if(error){
@@ -665,7 +679,7 @@ function AuthScreen({onLogin}){
   return(
     <div className="screen flex flex-col bg-ink text-white px-6 pt-14 pb-8 fade-in overflow-hidden relative">
       <div className="relative z-10 mb-5">
-        <div className="w-14 h-14 rounded-2xl bg-[#1c1c1c] border border-[#2a2a2a] flex items-center justify-center text-2xl font-bold mb-4">⚡</div>
+        <div className="w-14 h-14 rounded-2xl bg-[#001A4D] border border-[#002266] flex items-center justify-center text-2xl font-bold mb-4">⚡</div>
         <h1 className="text-3xl font-extrabold leading-tight tracking-tight">EletroGo</h1>
         <p className="text-gray-400 text-xs mt-1">Rede de Eletropostos · Curitiba, PR</p>
       </div>
@@ -673,7 +687,7 @@ function AuthScreen({onLogin}){
       <div className="relative z-10 flex bg-white/5 rounded-2xl p-1 mb-5">
         {["login","register"].map(t=>(
           <button key={t} onClick={()=>{setTab(t);setLoginErr("");setRErr("");}}
-            className={"flex-1 py-2 rounded-xl text-sm font-bold transition "+(tab===t?"bg-[#c8ff4d] text-ink shadow":"text-gray-400")}>
+            className={"flex-1 py-2 rounded-xl text-sm font-bold transition "+(tab===t?"bg-[#FF5C00] text-white shadow":"text-gray-400")}>
             {t==="login"?"Entrar":"Criar conta"}
           </button>
         ))}
@@ -681,20 +695,20 @@ function AuthScreen({onLogin}){
 
       {tab==="forgot"&&(
         <div className="relative z-10 space-y-4 slide-up">
-          <button onClick={()=>setTab("login")} className="text-[#c8ff4d] text-sm font-semibold">← Voltar</button>
+          <button onClick={()=>setTab("login")} className="text-[#FF5C00] text-sm font-semibold">← Voltar</button>
           <h2 className="text-lg font-extrabold">Redefinir senha</h2>
           {fSent?(
-            <div className="bg-[#c8ff4d]/20 border border-[#c8ff4d]/20 rounded-2xl p-5 text-center">
+            <div className="bg-[#FF5C00]/20 border border-[#FF5C00]/20 rounded-2xl p-5 text-center">
               <p className="text-3xl mb-2">📧</p>
-              <p className="font-bold text-[#c8ff4d]">E-mail enviado!</p>
+              <p className="font-bold text-[#FF5C00]">E-mail enviado!</p>
               <p className="text-sm text-gray-400 mt-1">Verifique <strong className="text-white">{fEmail}</strong> e siga as instruções.</p>
-              <button onClick={()=>setTab("login")} className="mt-4 text-[#c8ff4d] text-sm font-semibold">Voltar ao login</button>
+              <button onClick={()=>setTab("login")} className="mt-4 text-[#FF5C00] text-sm font-semibold">Voltar ao login</button>
             </div>
           ):(
             <>
               <p className="text-sm text-gray-400">Informe seu e-mail e enviaremos um link para redefinir sua senha.</p>
               <input value={fEmail} onChange={e=>setFEmail(e.target.value)} placeholder="voce@email.com" className={inp}/>
-              <button onClick={doForgotPassword} className="w-full py-3.5 rounded-xl bg-gradient-to-r bg-[#c8ff4d] font-bold text-ink">Enviar link</button>
+              <button onClick={doForgotPassword} className="w-full py-3.5 rounded-xl bg-gradient-to-r bg-[#FF5C00] font-bold text-white">Enviar link</button>
             </>
           )}
         </div>
@@ -704,9 +718,24 @@ function AuthScreen({onLogin}){
         <div className="relative z-10 space-y-3 slide-up">
           <input value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} placeholder="E-mail" className={inp}/>
           <input value={loginPass} onChange={e=>setLoginPass(e.target.value)} type="password" placeholder="Senha" className={inp}/>
+          {/* Verificação humana */}
+          <div style={{background:"#001A4D",border:`1.5px solid ${captchaErr?"#f87171":"#002266"}`,borderRadius:14,padding:"12px 14px"}} className="flex items-center gap-3">
+            <div style={{width:36,height:36,borderRadius:10,background:"rgba(255,92,0,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>🤖</div>
+            <div className="flex-1">
+              <p className="text-[11px] text-gray-400 font-semibold mb-1">Verificação rápida</p>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-bold text-sm">{captcha.a} + {captcha.b} =</span>
+                <input value={captchaVal} onChange={e=>{setCaptchaVal(e.target.value);setCaptchaErr(false);}}
+                  type="number" placeholder="?" maxLength={2}
+                  style={{width:52,background:"#002266",border:`1px solid ${captchaErr?"#f87171":"#003087"}`,borderRadius:8,padding:"4px 8px",color:"#fff",fontSize:14,fontWeight:700,outline:"none"}}/>
+                <button onClick={refreshCaptcha} style={{fontSize:14,color:"#6b7280",background:"none",border:"none",cursor:"pointer",padding:"0 4px"}} title="Nova pergunta">↺</button>
+              </div>
+            </div>
+            {captchaErr&&<span className="text-rose-400 text-[10px] font-bold">Incorreto</span>}
+          </div>
           {loginErr&&<p className="text-rose-400 text-xs font-semibold">{loginErr}</p>}
           <button onClick={doLogin} disabled={loginLoading}
-            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30 disabled:opacity-60">
+            className="w-full py-4 rounded-2xl font-extrabold bg-[#FF5C00] text-white shadow-lg shadow-black/30 disabled:opacity-60">
             {loginLoading?"Entrando...":"Entrar →"}
           </button>
           <button onClick={()=>{setTab("forgot");setFSent(false);setFEmail("");}} className="w-full text-center text-xs text-gray-400 font-semibold pt-1">
@@ -724,14 +753,29 @@ function AuthScreen({onLogin}){
           <input value={rPass} onChange={e=>setRPass(e.target.value)} type="password" placeholder="Senha (mín. 8 caracteres)" className={inp}/>
           <input value={rPass2} onChange={e=>setRPass2(e.target.value)} type="password" placeholder="Confirmar senha" className={inp}/>
           <label className="flex items-start gap-2 cursor-pointer pt-1" onClick={()=>setRTC(!rTC)}>
-            <div className={"w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(rTC?"bg-[#c8ff4d] border-[#c8ff4d]":"border-white/30")}>
+            <div className={"w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(rTC?"bg-[#FF5C00] border-[#FF5C00]":"border-white/30")}>
               {rTC&&<span className="text-ink text-[10px] font-extrabold">✓</span>}
             </div>
-            <p className="text-xs text-gray-400 leading-snug">Li e aceito os <span className="text-[#c8ff4d]">Termos de Uso</span> e a <span className="text-[#c8ff4d]">Política de Privacidade</span>.</p>
+            <p className="text-xs text-gray-400 leading-snug">Li e aceito os <span className="text-[#FF5C00]">Termos de Uso</span> e a <span className="text-[#FF5C00]">Política de Privacidade</span>.</p>
           </label>
+          {/* Verificação humana */}
+          <div style={{background:"#001A4D",border:`1.5px solid ${captchaErr?"#f87171":"#002266"}`,borderRadius:14,padding:"12px 14px"}} className="flex items-center gap-3">
+            <div style={{width:36,height:36,borderRadius:10,background:"rgba(255,92,0,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>🤖</div>
+            <div className="flex-1">
+              <p className="text-[11px] text-gray-400 font-semibold mb-1">Verificação rápida</p>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-bold text-sm">{captcha.a} + {captcha.b} =</span>
+                <input value={captchaVal} onChange={e=>{setCaptchaVal(e.target.value);setCaptchaErr(false);}}
+                  type="number" placeholder="?" maxLength={2}
+                  style={{width:52,background:"#002266",border:`1px solid ${captchaErr?"#f87171":"#003087"}`,borderRadius:8,padding:"4px 8px",color:"#fff",fontSize:14,fontWeight:700,outline:"none"}}/>
+                <button onClick={refreshCaptcha} style={{fontSize:14,color:"#6b7280",background:"none",border:"none",cursor:"pointer",padding:"0 4px"}} title="Nova pergunta">↺</button>
+              </div>
+            </div>
+            {captchaErr&&<span className="text-rose-400 text-[10px] font-bold">Incorreto</span>}
+          </div>
           {rErr&&<p className="text-rose-400 text-xs font-semibold">{rErr}</p>}
           <button onClick={doRegister} disabled={rLoading}
-            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30 disabled:opacity-60 mt-1">
+            className="w-full py-4 rounded-2xl font-extrabold bg-[#FF5C00] text-white shadow-lg shadow-black/30 disabled:opacity-60 mt-1">
             {rLoading?"Criando conta...":"Criar conta →"}
           </button>
         </div>
@@ -747,7 +791,7 @@ function PartnerAdsSection(){
   return(
     <div className="mt-4">
       <div className="flex items-center justify-between px-4 mb-2">
-        <h2 className="text-sm font-bold text-ink">🤝 Parceiros perto de você</h2>
+        <h2 className="text-sm font-bold text-white">🤝 Parceiros perto de você</h2>
         <span className="text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Patrocinado</span>
       </div>
       <div className="flex gap-3 overflow-x-auto px-4 pb-1 hscroll snap-x">
@@ -769,7 +813,7 @@ function PartnerAdsSection(){
 function StaticMap({stations,onSelect}){
   const positions=[{top:"38%",left:"32%"},{top:"22%",left:"66%"},{top:"68%",left:"58%"}];
   return(
-    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,background:"#1c1c1c",border:"1px solid #2a2a2a"}}>
+    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,background:"#001A4D",border:"1px solid #002266"}}>
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 148" preserveAspectRatio="none" style={{opacity:.3}}>
         <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#94a3b8" strokeWidth=".5"/></pattern></defs>
         <rect width="100%" height="100%" fill="url(#grid)"/>
@@ -780,7 +824,7 @@ function StaticMap({stations,onSelect}){
         const occ=st.connectors.some(c=>c.status==="disponivel");
         return(
           <button key={st.id} onClick={()=>onSelect(st)} style={{top:positions[i].top,left:positions[i].left,position:"absolute",transform:"translate(-50%,-50%)"}} className="active:scale-90 transition-transform">
-            <div style={{width:34,height:34,borderRadius:"50%",background:occ?"linear-gradient(135deg,#c8ff4d,#aaee1f)":"linear-gradient(135deg,#ff7a45,#f4622a)",display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #111111"}}>
+            <div style={{width:34,height:34,borderRadius:"50%",background:occ?"linear-gradient(135deg,#FFAB00,#FF5C00)":"linear-gradient(135deg,#ff7a45,#f4622a)",display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #001133"}}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             </div>
           </button>
@@ -796,7 +840,7 @@ function StaticMap({stations,onSelect}){
 }
 
 /* ─── Google Maps real ─── */
-const GMAPS_DARK=[{elementType:"geometry",stylers:[{color:"#1a1f2e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#111111"}]},{elementType:"labels.text.fill",stylers:[{color:"#6b7280"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#253047"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#1e2f48"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#0a111f"}]},{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}];
+const GMAPS_DARK=[{elementType:"geometry",stylers:[{color:"#1a1f2e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#001133"}]},{elementType:"labels.text.fill",stylers:[{color:"#6b7280"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#253047"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#1e2f48"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#0a111f"}]},{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}];
 
 function GoogleMapComponent({stations,onSelect}){
   const mapRef=useRef(null);
@@ -830,7 +874,7 @@ function GoogleMapComponent({stations,onSelect}){
       const coord=STATION_COORDS[st.id];
       if(!coord)return;
       const occ=st.connectors.some(c=>c.status==="disponivel");
-      const color=occ?"#c8ff4d":"#ff7a45";
+      const color=occ?"#FF5C00":"#ff7a45";
       const marker=new window.google.maps.Marker({
         position:coord,map,title:st.name,
         icon:{path:window.google.maps.SymbolPath.CIRCLE,scale:12,fillColor:color,fillOpacity:1,strokeColor:"#fff",strokeWeight:2.5},
@@ -858,7 +902,7 @@ function GoogleMapComponent({stations,onSelect}){
         <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"rgba(255,255,255,.7)",fontWeight:600}}>📡 Localizando…</div>
       )}
       {geoStatus==="ok"&&(
-        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#c8ff4d",fontWeight:600}}>📍 Localização ativa</div>
+        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#FF5C00",fontWeight:600}}>📍 Localização ativa</div>
       )}
       {geoStatus==="denied"&&(
         <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#ff7a45",fontWeight:600}}>📍 Curitiba, PR</div>
@@ -872,8 +916,8 @@ function PromoCarousel({coupons,onGo}){
   return(
     <div className="mt-4">
       <div className="flex items-center justify-between px-4 mb-2">
-        <h2 className="text-sm font-bold text-ink">🔥 Ofertas para você</h2>
-        <button onClick={onGo} className="text-xs font-bold text-[#aaee1f]">Ver todas</button>
+        <h2 className="text-sm font-bold text-white">🔥 Ofertas para você</h2>
+        <button onClick={onGo} className="text-xs font-bold text-[#FFAB00]">Ver todas</button>
       </div>
       <div className="flex gap-3 overflow-x-auto px-4 pb-1 hscroll snap-x">
         {active.map(c=>(
@@ -897,11 +941,11 @@ function StationCard({station,onSelect}){
   const minPrice=Math.min(...station.connectors.map(c=>c.priceKwh));
   const hasAvail=available>0;
   const estMins=maxPower>=60?Math.round(1800/maxPower):Math.round(1200/maxPower);
-  const accentColor=hasAvail?"#c8ff4d":station.connectors.some(c=>c.status==="manutencao")?"#f43f5e":"#ff7a45";
-  const iconBg=hasAvail?"linear-gradient(135deg,#c8ff4d,#aaee1f)":station.connectors.some(c=>c.status==="manutencao")?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+  const accentColor=hasAvail?"#FFAB00":station.connectors.some(c=>c.status==="manutencao")?"#f43f5e":"#ff7a45";
+  const iconBg=hasAvail?"linear-gradient(135deg,#FF5C00,#FFAB00)":station.connectors.some(c=>c.status==="manutencao")?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
   return(
     <button onClick={()=>onSelect(station)} className="w-full text-left card-hover flex items-start gap-0 overflow-hidden"
-      style={{background:"#fff",border:"1px solid rgba(10,14,26,.06)",borderRadius:22,boxShadow:"0 1px 3px rgba(10,14,26,.04),0 4px 16px rgba(10,14,26,.05)",padding:0,display:"flex",width:"100%"}}>
+      style={{background:"#001A4D",border:"1px solid rgba(0,82,212,.2)",borderRadius:22,boxShadow:"0 1px 3px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.3)",padding:0,display:"flex",width:"100%"}}>
       {/* left accent bar */}
       <div style={{width:4,background:accentColor,borderRadius:"22px 0 0 22px",alignSelf:"stretch",flexShrink:0,opacity:.85}}></div>
       <div className="flex items-start gap-3.5 p-4 flex-1 min-w-0">
@@ -914,24 +958,24 @@ function StationCard({station,onSelect}){
         <div className="flex-1 min-w-0">
           {/* name + price */}
           <div className="flex items-start justify-between gap-1.5">
-            <p className="font-extrabold text-ink text-[13px] leading-tight tracking-tight">{station.name}</p>
+            <p className="font-extrabold text-white text-[13px] leading-tight tracking-tight">{station.name}</p>
             <div className="flex-shrink-0 text-right">
-              <p className="text-[12px] font-extrabold text-[#aaee1f] leading-none">{fmtMoney(minPrice)}</p>
+              <p className="text-[12px] font-extrabold text-[#FFAB00] leading-none">{fmtMoney(minPrice)}</p>
               <p className="text-[10px] text-gray-400 font-medium">/kWh</p>
             </div>
           </div>
           <p className="text-[11px] text-gray-400 mt-0.5 truncate">{station.address}</p>
           {/* info chips */}
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#001A4D] px-2 py-0.5 rounded-full border border-[#002266]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               {station.distanceKm.toFixed(1)} km
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#001A4D] px-2 py-0.5 rounded-full border border-[#002266]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               {maxPower} kW
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#001A4D] px-2 py-0.5 rounded-full border border-[#002266]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
               ~{estMins} min
             </span>
@@ -940,10 +984,10 @@ function StationCard({station,onSelect}){
           <div className="flex items-center gap-2 mt-2.5">
             <div className="flex gap-1" style={{flex:1,maxWidth:80}}>
               {station.connectors.map((c,i)=>(
-                <div key={i} style={{height:3,flex:1,borderRadius:2,background:c.status==="disponivel"?"#c8ff4d":c.status==="manutencao"?"#f43f5e":"#ff7a45",opacity:.8}}></div>
+                <div key={i} style={{height:3,flex:1,borderRadius:2,background:c.status==="disponivel"?"#FFAB00":c.status==="manutencao"?"#f43f5e":"#ff7a45",opacity:.8}}></div>
               ))}
             </div>
-            <span className={"badge-pill "+(hasAvail?"bg-[#c8ff4d]/10 text-[#c8ff4d] border border-[#c8ff4d]/20":"bg-rose-50 text-rose-600 border border-rose-100")} style={{fontSize:10}}>
+            <span className={"badge-pill "+(hasAvail?"bg-[#FFAB00]/10 text-[#FFAB00] border border-[#FFAB00]/25":"bg-rose-900/30 text-rose-400 border border-rose-400/30")} style={{fontSize:10}}>
               {hasAvail?`${available}/${total} livre${available>1?"s":""}`:"Sem vagas"}
             </span>
           </div>
@@ -961,14 +1005,14 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
   const tier=getTier(wallet.points);
   const available=stations.reduce((a,s)=>a+s.connectors.filter(c=>c.status==="disponivel").length,0);
   return(
-    <div className="screen fade-in" style={{background:"#111111"}}>
+    <div className="screen fade-in" style={{background:"#001133"}}>
       {/* ── HEADER ── */}
-      <div style={{background:"#1c1c1c",borderBottom:"1px solid #2a2a2a",paddingBottom:22,position:"relative"}}>
+      <div style={{background:"#001A4D",borderBottom:"1px solid #002266",paddingBottom:22,position:"relative"}}>
         <div className="relative z-10 px-4 pt-12">
           {/* row 1: avatar + actions */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <div style={{width:42,height:42,borderRadius:12,background:"#c8ff4d",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:17,color:"#111111",letterSpacing:0,flexShrink:0}}>
+              <div style={{width:42,height:42,borderRadius:12,background:"#FF5C00",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:17,color:"#ffffff",letterSpacing:0,flexShrink:0}}>
                 {initials}
               </div>
               <div>
@@ -983,9 +1027,9 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
                 </svg>
                 {unreadCount>0&&<span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-sunset-500 text-white text-[9px] font-extrabold flex items-center justify-center pulse-dot border border-ink" style={{lineHeight:1}}>{unreadCount}</span>}
               </button>
-              <button onClick={onGoWallet} className="flex items-center gap-1.5 active:scale-95 transition-transform" style={{background:"#c8ff4d",borderRadius:12,padding:"8px 13px"}}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#111111"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-                <span className="text-ink text-[12px] font-extrabold tracking-tight">{fmtMoney(wallet.balance)}</span>
+              <button onClick={onGoWallet} className="flex items-center gap-1.5 active:scale-95 transition-transform" style={{background:"#FF5C00",borderRadius:12,padding:"8px 13px"}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <span className="text-white text-[12px] font-extrabold tracking-tight">{fmtMoney(wallet.balance)}</span>
               </button>
             </div>
           </div>
@@ -999,7 +1043,7 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
               <div key={i} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:"10px 8px",textAlign:"center"}}>
                 <p className="text-[11px] text-white/35 font-medium tracking-wide">{s.label}</p>
                 <p className="text-[15px] font-extrabold text-white mt-0.5 leading-none">{s.value}</p>
-                <p className="text-[10px] text-[#c8ff4d]/80 mt-0.5 font-medium">{s.unit}</p>
+                <p className="text-[10px] text-[#FF5C00]/80 mt-0.5 font-medium">{s.unit}</p>
               </div>
             ))}
           </div>
@@ -1020,10 +1064,10 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
       <PartnerAdsSection/>
       <div className="px-4 mt-5 mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#c8ff4d,#aaee1f)"}}></div>
-          <h2 className="text-[13px] font-extrabold text-ink tracking-tight">Eletropostos próximos</h2>
+          <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#FF5C00,#FFAB00)"}}></div>
+          <h2 className="text-[13px] font-extrabold text-white tracking-tight">Eletropostos próximos</h2>
         </div>
-        <span className="text-[11px] text-[#aaee1f] font-bold bg-[#1c1c1c] border border-[#2a2a2a] px-2.5 py-1 rounded-full">{filtered.length} encontrado{filtered.length!==1?"s":""}</span>
+        <span className="text-[11px] text-[#FFAB00] font-bold bg-[#001A4D] border border-[#002266] px-2.5 py-1 rounded-full">{filtered.length} encontrado{filtered.length!==1?"s":""}</span>
       </div>
       <div className="px-4 space-y-3 pb-6">
         {filtered.map(s=><StationCard key={s.id} station={s} onSelect={onSelectStation}/>)}
@@ -1046,11 +1090,11 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
   const maxPower=Math.max(...station.connectors.map(c=>c.powerKw));
   const isGold=userPlan==="eletropass-gold";
   return(
-    <div className="screen bg-[#111111] fade-in">
-      <div className="relative bg-[#1c1c1c] text-white pb-6" style={{borderBottom:"1px solid #2a2a2a"}}>
+    <div className="screen bg-[#001133] fade-in">
+      <div className="relative bg-[#001A4D] text-white pb-6" style={{borderBottom:"1px solid #002266"}}>
         <TopBar title="Detalhes do posto" onBack={onBack} dark/>
         <div className="px-4 relative z-10 mt-1">
-          <span className="text-[11px] font-semibold bg-[#c8ff4d]/10 text-[#c8ff4d] px-2.5 py-1 rounded-full border border-[#c8ff4d]/20">{station.badge}</span>
+          <span className="text-[11px] font-semibold bg-[#FF5C00]/10 text-[#FF5C00] px-2.5 py-1 rounded-full border border-[#FF5C00]/20">{station.badge}</span>
           <h2 className="text-xl font-bold mt-2 tracking-tight">{station.name}</h2>
           <p className="text-xs text-white/40 mt-1">{station.address}</p>
           <div className="flex items-center gap-4 mt-3 text-xs">
@@ -1077,32 +1121,32 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
           </div>
         )}
         <div>
-          <h3 className="text-sm font-bold text-ink mb-2">Conectores disponíveis</h3>
+          <h3 className="text-sm font-bold text-white mb-2">Conectores disponíveis</h3>
           <div className="space-y-2">
             {station.connectors.map((c,ci)=>{
               const key=station.id+"-"+c.id;
               const res=reservations&&reservations[key];
               const minsLeft=res?Math.ceil(res.secsLeft/60):0;
-              const ringColor=c.status==="disponivel"?"rgba(200,255,77,.25)":c.status==="manutencao"?"rgba(244,63,94,.3)":"rgba(255,122,69,.3)";
-              const iconBg=c.status==="disponivel"?"linear-gradient(135deg,#c8ff4d,#aaee1f)":c.status==="manutencao"?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+              const ringColor=c.status==="disponivel"?"rgba(255,171,0,.3)":c.status==="manutencao"?"rgba(244,63,94,.3)":"rgba(255,122,69,.3)";
+              const iconBg=c.status==="disponivel"?"linear-gradient(135deg,#FF5C00,#FFAB00)":c.status==="manutencao"?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
               return(
                 <div key={c.id} className="card p-4" style={{boxShadow:`0 0 0 3px ${ringColor}, 0 2px 10px rgba(10,14,26,.05)`}}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div style={{width:44,height:44,borderRadius:14,background:iconBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0,boxShadow:`0 4px 12px ${ringColor}`}}>🔌</div>
                       <div className="min-w-0">
-                        <p className="font-extrabold text-ink text-sm">{c.type}</p>
+                        <p className="font-extrabold text-white text-sm">{c.type}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <Badge status={c.status}/>
                           <span className="text-[10px] text-gray-300">·</span>
                           <span className="text-[11px] font-bold text-gray-500">{c.powerKw} kW</span>
                         </div>
-                        <p className="text-[11px] font-extrabold text-[#aaee1f] mt-1">{fmtMoney(c.priceKwh)} / kWh</p>
+                        <p className="text-[11px] font-extrabold text-[#FFAB00] mt-1">{fmtMoney(c.priceKwh)} / kWh</p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1.5 items-end flex-shrink-0">
                       <button disabled={c.status!=="disponivel"} onClick={()=>onStartCharge(station,c)}
-                        style={c.status==="disponivel"?{background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",color:"#111111",fontWeight:800,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"pointer",boxShadow:"0 4px 14px rgba(200,255,77,.25)"}:{background:"#111111",color:"#d1d5db",fontWeight:700,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"not-allowed"}}>
+                        style={c.status==="disponivel"?{background:"linear-gradient(135deg,#FF5C00,#FFAB00)",color:"#ffffff",fontWeight:800,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"pointer",boxShadow:"0 4px 14px rgba(255,92,0,.3)"}:{background:"#001133",color:"#d1d5db",fontWeight:700,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"not-allowed"}}>
                         {c.status==="disponivel"?"⚡ Carregar":"—"}
                       </button>
                       {isGold&&c.status==="disponivel"&&!res&&(
@@ -1127,11 +1171,11 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
 function ChargingScreen({session,onStop,onBack,wallet}){
   if(!session){
     return(
-      <div className="screen bg-[#111111] fade-in flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br bg-[#1c1c1c] flex items-center justify-center text-4xl mb-4">⚡</div>
-        <p className="font-bold text-ink text-lg">Nenhuma carga em andamento</p>
+      <div className="screen bg-[#001133] fade-in flex flex-col items-center justify-center px-6 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br bg-[#001A4D] flex items-center justify-center text-4xl mb-4">⚡</div>
+        <p className="font-bold text-white text-lg">Nenhuma carga em andamento</p>
         <p className="text-xs text-gray-400 mt-1 max-w-[220px]">Escolha um eletroposto na tela inicial para iniciar uma recarga.</p>
-        <button onClick={onBack} className="mt-5 px-6 py-3 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink text-sm font-bold shadow-lg shadow-black/30">Buscar eletropostos</button>
+        <button onClick={onBack} className="mt-5 px-6 py-3 rounded-2xl bg-[#FF5C00] text-white text-sm font-bold shadow-lg shadow-black/30">Buscar eletropostos</button>
       </div>
     );
   }
@@ -1148,22 +1192,22 @@ function ChargingScreen({session,onStop,onBack,wallet}){
   return(
     <div className="screen bg-ink text-white fade-in flex flex-col overflow-hidden relative">
       <div className="relative z-10">
-        <TopBar title="Carregando" onBack={onBack} dark right={<span className="text-[11px] bg-white/10 px-2.5 py-1 rounded-full font-semibold text-[#c8ff4d]">● em andamento</span>}/>
+        <TopBar title="Carregando" onBack={onBack} dark right={<span className="text-[11px] bg-white/10 px-2.5 py-1 rounded-full font-semibold text-[#FF5C00]">● em andamento</span>}/>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-6 -mt-4 relative z-10">
         <p className="text-sm text-gray-300 font-medium mb-1">{station.name}</p>
         <div className="relative w-56 h-56 flex items-center justify-center">
           <svg className="absolute inset-0" viewBox="0 0 200 200">
             <circle cx="100" cy="100" r={r} stroke="#1c2438" strokeWidth="12" fill="none"/>
-            <circle cx="100" cy="100" r={r} stroke="#c8ff4d" strokeWidth="12" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 100 100)" className="progress-ring"/>
+            <circle cx="100" cy="100" r={r} stroke="#FF5C00" strokeWidth="12" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 100 100)" className="progress-ring"/>
           </svg>
           <div className="text-center">
             <p className="text-4xl font-extrabold tracking-tight">{fmtKwh(kwh)}</p>
-            <p className="text-xs text-[#c8ff4d] mt-1 font-semibold">{connector.powerKw} kW · {connector.type}</p>
+            <p className="text-xs text-[#FF5C00] mt-1 font-semibold">{connector.powerKw} kW · {connector.type}</p>
           </div>
         </div>
         <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 flex items-center justify-between w-full">
-          <div className="flex items-center gap-2 text-xs text-gray-300"><span className="text-[#c8ff4d] font-bold">⚡</span><span>Tarifa</span></div>
+          <div className="flex items-center gap-2 text-xs text-gray-300"><span className="text-[#FF5C00] font-bold">⚡</span><span>Tarifa</span></div>
           <div className="text-right"><span className="font-extrabold text-white">{fmtMoney(connector.priceKwh)}</span><span className="text-gray-400 text-xs"> / kWh</span></div>
         </div>
         <div className="grid grid-cols-3 gap-3 w-full mt-3">
@@ -1173,14 +1217,14 @@ function ChargingScreen({session,onStop,onBack,wallet}){
           </div>
           <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Total</p>
-            <p className="font-bold mt-1 text-[#c8ff4d]">{fmtMoney(finalCost)}</p>
+            <p className="font-bold mt-1 text-[#FF5C00]">{fmtMoney(finalCost)}</p>
           </div>
           <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Economia</p>
-            <p className="font-bold mt-1 text-[#c8ff4d]">{discountValue>0?"-"+fmtMoney(discountValue):"—"}</p>
+            <p className="font-bold mt-1 text-[#FF5C00]">{discountValue>0?"-"+fmtMoney(discountValue):"—"}</p>
           </div>
         </div>
-        {coupon&&<div className="mt-3 w-full glass rounded-2xl px-3 py-2.5 text-xs text-[#c8ff4d] text-center font-semibold border border-[#c8ff4d]/20">{coupon.icon} Cupom ativo: {coupon.big} — {coupon.title}</div>}
+        {coupon&&<div className="mt-3 w-full glass rounded-2xl px-3 py-2.5 text-xs text-[#FF5C00] text-center font-semibold border border-[#FF5C00]/20">{coupon.icon} Cupom ativo: {coupon.big} — {coupon.title}</div>}
         {/* ETA + sessão */}
         <div className="mt-4 w-full glass rounded-2xl px-4 py-3 flex items-center justify-between">
           <div className="text-center">
@@ -1190,7 +1234,7 @@ function ChargingScreen({session,onStop,onBack,wallet}){
           <div className="w-px h-8 bg-white/10"></div>
           <div className="text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Potência</p>
-            <p className="text-xs font-extrabold text-[#c8ff4d] mt-0.5">{connector.powerKw} kW</p>
+            <p className="text-xs font-extrabold text-[#FF5C00] mt-0.5">{connector.powerKw} kW</p>
           </div>
           <div className="w-px h-8 bg-white/10"></div>
           <div className="text-center">
@@ -1251,19 +1295,19 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
   const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 
   const billSummary=(
-    <div className="rounded-2xl overflow-hidden border border-[#2a2a2a] mb-4">
-      <div className="bg-[#1c1c1c] px-4 py-3 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-[#c8ff4d]/10 border border-[#c8ff4d]/20 flex items-center justify-center text-lg">⚡</div>
+    <div className="rounded-2xl overflow-hidden border border-[#002266] mb-4">
+      <div className="bg-[#001A4D] px-4 py-3 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-[#FF5C00]/10 border border-[#FF5C00]/20 flex items-center justify-center text-lg">⚡</div>
         <div><p className="font-bold text-white text-sm">Recarga concluída</p><p className="text-[11px] text-white/40">{station.name} · {connector.type}</p></div>
         <div className="ml-auto text-right"><p className="text-[10px] text-white/40 font-semibold">Duração</p><p className="font-bold text-white text-sm">{durationMin} min</p></div>
       </div>
-      <div className="bg-[#111111] px-4 py-3 space-y-2">
+      <div className="bg-[#001133] px-4 py-3 space-y-2">
         <div className="flex justify-between text-sm"><span className="text-white/40">Energia consumida</span><span className="font-bold text-white">{fmtKwh(kwh)}</span></div>
         <div className="flex justify-between text-sm"><span className="text-white/40">Tarifa</span><span className="font-bold text-white">{fmtMoney(connector.priceKwh)} / kWh</span></div>
-        {discount>0&&<div className="flex justify-between text-sm"><span className="text-[#c8ff4d] font-semibold">Desconto cupom</span><span className="font-bold text-[#c8ff4d]">− {fmtMoney(discount)}</span></div>}
-        <div className="border-t border-[#2a2a2a] pt-2 flex justify-between items-center">
+        {discount>0&&<div className="flex justify-between text-sm"><span className="text-[#FF5C00] font-semibold">Desconto cupom</span><span className="font-bold text-[#FF5C00]">− {fmtMoney(discount)}</span></div>}
+        <div className="border-t border-[#002266] pt-2 flex justify-between items-center">
           <span className="font-bold text-white/60">Total a pagar</span>
-          <span className="font-bold text-2xl text-[#c8ff4d]">{fmtMoney(finalCost)}</span>
+          <span className="font-bold text-2xl text-[#FF5C00]">{fmtMoney(finalCost)}</span>
         </div>
       </div>
       <div className="bg-amber-50 border-t border-amber-100 px-4 py-2 flex items-center gap-2">
@@ -1275,26 +1319,26 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(!method){
     return(
-      <div className="screen bg-[#111111] fade-in">
-        <div className="bg-[#1c1c1c] text-white pb-6" style={{borderBottom:"1px solid #2a2a2a"}}>
+      <div className="screen bg-[#001133] fade-in">
+        <div className="bg-[#001A4D] text-white pb-6" style={{borderBottom:"1px solid #002266"}}>
           <TopBar title="Pagamento" dark onBack={onBack}/>
           <div className="px-4 relative z-10 -mt-1"><p className="font-extrabold text-xl">Forma de pagamento</p><p className="text-xs text-gray-400 mt-0.5">Conector liberado só após confirmação.</p></div>
         </div>
         <div className="px-4 pt-4 pb-6 space-y-3">
           {billSummary}
           {[
-            {id:"pix",icon:"🔑",label:"PIX",sub:"Aprovação instantânea · 0,99% de taxa",badge:"Recomendado",badgeColor:"#e6fff6",badgeText:"#018a69",border:"#c8ff4d",action:()=>setMethod("pix"),enabled:true},
+            {id:"pix",icon:"🔑",label:"PIX",sub:"Aprovação instantânea · 0,99% de taxa",badge:"Recomendado",badgeColor:"#e6fff6",badgeText:"#018a69",border:"#FF5C00",action:()=>setMethod("pix"),enabled:true},
             {id:"card",icon:"💳",label:"Cartão de crédito / débito",sub:"Via Mercado Pago · Visa, Master, Elo",badge:"MP",badgeColor:"#009ee3",badgeText:"#fff",border:"#009ee3",action:()=>{setMethod("card");setCardErr(false);setCardOpened(false);},enabled:true},
             {id:"saldo",icon:"💰",label:"Saldo EletroGo",sub:`Disponível: ${fmtMoney(wallet.balance)}`,badge:hasSaldoParcial?"Parcial":(!hasSaldo&&!hasSaldoParcial?"Insuficiente":""),badgeColor:"#fef3c7",badgeText:"#92400e",border:"#8b5cf6",action:()=>(hasSaldo||hasSaldoParcial)&&setMethod("saldo"),enabled:hasSaldo||hasSaldoParcial},
           ].map(m=>(
             <button key={m.id} onClick={m.action} disabled={!m.enabled}
               className="w-full text-left card card-hover flex items-center gap-3 p-4"
-              style={{opacity:m.enabled?1:.45,border:`1.5px solid #2a2a2a`,transition:"border-color .2s"}}
+              style={{opacity:m.enabled?1:.45,border:`1.5px solid #002266`,transition:"border-color .2s"}}
               onMouseEnter={e=>{if(m.enabled)e.currentTarget.style.borderColor=m.border}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor="#eef0f5"}}>
-              <div style={{width:46,height:46,borderRadius:14,background:"#111111",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{m.icon}</div>
+              <div style={{width:46,height:46,borderRadius:14,background:"#001133",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{m.icon}</div>
               <div className="flex-1 min-w-0">
-                <p className="font-extrabold text-ink text-sm">{m.label}</p>
+                <p className="font-extrabold text-white text-sm">{m.label}</p>
                 <p className="text-[11px] text-gray-400 mt-0.5">{m.sub}</p>
               </div>
               {m.badge&&<span className="badge-pill flex-shrink-0" style={{background:m.badgeColor,color:m.badgeText}}>{m.badge}</span>}
@@ -1308,7 +1352,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="pix"){
     return(
-      <div className="screen bg-[#111111] fade-in">
+      <div className="screen bg-[#001133] fade-in">
         <TopBar title="Pagar com PIX" onBack={()=>{setMethod(null);setPixStatus("idle");setPixSecs(1800);}}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
@@ -1317,25 +1361,25 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
               <div className="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl">⏰</div>
               <p className="font-extrabold text-lg text-rose-600">QR Code expirado</p>
               <p className="text-sm text-gray-500 text-center">O prazo de 30 minutos foi atingido.</p>
-              <button onClick={()=>{setPixStatus("idle");setPixSecs(1800);}} className="mt-2 px-6 py-3 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-bold">Gerar novo QR</button>
+              <button onClick={()=>{setPixStatus("idle");setPixSecs(1800);}} className="mt-2 px-6 py-3 rounded-2xl bg-[#FF5C00] text-white font-bold">Gerar novo QR</button>
             </div>
           ):pixStatus==="confirmed"?(
             <div className="flex flex-col items-center py-10 gap-3">
-              <div className="w-20 h-20 rounded-full bg-[#c8ff4d] flex items-center justify-center text-4xl">✅</div>
-              <p className="font-extrabold text-lg text-[#aaee1f]">Pagamento confirmado!</p>
+              <div className="w-20 h-20 rounded-full bg-[#FF5C00] flex items-center justify-center text-4xl">✅</div>
+              <p className="font-extrabold text-lg text-[#FFAB00]">Pagamento confirmado!</p>
               <p className="text-sm text-gray-500">Liberando o conector…</p>
             </div>
           ):pixStatus==="scanning"?(
             <div className="flex flex-col items-center py-8 gap-4">
-              <div className="w-16 h-16 rounded-full border-4 border-[#c8ff4d] border-t-transparent animate-spin"></div>
-              <p className="font-bold text-ink">Aguardando confirmação…</p>
+              <div className="w-16 h-16 rounded-full border-4 border-[#FF5C00] border-t-transparent animate-spin"></div>
+              <p className="font-bold text-white">Aguardando confirmação…</p>
             </div>
           ):(
             <>
               <div className="flex flex-col items-center bg-white rounded-2xl border border-gray-100 p-6 shadow-sm gap-4">
                 <div className="flex items-center justify-between w-full">
-                  <p className="text-sm font-bold text-ink">Escaneie o QR Code</p>
-                  <span className={"text-xs font-bold px-2 py-1 rounded-full "+(pixSecs<300?"bg-rose-100 text-rose-600":"bg-[#c8ff4d]/10 text-[#c8ff4d]")}>⏱ {fmt(pixSecs)}</span>
+                  <p className="text-sm font-bold text-[#001133]">Escaneie o QR Code</p>
+                  <span className={"text-xs font-bold px-2 py-1 rounded-full "+(pixSecs<300?"bg-rose-100 text-rose-600":"bg-[#FF5C00]/10 text-[#FF5C00]")}>⏱ {fmt(pixSecs)}</span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-gray-200 shadow-sm"><QRMock size={160}/></div>
                 <div className="w-full">
@@ -1343,17 +1387,17 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
                     <span className="text-xs text-gray-600 flex-1 truncate font-mono">{PIX_KEY}</span>
                     <button onClick={()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}}
-                      className={"text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition "+(copied?"bg-[#c8ff4d]/10 text-[#c8ff4d]":"bg-gray-200 text-gray-600")}>
+                      className={"text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition "+(copied?"bg-[#FF5C00]/10 text-[#FF5C00]":"bg-gray-200 text-gray-600")}>
                       {copied?"Copiado ✓":"Copiar"}
                     </button>
                   </div>
                 </div>
                 <div className="w-full text-center">
-                  <p className="text-3xl font-extrabold text-ink">{fmtMoney(finalCost)}</p>
+                  <p className="text-3xl font-extrabold text-[#001133]">{fmtMoney(finalCost)}</p>
                   <p className="text-[11px] text-gray-400 mt-1">Pague exatamente este valor</p>
                 </div>
               </div>
-              <button onClick={()=>setPixStatus("scanning")} className="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
+              <button onClick={()=>setPixStatus("scanning")} className="w-full mt-4 py-4 rounded-2xl bg-[#FF5C00] text-white font-extrabold shadow-lg shadow-black/30">
                 Já paguei — Confirmar
               </button>
               <p className="text-center text-[11px] text-gray-400 mt-2">QR válido por 30 min · expira às {new Date(Date.now()+pixSecs*1000).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</p>
@@ -1366,11 +1410,11 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="card"){
     return(
-      <div className="screen bg-[#111111] fade-in">
+      <div className="screen bg-[#001133] fade-in">
         <TopBar title="Mercado Pago" onBack={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
-          <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] p-6 flex flex-col items-center gap-4">
+          <div className="bg-[#001A4D] rounded-2xl border border-[#002266] p-6 flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-md" style={{background:"#009ee3"}}><span className="text-white font-extrabold text-xl">MP</span></div>
             {cardErr?(
               <>
@@ -1379,21 +1423,21 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   <p className="font-bold text-rose-600">Pagamento não confirmado</p>
                   <p className="text-xs text-rose-500 mt-1">Não identificamos o pagamento. Tente novamente ou use outro método.</p>
                 </div>
-                <button onClick={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}} className="w-full py-3.5 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-bold">Tentar outro método</button>
+                <button onClick={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}} className="w-full py-3.5 rounded-2xl bg-[#FF5C00] text-white font-bold">Tentar outro método</button>
                 <button onClick={()=>{setCardErr(false);setCardOpened(false);}} className="w-full py-3 rounded-2xl border border-gray-200 text-gray-600 text-sm font-semibold">Tentar novamente</button>
               </>
             ):(
               <>
-                <p className="font-extrabold text-ink text-lg">Mercado Pago</p>
+                <p className="font-extrabold text-white text-lg">Mercado Pago</p>
                 <p className="text-sm text-gray-500 text-center leading-snug">Após pagar, volte e clique em <strong>"Já paguei"</strong>.</p>
-                <p className="text-3xl font-extrabold text-ink">{fmtMoney(finalCost)}</p>
+                <p className="text-3xl font-extrabold text-white">{fmtMoney(finalCost)}</p>
                 <a href={MP_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" onClick={()=>setCardOpened(true)}
                   className="w-full py-4 rounded-2xl font-extrabold text-white text-center shadow-lg block"
                   style={{background:"linear-gradient(135deg,#009ee3 0%,#0070b3 100%)"}}>
                   💳 Ir para o Mercado Pago →
                 </a>
                 {cardOpened&&(
-                  <button onClick={()=>onConfirm("card")} className="w-full py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
+                  <button onClick={()=>onConfirm("card")} className="w-full py-4 rounded-2xl bg-[#FF5C00] text-white font-extrabold shadow-lg shadow-black/30">
                     ✅ Já paguei — Liberar conector
                   </button>
                 )}
@@ -1408,23 +1452,23 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="saldo"){
     return(
-      <div className="screen bg-[#111111] fade-in">
+      <div className="screen bg-[#001133] fade-in">
         <TopBar title="Saldo EletroGo" onBack={()=>setMethod(null)}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
-          <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] p-6 flex flex-col items-center gap-4">
+          <div className="bg-[#001A4D] rounded-2xl border border-[#002266] p-6 flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-3xl shadow-md">💰</div>
-            <p className="font-extrabold text-ink text-lg">Saldo EletroGo</p>
+            <p className="font-extrabold text-white text-lg">Saldo EletroGo</p>
             <p className="text-4xl font-extrabold text-accent-700">{fmtMoney(wallet.balance)}</p>
             {hasSaldo?(
               <>
                 <p className="text-sm text-gray-600 text-center">Serão debitados <strong>{fmtMoney(finalCost)}</strong>. Conector liberado imediatamente.</p>
-                <button onClick={()=>onConfirm("saldo")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 text-white font-extrabold shadow-lg">✅ Confirmar e liberar conector</button>
+                <button onClick={()=>onConfirm("saldo")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FF5C00] to-[#E05000] text-white font-extrabold shadow-lg">✅ Confirmar e liberar conector</button>
               </>
             ):(
               <>
                 <p className="text-sm text-gray-500 text-center">Saldo cobre <strong>{fmtMoney(wallet.balance)}</strong>. O restante <strong>{fmtMoney(finalCost-wallet.balance)}</strong> via PIX.</p>
-                <button onClick={()=>onConfirm("saldo+pix")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 text-white font-extrabold shadow-lg">Usar saldo + PIX pelo restante</button>
+                <button onClick={()=>onConfirm("saldo+pix")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FF5C00] to-[#E05000] text-white font-extrabold shadow-lg">Usar saldo + PIX pelo restante</button>
               </>
             )}
           </div>
@@ -1441,39 +1485,39 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 function ReceiptScreen({receipt,onDone}){
   const [copied,setCopied]=useState(false);
   return(
-    <div className="screen bg-[#111111] fade-in">
-      <div className="bg-[#1c1c1c] pb-8" style={{borderBottom:"1px solid #2a2a2a"}}>
+    <div className="screen bg-[#001133] fade-in">
+      <div className="bg-[#001A4D] pb-8" style={{borderBottom:"1px solid #002266"}}>
         <div style={{position:"absolute",top:0,left:0,right:0,zIndex:20,paddingTop:12,paddingLeft:12}}>
           <button onClick={onDone} style={{display:"flex",alignItems:"center",gap:4,color:"rgba(255,255,255,.6)",fontSize:13,fontWeight:600,background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"6px 12px"}}>
             ‹ Histórico
           </button>
         </div>
         <div className="pt-14 pb-2 px-6 relative z-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-[#c8ff4d] flex items-center justify-center text-3xl mb-3">✅</div>
+          <div className="w-16 h-16 rounded-full bg-[#FF5C00] flex items-center justify-center text-3xl mb-3">✅</div>
           <p className="text-xl font-bold text-white">Recarga paga!</p>
           <p className="text-xs text-white/40 mt-1">Conector liberado com sucesso</p>
         </div>
       </div>
       <div className="px-4 pt-5 pb-6 space-y-3">
-        <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] overflow-hidden">
+        <div className="bg-[#001A4D] rounded-2xl border border-[#002266] overflow-hidden">
           <div className="px-5 py-4 border-b border-dashed border-gray-100 space-y-2.5">
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Sessão</span><span className="font-bold text-ink font-mono">{receipt.id}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Posto</span><span className="font-bold text-ink">{receipt.stationName}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Conector</span><span className="font-bold text-ink">{receipt.connectorType}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Energia</span><span className="font-bold text-ink">{fmtKwh(receipt.kwh)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Duração</span><span className="font-bold text-ink">{receipt.durationMin} min</span></div>
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Tarifa</span><span className="font-bold text-ink">{fmtMoney(receipt.priceKwh)} / kWh</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Sessão</span><span className="font-bold text-white font-mono">{receipt.id}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Posto</span><span className="font-bold text-white">{receipt.stationName}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Conector</span><span className="font-bold text-white">{receipt.connectorType}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Energia</span><span className="font-bold text-white">{fmtKwh(receipt.kwh)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Duração</span><span className="font-bold text-white">{receipt.durationMin} min</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Tarifa</span><span className="font-bold text-white">{fmtMoney(receipt.priceKwh)} / kWh</span></div>
             {receipt.discount>0&&<div className="flex justify-between text-sm"><span className="text-green-600 font-semibold">Desconto</span><span className="font-bold text-green-600">− {fmtMoney(receipt.discount)}</span></div>}
-            <div className="flex justify-between text-sm"><span className="text-gray-500">Pagamento</span><span className="font-bold text-ink capitalize">{receipt.paymentMethod}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Pagamento</span><span className="font-bold text-white capitalize">{receipt.paymentMethod}</span></div>
           </div>
           <div className="px-5 py-4 flex justify-between items-center">
             <span className="font-extrabold text-gray-700">Total pago</span>
-            <span className="font-extrabold text-2xl text-[#aaee1f]">{fmtMoney(receipt.cost)}</span>
+            <span className="font-extrabold text-2xl text-[#FFAB00]">{fmtMoney(receipt.cost)}</span>
           </div>
           {receipt.cashback>0&&(
-            <div className="bg-[#c8ff4d]/10 border-t border-[#c8ff4d]/20 px-5 py-3 flex items-center gap-2">
-              <span className="text-[#c8ff4d] text-lg">💚</span>
-              <p className="text-xs text-[#aaee1f] font-semibold">+{fmtMoney(receipt.cashback)} de cashback creditado!</p>
+            <div className="bg-[#FF5C00]/10 border-t border-[#FF5C00]/20 px-5 py-3 flex items-center gap-2">
+              <span className="text-[#FF5C00] text-lg">💚</span>
+              <p className="text-xs text-[#FFAB00] font-semibold">+{fmtMoney(receipt.cashback)} de cashback creditado!</p>
             </div>
           )}
         </div>
@@ -1482,11 +1526,11 @@ function ReceiptScreen({receipt,onDone}){
           const co2Avoided=Math.round(receipt.kwh*0.089*1000)/1000;
           const kmEq=Math.round(receipt.kwh*6.5);
           return(
-            <div style={{background:"linear-gradient(135deg,#052a1a,#0d3320)",borderRadius:20,padding:"14px 16px"}} className="flex items-center gap-3">
-              <div style={{width:40,height:40,borderRadius:12,background:"rgba(200,255,77,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🌿</div>
+            <div style={{background:"linear-gradient(135deg,#001A4D,#002266)",borderRadius:20,padding:"14px 16px"}} className="flex items-center gap-3">
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(255,171,0,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🌿</div>
               <div>
-                <p className="text-xs font-bold text-[#c8ff4d]">Impacto ambiental desta carga</p>
-                <p className="text-[11px] text-[#c8ff4d]/80 mt-0.5">{co2Avoided.toFixed(2)} kg CO₂ evitado · equivale a {kmEq} km elétricos</p>
+                <p className="text-xs font-bold text-[#FF5C00]">Impacto ambiental desta carga</p>
+                <p className="text-[11px] text-[#FF5C00]/80 mt-0.5">{co2Avoided.toFixed(2)} kg CO₂ evitado · equivale a {kmEq} km elétricos</p>
               </div>
             </div>
           );
@@ -1516,23 +1560,23 @@ function WalletScreen({wallet,onToggleCoupon,userPlan,onGoPlans,onBack}){
   const levelPct=nextTier?Math.min(100,((wallet.points-tier.min)/(nextTier.min-tier.min))*100):100;
   const projectedMonthly=(wallet.balance+50*tier.cashbackRate).toFixed(2);
   return(
-    <div className="screen fade-in" style={{background:"#111111"}}>
-      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+    <div className="screen fade-in" style={{background:"#001133"}}>
+      <div style={{background:"linear-gradient(160deg,#001133,#001A4D)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
         <div className="hidden" style={{top:-60,right:-30,opacity:.25}}></div>
         <TopBar title="Carteira e Ofertas" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
           {/* saldo card */}
           <div className="shimmer glass rounded-2xl p-4 mb-3">
-            <p className="text-[10px] uppercase tracking-widest text-[#c8ff4d] font-bold">Saldo de cashback</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#FF5C00] font-bold">Saldo de cashback</p>
             <p className="text-4xl font-extrabold text-white mt-1">{fmtMoney(wallet.balance)}</p>
-            <p className="text-[11px] text-gray-400 mt-1">Projeção mensal: <span className="text-[#c8ff4d] font-bold">R$ {projectedMonthly}</span></p>
+            <p className="text-[11px] text-gray-400 mt-1">Projeção mensal: <span className="text-[#FF5C00] font-bold">R$ {projectedMonthly}</span></p>
             <div className="mt-3">
               <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
                 <span>{tier.icon} {tier.label} — {wallet.points} pts</span>
                 <span>{nextTier?`${nextTier.min-wallet.points} pts para ${nextTier.icon} ${nextTier.label}`:"Nível máximo 🏆"}</span>
               </div>
               <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
-                <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3}}></div>
+                <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#FF5C00,#FFAB00)",borderRadius:3}}></div>
               </div>
             </div>
           </div>
@@ -1561,7 +1605,7 @@ function WalletScreen({wallet,onToggleCoupon,userPlan,onGoPlans,onBack}){
             <button onClick={onGoPlans} className="mt-2 text-[11px] font-bold bg-white/20 px-3 py-1.5 rounded-lg">Gerenciar plano →</button>
           </div>
         )}
-        <h3 className="text-sm font-bold text-ink">Ofertas disponíveis</h3>
+        <h3 className="text-sm font-bold text-white">Ofertas disponíveis</h3>
         {wallet.coupons.map(c=>(
           <div key={c.id} className={"rounded-2xl p-4 text-white bg-gradient-to-r shadow-md relative overflow-hidden "+c.color+(c.used?" opacity-40":"")}>
             <div className="absolute -right-3 -bottom-3 text-7xl opacity-15">{c.icon}</div>
@@ -1578,7 +1622,7 @@ function WalletScreen({wallet,onToggleCoupon,userPlan,onGoPlans,onBack}){
             </div>
           </div>
         ))}
-        <div className="bg-gradient-to-br from-accent-500 to-accent-700 rounded-2xl p-4 text-white text-center shadow-md relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#FF5C00] to-[#E05000] rounded-2xl p-4 text-white text-center shadow-md relative overflow-hidden">
           <div className="absolute -left-4 -top-4 text-7xl opacity-15">🤝</div>
           <p className="text-sm font-bold relative z-10">Indique e ganhe</p>
           <p className="text-[11px] opacity-90 mt-1 relative z-10">Convide amigos e ganhe R$ 15 por cada novo usuário.</p>
@@ -1601,9 +1645,9 @@ function HistoryScreen({history,onBack}){
   const sessions=history.length;
   const filters=[{id:"all",label:"Todas"},{id:"month",label:"Este mês"},{id:"week",label:"Esta semana"}];
   return(
-    <div className="screen fade-in" style={{background:"#111111"}}>
+    <div className="screen fade-in" style={{background:"#001133"}}>
       {/* header */}
-      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+      <div style={{background:"linear-gradient(160deg,#001133,#001A4D)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
         <div className="hidden" style={{top:-30,right:-20,opacity:.2}}></div>
         <TopBar title="Histórico" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
@@ -1611,12 +1655,12 @@ function HistoryScreen({history,onBack}){
             <div className="glass rounded-2xl p-3">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Energia total</p>
               <p className="text-lg font-extrabold text-white mt-0.5">{fmtKwh(totalKwh)}</p>
-              <p className="text-[10px] text-[#c8ff4d] font-semibold mt-0.5">{sessions} sessões</p>
+              <p className="text-[10px] text-[#FF5C00] font-semibold mt-0.5">{sessions} sessões</p>
             </div>
             <div className="glass rounded-2xl p-3">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Total investido</p>
               <p className="text-lg font-extrabold text-white mt-0.5">{fmtMoney(totalCost)}</p>
-              <p className="text-[10px] text-[#c8ff4d] font-semibold mt-0.5">+{fmtMoney(totalCashback)} cashback</p>
+              <p className="text-[10px] text-[#FF5C00] font-semibold mt-0.5">+{fmtMoney(totalCashback)} cashback</p>
             </div>
           </div>
           {/* CO2 */}
@@ -1625,7 +1669,7 @@ function HistoryScreen({history,onBack}){
             <div className="flex-1">
               <p className="text-[10px] text-gray-400 font-semibold uppercase mb-1">CO₂ evitado</p>
               <div className="co2-bar" style={{width:`${Math.min(100,(totalCo2/50)*100)}%`}}></div>
-              <p className="text-[11px] text-[#c8ff4d] font-bold mt-1">{totalCo2.toFixed(2)} kg · {Math.round(totalKwh*6.5)} km elétricos</p>
+              <p className="text-[11px] text-[#FF5C00] font-bold mt-1">{totalCo2.toFixed(2)} kg · {Math.round(totalKwh*6.5)} km elétricos</p>
             </div>
           </div>
         </div>
@@ -1634,8 +1678,8 @@ function HistoryScreen({history,onBack}){
       <div className="flex gap-2 px-4 mt-4">
         {filters.map(f=>(
           <button key={f.id} onClick={()=>setFilter(f.id)}
-            className={"text-xs font-bold px-4 py-2 rounded-full transition "+(filter===f.id?"text-ink shadow-sm":"bg-white text-gray-400 border border-gray-100")}
-            style={filter===f.id?{background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",boxShadow:"0 2px 8px rgba(200,255,77,.2)"}:{}}>
+            className={"text-xs font-bold px-4 py-2 rounded-full transition "+(filter===f.id?"text-white shadow-sm":"bg-[#001A4D] text-gray-400 border border-[#002266]")}
+            style={filter===f.id?{background:"linear-gradient(135deg,#FF5C00,#FFAB00)",boxShadow:"0 2px 8px rgba(255,92,0,.25)"}:{}}>
             {f.label}
           </button>
         ))}
@@ -1644,23 +1688,23 @@ function HistoryScreen({history,onBack}){
         {history.map((h,idx)=>(
           <div key={h.id} className="card flex gap-3 p-4">
             <div className="flex flex-col items-center">
-              <div className="tl-dot bg-[#1c1c1c] text-sm">⚡</div>
+              <div className="tl-dot bg-[#001A4D] text-sm">⚡</div>
               {idx<history.length-1&&<div className="w-px flex-1 bg-gray-100 mt-1 mb-1"></div>}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
-                <p className="font-extrabold text-ink text-sm leading-tight">{h.stationName}</p>
+                <p className="font-extrabold text-white text-sm leading-tight">{h.stationName}</p>
                 <p className="text-[11px] text-gray-400 flex-shrink-0">{h.date}</p>
               </div>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
                 <span className="badge-pill bg-gray-100 text-gray-500">{fmtKwh(h.kwh)}</span>
                 <span className="badge-pill bg-gray-100 text-gray-500">{h.durationMin} min</span>
-                {h.cashback>0&&<span className="badge-pill bg-brand-50 text-[#aaee1f]">+{fmtMoney(h.cashback)} cashback</span>}
+                {h.cashback>0&&<span className="badge-pill bg-brand-50 text-[#FFAB00]">+{fmtMoney(h.cashback)} cashback</span>}
                 {h.discount>0&&<span className="badge-pill bg-accent-50 text-accent-700">-{fmtMoney(h.discount)} cupom</span>}
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-[11px] text-gray-400">🌿 {(h.kwh*0.089).toFixed(2)} kg CO₂ evitado</span>
-                <span className="font-extrabold text-ink">{fmtMoney(h.cost)}</span>
+                <span className="font-extrabold text-white">{fmtMoney(h.cost)}</span>
               </div>
             </div>
           </div>
@@ -1698,22 +1742,22 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
     {icon:"📄",label:"Termos de Uso",value:"Ver termos"},
   ];
   return(
-    <div className="screen fade-in" style={{background:"#111111"}}>
+    <div className="screen fade-in" style={{background:"#001133"}}>
       {/* header */}
-      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+      <div style={{background:"linear-gradient(160deg,#001133,#001A4D)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
         <div className="hidden" style={{top:-60,left:-30,opacity:.2}}></div>
         <TopBar title="Perfil" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
           {/* avatar + nome */}
           <div className="flex items-center gap-4 mb-4">
-            <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:22,color:"#111111",boxShadow:"0 6px 20px rgba(200,255,77,.2)",flexShrink:0}}>
+            <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,#FF5C00,#FFAB00)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:22,color:"#ffffff",boxShadow:"0 6px 20px rgba(255,92,0,.25)",flexShrink:0}}>
               {initials}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-extrabold text-white capitalize truncate">{displayName}</p>
               <p className="text-[11px] text-gray-400 truncate">{displayEmail}</p>
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="badge-pill bg-[#c8ff4d]/20 text-[#c8ff4d]" style={{border:"1px solid rgba(200,255,77,.15)"}}>{tier.icon} {tier.label}</span>
+                <span className="badge-pill bg-[#FF5C00]/20 text-[#FF5C00]" style={{border:"1px solid rgba(255,92,0,.3)"}}>{tier.icon} {tier.label}</span>
                 <span className="badge-pill bg-white/10 text-gray-300">{wallet.points} pts</span>
               </div>
             </div>
@@ -1722,10 +1766,10 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
           <div className="glass rounded-2xl px-4 py-3">
             <div className="flex items-center justify-between mb-1.5">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Progresso para {nextTier?nextTier.label:"nível máximo"}</p>
-              <p className="text-[10px] text-[#c8ff4d] font-bold">{nextTier?`${nextTier.min-wallet.points} pts`:"✓ Máximo"}</p>
+              <p className="text-[10px] text-[#FF5C00] font-bold">{nextTier?`${nextTier.min-wallet.points} pts`:"✓ Máximo"}</p>
             </div>
             <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
-              <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3,transition:"width .6s"}}></div>
+              <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#FF5C00,#FFAB00)",borderRadius:3,transition:"width .6s"}}></div>
             </div>
           </div>
         </div>
@@ -1741,28 +1785,28 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
             <div key={i} className="card text-center py-3">
               <p className="text-xl">{s.icon}</p>
               <p className="text-[10px] text-gray-400 font-semibold mt-1">{s.label}</p>
-              <p className="text-xs font-extrabold text-ink mt-0.5">{s.val}</p>
+              <p className="text-xs font-extrabold text-white mt-0.5">{s.val}</p>
             </div>
           ))}
         </div>
         {/* EV card */}
-        <div style={{background:"linear-gradient(135deg,#0d1f1a,#052a1a)",borderRadius:20,padding:"14px 16px",border:"1px solid rgba(200,255,77,.12)"}}>
+        <div style={{background:"linear-gradient(135deg,#001A4D,#002266)",borderRadius:20,padding:"14px 16px",border:"1px solid rgba(0,82,212,.2)"}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div style={{width:40,height:40,borderRadius:12,background:"rgba(200,255,77,.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🚗</div>
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(255,171,0,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🚗</div>
               <div>
                 <p className="text-sm font-extrabold text-white">BYD Dolphin</p>
                 <p className="text-[11px] text-gray-400">44,9 kWh · CCS2</p>
               </div>
             </div>
-            <button className="text-[11px] font-bold text-[#c8ff4d]" style={{background:"rgba(200,255,77,.08)",padding:"5px 12px",borderRadius:10}}>Editar</button>
+            <button className="text-[11px] font-bold text-[#FF5C00]" style={{background:"rgba(255,92,0,.08)",padding:"5px 12px",borderRadius:10}}>Editar</button>
           </div>
           <div className="mt-3">
             <div className="flex justify-between text-[10px] text-gray-400 mb-1">
-              <span>Bateria estimada</span><span className="text-[#c8ff4d] font-bold">72%</span>
+              <span>Bateria estimada</span><span className="text-[#FF5C00] font-bold">72%</span>
             </div>
             <div style={{height:6,background:"rgba(255,255,255,.08)",borderRadius:3}}>
-              <div style={{height:"100%",width:"72%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3}}></div>
+              <div style={{height:"100%",width:"72%",background:"linear-gradient(90deg,#FF5C00,#FFAB00)",borderRadius:3}}></div>
             </div>
           </div>
         </div>
@@ -1773,7 +1817,7 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
               className={"flex items-center justify-between px-4 py-3.5 "+(r.action||r.href?"cursor-pointer active:bg-[#1a1a1a]":"")}
               style={i<rows.length-1?{borderBottom:"1px solid #f3f5f9"}:{}}>
               <div className="flex items-center gap-3">
-                <div style={{width:34,height:34,borderRadius:10,background:"#111111",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{r.icon}</div>
+                <div style={{width:34,height:34,borderRadius:10,background:"#001133",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{r.icon}</div>
                 <span className="text-sm font-semibold text-ink">{r.label}</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -1798,7 +1842,7 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
   const [confirmed,setConfirmed]=useState(false);
   const handleConfirm=()=>{onSelectPlan(selected);setConfirmed(true);setTimeout(onBack,1200);};
   return(
-    <div className="screen bg-[#111111] fade-in">
+    <div className="screen bg-[#001133] fade-in">
       <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-ink pb-6 rounded-b-[28px] relative overflow-hidden">
         <div className="hidden"></div>
         <TopBar title="EletroPass" onBack={onBack}/>
@@ -1814,47 +1858,47 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
           return(
             <button key={plan.id} onClick={()=>setSelected(plan.id)}
               className="w-full text-left rounded-2xl transition-all card-hover overflow-hidden"
-              style={{border:isActive?"2px solid #c8ff4d":"2px solid #eef0f5",boxShadow:isActive?"0 4px 20px rgba(200,255,77,.1)":"0 2px 8px rgba(10,14,26,.05)",background:"#fff",position:"relative"}}>
+              style={{border:isActive?"2px solid #FF5C00":"2px solid #002266",boxShadow:isActive?"0 4px 20px rgba(255,92,0,.15)":"0 2px 8px rgba(0,0,0,.4)",background:"#001A4D",position:"relative"}}>
               {isGold&&<div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#fbbf24,#f59e0b)"}}></div>}
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <div style={{width:38,height:38,borderRadius:12,background:isGold?"linear-gradient(135deg,#fbbf24,#f59e0b)":isActive?"linear-gradient(135deg,#c8ff4d,#aaee1f)":"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                    <div style={{width:38,height:38,borderRadius:12,background:isGold?"linear-gradient(135deg,#fbbf24,#f59e0b)":isActive?"linear-gradient(135deg,#FF5C00,#FFAB00)":"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
                       {plan.icon}
                     </div>
                     <div>
-                      <p className="font-extrabold text-ink text-sm">{plan.label}</p>
+                      <p className="font-extrabold text-white text-sm">{plan.label}</p>
                       {plan.highlight&&<span className="badge-pill bg-yellow-100 text-yellow-700">Mais popular</span>}
                     </div>
                   </div>
                   <div className="text-right">
                     {plan.priceMonth===0
                       ?<p className="font-bold text-gray-400 text-sm">Grátis</p>
-                      :<><p className="font-extrabold text-ink text-lg leading-none">{fmtMoney(plan.priceMonth)}</p><p className="text-[10px] text-gray-400">/mês</p></>
+                      :<><p className="font-extrabold text-white text-lg leading-none">{fmtMoney(plan.priceMonth)}</p><p className="text-[10px] text-gray-400">/mês</p></>
                     }
                   </div>
                 </div>
                 <div className="mt-3 space-y-1.5">
                   {plan.features.map((f,i)=>(
                     <div key={i} className="flex items-center gap-2">
-                      <div style={{width:16,height:16,borderRadius:"50%",background:isActive?"#c8ff4d":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                        <span style={{fontSize:9,fontWeight:800,color:isActive?"#111111":"#9ca3af"}}>✓</span>
+                      <div style={{width:16,height:16,borderRadius:"50%",background:isActive?"#FF5C00":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        <span style={{fontSize:9,fontWeight:800,color:isActive?"#ffffff":"#9ca3af"}}>✓</span>
                       </div>
-                      <span className="text-[12px] text-gray-600">{f}</span>
+                      <span className="text-[12px] text-gray-400">{f}</span>
                     </div>
                   ))}
                 </div>
-                {isActive&&<div style={{marginTop:12,padding:"8px 12px",borderRadius:12,background:"rgba(200,255,77,.06)",border:"1px solid rgba(200,255,77,.15)"}}>
-                  <p className="text-[11px] text-[#aaee1f] font-bold text-center">✓ Plano selecionado</p>
+                {isActive&&<div style={{marginTop:12,padding:"8px 12px",borderRadius:12,background:"rgba(255,92,0,.08)",border:"1px solid rgba(255,92,0,.25)"}}>
+                  <p className="text-[11px] text-[#FF5C00] font-bold text-center">✓ Plano selecionado</p>
                 </div>}
               </div>
             </button>
           );
         })}
         {confirmed?(
-          <div className="py-4 text-center text-[#aaee1f] font-bold text-sm">✅ Plano atualizado com sucesso!</div>
+          <div className="py-4 text-center text-[#FFAB00] font-bold text-sm">✅ Plano atualizado com sucesso!</div>
         ):(
-          <button onClick={handleConfirm} className="w-full py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
+          <button onClick={handleConfirm} className="w-full py-4 rounded-2xl bg-[#FF5C00] text-white font-extrabold shadow-lg shadow-black/30">
             {selected==="free"?"Continuar grátis":`Assinar ${PLANS.find(p=>p.id===selected)?.label}`}
           </button>
         )}
@@ -1878,7 +1922,7 @@ function App(){
   const [session,setSession]     = useState(null);
   const [completedSession,setCompletedSession] = useState(null);
   const [pendingReceipt,setPendingReceipt]     = useState(null);
-  const [history,setHistory]     = useState(()=>{try{return JSON.parse(localStorage.getItem(SK_HISTORY))||HISTORY_SEED;}catch{return HISTORY_SEED;}});
+  const [history,setHistory]     = useState([]);
   const [wallet,setWallet]       = useState(()=>{try{return JSON.parse(localStorage.getItem(SK_WALLET))||{balance:0,points:0,coupons:INITIAL_COUPONS};}catch{return {balance:0,points:0,coupons:INITIAL_COUPONS};}});
   const [userPlan,setUserPlan]   = useState("free");
   const [notifs,setNotifs]       = useState(INITIAL_NOTIFS);
@@ -1906,14 +1950,28 @@ function App(){
         cost:parseFloat(s.cost)||0, discount:parseFloat(s.discount)||0,
         cashback:parseFloat(s.cashback)||0, paymentMethod:s.payment_method,
       })));
+    } else {
+      // Tenta cache local com escopo por usuário
+      try{
+        const cached=JSON.parse(localStorage.getItem(SK_HISTORY+"_"+userId));
+        if(cached?.length) setHistory(cached);
+        else setHistory([]);
+      } catch{ setHistory([]); }
     }
   };
 
   /* ── Supabase: escutar mudança de sessão de auth ── */
   useEffect(()=>{
     if(!SB_READY){
-      // Sem Supabase: usar localStorage como fallback
-      try{const u=JSON.parse(localStorage.getItem(SK_USER));if(u)setUser(u);}catch{}
+      // Sem Supabase: usar localStorage como fallback (histórico com escopo por usuário)
+      try{
+        const u=JSON.parse(localStorage.getItem(SK_USER));
+        if(u){
+          setUser(u);
+          const cached=JSON.parse(localStorage.getItem(SK_HISTORY+"_"+u.id));
+          setHistory(cached?.length?cached:[]);
+        }
+      }catch{}
       return;
     }
     SbAuth.getSession().then(session=>{
@@ -1931,7 +1989,7 @@ function App(){
       } else if(event==="SIGNED_OUT"){
         setUser(null);
         setWallet({balance:0,points:0,coupons:INITIAL_COUPONS});
-        setHistory(HISTORY_SEED);
+        setHistory([]);
       }
     });
     return unsub;
@@ -1946,7 +2004,9 @@ function App(){
     walletSyncTimer.current=setTimeout(()=>sbUpsertWallet(user.id,wallet),1500);
   },[wallet]);
 
-  useEffect(()=>{localStorage.setItem(SK_HISTORY,JSON.stringify(history));},[history]);
+  useEffect(()=>{
+    if(user?.id) localStorage.setItem(SK_HISTORY+"_"+user.id,JSON.stringify(history));
+  },[history,user?.id]);
 
   /* ── Tick de carga em tempo real (DEMO_FACTOR removido) ── */
   useEffect(()=>{
@@ -2038,7 +2098,7 @@ function App(){
     localStorage.removeItem(SK_USER);
     setUser(null);setScreen("home");setSelectedStation(null);setSession(null);
     setWallet({balance:0,points:0,coupons:INITIAL_COUPONS});
-    setHistory(HISTORY_SEED);
+    setHistory([]);
   };
 
   const handleReserve=(station,connector)=>{
@@ -2063,8 +2123,8 @@ function App(){
   const unreadCount=notifs.filter(n=>!n.read).length;
 
   if(authLoading) return(
-    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",background:"#111111",gap:16}}>
-      <div style={{width:48,height:48,border:"3px solid #1e3a5f",borderTop:"3px solid #c8ff4d",borderRadius:"50%",animation:"spin 0.9s linear infinite"}}/>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",background:"#001133",gap:16}}>
+      <div style={{width:48,height:48,border:"3px solid #1e3a5f",borderTop:"3px solid #FF5C00",borderRadius:"50%",animation:"spin 0.9s linear infinite"}}/>
       <p style={{color:"#8899aa",fontSize:13,letterSpacing:1}}>Carregando...</p>
     </div>
   );
