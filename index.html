@@ -6,7 +6,7 @@
 <title>EletroGo - Rede de Eletropostos</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#0a0e1a" />
+<meta name="theme-color" content="#111111" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -19,7 +19,7 @@
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- React + Babel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -31,115 +31,140 @@
   tailwind.config = {
     theme: {
       extend: {
-        fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+        fontFamily: {
+          sans: ['Space Grotesk', 'Inter', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+        },
         colors: {
-          brand: { 50:'#e6fff6',100:'#c2ffe9',300:'#6df0c2',400:'#2de3ab',500:'#00d49a',600:'#00b386',700:'#018a69',900:'#053d30' },
-          accent: { 400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9' },
-          sunset: { 400:'#ff9a6c',500:'#ff7a45',600:'#f4622a' },
-          ink: '#0a0e1a', ink2: '#121a2e'
+          brand: { 50:'#f7ffe6',100:'#edffcc',300:'#d4ff7a',400:'#c8ff4d',500:'#aaee1f',600:'#88cc00',700:'#669900',900:'#334d00' },
+          ink:  '#111111',
+          ink2: '#1c1c1c',
+          ink3: '#2a2a2a',
+          muted: '#666666',
+          subtle: '#999999',
         }
       }
     }
   }
 </script>
 <style>
-  html,body{margin:0;padding:0;background:#05070d;font-family:'Plus Jakarta Sans',sans-serif;}
-  #phone-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
-  #phone{width:100%;max-width:430px;height:100%;min-height:850px;max-height:932px;background:#f3f5f9;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 0 10px #1c2638,0 0 0 11px rgba(255,255,255,.04),0 30px 80px rgba(0,0,0,.65),0 10px 40px rgba(0,212,154,.08);display:flex;flex-direction:column;}
-  @media(max-width:480px){#phone-wrap{padding:0;}#phone{border-radius:0;box-shadow:none;min-height:100vh;max-height:none;}}
-  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;}
-  .screen::-webkit-scrollbar{width:0px;}
-  .hscroll::-webkit-scrollbar{height:0px;}
-  .fade-in{animation:fadeIn .3s ease-out;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-  .pulse-dot{animation:pulseDot 1.4s ease-in-out infinite;}
-  @keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:.3;}}
-  .progress-ring{transition:stroke-dashoffset .6s linear;filter:drop-shadow(0 0 6px rgba(0,212,154,.7));}
-  .glow-pulse{animation:glowPulse 2.4s ease-in-out infinite;}
-  @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,154,.35);}50%{box-shadow:0 0 0 14px rgba(0,212,154,0);}}
-  .blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55;}
-  .float-slow{animation:floaty 7s ease-in-out infinite;}
-  .float-slower{animation:floaty 10s ease-in-out infinite reverse;}
-  @keyframes floaty{0%,100%{transform:translateY(0px) scale(1);}50%{transform:translateY(-18px) scale(1.05);}}
-  .shimmer{position:relative;overflow:hidden;}
-  .shimmer::after{content:'';position:absolute;top:0;left:-150%;width:80%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmerMove 3s ease-in-out infinite;}
-  @keyframes shimmerMove{0%{left:-150%;}100%{left:150%;}}
-  .slide-up{animation:slideUp .35s cubic-bezier(.16,1,.3,1);}
-  @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-  .notif-overlay{position:absolute;top:0;right:0;bottom:0;left:0;z-index:50;background:rgba(10,14,26,.8);backdrop-filter:blur(6px);}
-  /* ── glass cards ── */
-  .glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(12px);}
-  .glass-dark{background:rgba(10,14,26,.55);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px);}
-  /* ── card shadows ── */
-  .card{background:#fff;border:1px solid #eef0f5;border-radius:20px;box-shadow:0 2px 12px rgba(10,14,26,.06);}
-  .card-hover{transition:box-shadow .2s,border-color .2s,transform .15s;}
-  .card-hover:active{transform:scale(.985);}
-  /* ── btn styles ── */
-  .btn-primary{background:linear-gradient(135deg,#2de3ab 0%,#00b386 100%);color:#0a0e1a;font-weight:800;border-radius:16px;padding:14px 20px;box-shadow:0 6px 20px rgba(0,212,154,.28);transition:opacity .15s,transform .15s;}
-  .btn-primary:active{opacity:.85;transform:scale(.97);}
-  .btn-secondary{background:#f3f5f9;color:#0a0e1a;font-weight:700;border-radius:16px;padding:13px 20px;border:1.5px solid #eef0f5;transition:background .15s,transform .15s;}
-  .btn-secondary:active{background:#e8eaf0;transform:scale(.97);}
-  /* ── status chip ── */
-  .status-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
-  /* ── section title ── */
-  .sec-title{font-size:13px;font-weight:800;color:#0a0e1a;letter-spacing:-.01em;}
-  /* ── stat card ── */
-  .stat-card{border-radius:18px;padding:14px 16px;}
-  /* ── input ── */
-  .inp-dark{width:100%;border-radius:14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.10);color:#fff;padding:13px 16px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;}
-  .inp-dark:focus{border-color:#2de3ab;}
-  .inp-dark::placeholder{color:#4b5563;}
-  /* ── connector status ring ── */
-  .ring-disponivel{box-shadow:0 0 0 3px rgba(0,212,154,.25);}
-  .ring-ocupado{box-shadow:0 0 0 3px rgba(255,122,69,.25);}
-  .ring-manutencao{box-shadow:0 0 0 3px rgba(244,63,94,.20);}
-  /* ── pill nav ── */
-  .nav-pill{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:36px;height:3px;border-radius:2px;background:linear-gradient(90deg,#2de3ab,#00b386);}
-  /* ── timeline dot ── */
-  .tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-  /* ── spin ── */
-  .spin{animation:spin 1s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  /* ── badge pill ── */
-  .badge-pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;white-space:nowrap;}
-  /* ── co2 bar ── */
-  .co2-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#2de3ab,#00b386);}
-  /* ── 2025 polish ── */
-  *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  /* ── Reset & base ── */
+  *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#0c0c0c;font-family:'Space Grotesk','Inter',sans-serif;}
   button{cursor:pointer;border:none;background:none;font-family:inherit;}
-  input,button{font-family:'Plus Jakarta Sans',sans-serif;}
-  /* phone wrap gradient mesh */
+  input,button,select{font-family:'Space Grotesk','Inter',sans-serif;}
+
+  /* ── Phone shell ── */
   #phone-wrap{
-    background:
-      radial-gradient(ellipse 60% 50% at 15% 15%, rgba(0,212,154,.12) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 85% 85%, rgba(139,92,246,.10) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 80% 10%, rgba(255,122,69,.06) 0%, transparent 50%),
-      #05070d;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+    background:#0c0c0c;
   }
-  /* improved card */
-  .card{background:#fff;border:1px solid rgba(10,14,26,.06);border-radius:20px;box-shadow:0 1px 3px rgba(10,14,26,.04),0 4px 16px rgba(10,14,26,.06);}
-  /* section divider */
-  .sec-divider{height:1px;background:linear-gradient(90deg,transparent,#eef0f5,transparent);margin:0 16px;}
-  /* improved inp-dark focus ring */
-  .inp-dark:focus{border-color:#2de3ab;box-shadow:0 0 0 3px rgba(45,227,171,.15);}
-  /* status dot glow */
-  .dot-disponivel{background:#2de3ab;box-shadow:0 0 0 3px rgba(0,212,154,.2);}
-  .dot-ocupado{background:#ff7a45;box-shadow:0 0 0 3px rgba(255,122,69,.2);}
-  .dot-manutencao{background:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.15);}
-  /* better btn active */
-  .btn-primary{background:linear-gradient(135deg,#2de3ab 0%,#00b386 100%);color:#0a0e1a;font-weight:800;border-radius:16px;padding:14px 20px;box-shadow:0 4px 16px rgba(0,212,154,.30),0 1px 2px rgba(0,212,154,.15);transition:opacity .12s,transform .12s,box-shadow .12s;}
-  .btn-primary:hover{box-shadow:0 6px 24px rgba(0,212,154,.42),0 2px 4px rgba(0,212,154,.2);}
-  .btn-primary:active{opacity:.88;transform:scale(.97);box-shadow:0 2px 8px rgba(0,212,154,.25);}
-  /* nav item transition */
-  .nav-item-icon{transition:background .2s, box-shadow .2s, transform .15s;}
-  /* floating action shadow */
-  .fab-shadow{box-shadow:0 4px 20px rgba(0,0,0,.25),0 1px 4px rgba(0,0,0,.15);}
-  /* top gradient handle */
-  .screen-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto;}
-  /* improved glass */
-  .glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
-  /* reduced motion */
-  @media(prefers-reduced-motion:reduce){.fade-in,.slide-up,.glow-pulse,.float-slow,.float-slower,.shimmer::after{animation:none;}}
+  #phone{
+    width:100%;max-width:430px;min-height:850px;max-height:932px;
+    background:#111111;
+    border-radius:44px;overflow:hidden;position:relative;
+    box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 0 0 10px #1c1c1c, 0 0 0 11px rgba(255,255,255,.04), 0 32px 80px rgba(0,0,0,.8);
+    display:flex;flex-direction:column;
+  }
+  @media(max-width:480px){
+    #phone-wrap{padding:0;}
+    #phone{border-radius:0;box-shadow:none;min-height:100vh;max-height:none;}
+  }
+
+  /* ── Screen ── */
+  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;background:#111111;}
+  .screen::-webkit-scrollbar{width:0;}
+  .hscroll::-webkit-scrollbar{height:0;}
+
+  /* ── Animations — only motion, zero glow ── */
+  .fade-in{animation:fadeIn .25s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .slide-up{animation:slideUp .3s cubic-bezier(.16,1,.3,1);}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .pulse-dot{animation:pulseDot 1.6s ease-in-out infinite;}
+  @keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:.25;}}
+  .spin{animation:spin .9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media(prefers-reduced-motion:reduce){.fade-in,.slide-up,.pulse-dot{animation:none;}}
+
+  /* ── Progress ring — no colored glow ── */
+  .progress-ring{transition:stroke-dashoffset .6s linear;}
+
+  /* ── Cards ── */
+  .card{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .card-hover{transition:border-color .15s,transform .12s;}
+  .card-hover:active{transform:scale(.985);border-color:#3a3a3a;}
+
+  /* ── Buttons ── */
+  .btn-primary{
+    background:#c8ff4d;color:#111111;font-weight:700;font-size:15px;letter-spacing:-.01em;
+    border-radius:14px;padding:15px 20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+    transition:opacity .12s,transform .12s;
+  }
+  .btn-primary:active{opacity:.85;transform:scale(.97);}
+  .btn-secondary{
+    background:#1c1c1c;color:#ffffff;font-weight:600;
+    border-radius:14px;padding:14px 20px;border:1.5px solid #2a2a2a;
+    transition:border-color .15s,transform .12s;
+  }
+  .btn-secondary:active{border-color:#3a3a3a;transform:scale(.97);}
+
+  /* ── Inputs ── */
+  .inp-dark{
+    width:100%;border-radius:12px;
+    background:#1c1c1c;border:1.5px solid #2a2a2a;
+    color:#ffffff;padding:13px 16px;font-size:14px;font-family:inherit;
+    outline:none;transition:border-color .15s;
+  }
+  .inp-dark:focus{border-color:#c8ff4d;}
+  .inp-dark::placeholder{color:#555555;}
+
+  /* ── Status dots — flat, no glow ── */
+  .dot-disponivel{background:#c8ff4d;}
+  .dot-ocupado{background:#ff6b35;}
+  .dot-manutencao{background:#ff3b5c;}
+
+  /* ── Status chips ── */
+  .status-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;}
+
+  /* ── Section titles ── */
+  .sec-title{font-size:13px;font-weight:700;color:#ffffff;letter-spacing:.02em;text-transform:uppercase;}
+  .sec-divider{height:1px;background:#1e1e1e;margin:0 16px;}
+
+  /* ── Stat card ── */
+  .stat-card{border-radius:14px;padding:14px 16px;}
+
+  /* ── Nav pill ── */
+  .nav-pill{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:28px;height:2px;border-radius:1px;background:#c8ff4d;}
+  .nav-item-icon{transition:background .15s,transform .12s;}
+
+  /* ── Timeline dot ── */
+  .tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+
+  /* ── Badge pill ── */
+  .badge-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+
+  /* ── Progress bar ── */
+  .co2-bar{height:5px;border-radius:3px;background:#c8ff4d;}
+
+  /* ── Floating action ── */
+  .fab-shadow{box-shadow:0 4px 16px rgba(0,0,0,.5);}
+
+  /* ── Notification overlay ── */
+  .notif-overlay{position:absolute;top:0;right:0;bottom:0;left:0;z-index:50;background:rgba(0,0,0,.85);}
+
+  /* ── Screen handle ── */
+  .screen-handle{width:36px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:0 auto;}
+
+  /* ── Glass — minimal, used only where essential ── */
+  .glass{background:rgba(28,28,28,.9);border:1px solid #2a2a2a;}
+  .glass-dark{background:rgba(17,17,17,.95);border:1px solid #222222;}
+
+  /* ── Connector rings — no color ── */
+  .ring-disponivel{box-shadow:0 0 0 2px rgba(200,255,77,.2);}
+  .ring-ocupado{box-shadow:0 0 0 2px rgba(255,107,53,.2);}
+  .ring-manutencao{box-shadow:0 0 0 2px rgba(255,59,92,.15);}
 </style>
 </head>
 <body>
@@ -313,7 +338,7 @@ function getTier(pts) { return TIERS.find(t=>pts>=t.min&&pts<=t.max)||TIERS[0]; 
 function getNextTier(pts) { const i=TIERS.findIndex(t=>pts>=t.min&&pts<=t.max); return TIERS[i+1]||null; }
 
 const STATUS_LABEL = {
-  disponivel:{label:"Disponível",dot:"bg-brand-400",text:"text-brand-700"},
+  disponivel:{label:"Disponível",dot:"bg-[#c8ff4d]",text:"text-[#aaee1f]"},
   ocupado:{label:"Ocupado",dot:"bg-sunset-500",text:"text-sunset-600"},
   manutencao:{label:"Manutenção",dot:"bg-rose-500",text:"text-rose-600"},
   carregando:{label:"Carregando",dot:"bg-sky-500",text:"text-sky-600"},
@@ -340,7 +365,7 @@ function QRMock({size=152}){
   return(
     <svg width={size} height={size} viewBox={`0 0 ${n} ${n}`} style={{display:"block",borderRadius:4}}>
       <rect width={n} height={n} fill="white"/>
-      {bits.split("").map((c,i)=>c==="1"?<rect key={i} x={i%n} y={Math.floor(i/n)} width={1} height={1} fill="#0a0e1a"/>:null)}
+      {bits.split("").map((c,i)=>c==="1"?<rect key={i} x={i%n} y={Math.floor(i/n)} width={1} height={1} fill="#111111"/>:null)}
     </svg>
   );
 }
@@ -351,11 +376,11 @@ function QRMock({size=152}){
 
 function TopBar({title,onBack,right,dark}){
   return(
-    <div className={"flex items-center justify-between px-4 pt-12 pb-3 sticky top-0 z-10 "+(dark?"bg-transparent":"bg-white/92 backdrop-blur-sm border-b border-gray-100/80")} style={dark?{}:{backdropFilter:"blur(16px)"}}>
+    <div className={"flex items-center justify-between px-4 pt-12 pb-3 sticky top-0 z-10 "+(dark?"bg-transparent":"bg-[#111111]/95 border-b border-[#1e1e1e]")} style={dark?{}:{backdropFilter:"blur(16px)"}}>
       <div className="flex items-center gap-2.5">
         {onBack&&(
           <button onClick={onBack}
-            className={"w-9 h-9 flex items-center justify-center rounded-full transition active:scale-90 "+(dark?"bg-white/10 hover:bg-white/15 text-white":"bg-gray-100 hover:bg-gray-200 text-gray-600")}
+            className={"w-9 h-9 flex items-center justify-center rounded-full transition active:scale-90 "+(dark?"bg-white/10 hover:bg-white/15 text-white":"bg-[#1c1c1c] hover:bg-[#2a2a2a] text-white/70")}
             style={{flexShrink:0}}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"/>
@@ -371,33 +396,33 @@ function TopBar({title,onBack,right,dark}){
 
 const NAV_ICONS={
   home:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#0a0e1a":"none"} stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#111111":"none"} stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
-      <path d="M9 21V12h6v9" fill={active?"#fff":undefined} stroke={active?"#0a0e1a":"#9ca3af"}/>
+      <path d="M9 21V12h6v9" fill={active?"#fff":undefined} stroke={active?"#111111":"#9ca3af"}/>
     </svg>
   ),
   wallet:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="7" width="20" height="14" rx="2" fill={active?"#0a0e1a":undefined}/>
-      <path d="M16 3H5a3 3 0 00-3 3v1" stroke={active?"#0a0e1a":"#9ca3af"}/>
-      <circle cx="17" cy="14" r="1.5" fill={active?"#2de3ab":"#9ca3af"} stroke="none"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2" fill={active?"#111111":undefined}/>
+      <path d="M16 3H5a3 3 0 00-3 3v1" stroke={active?"#111111":"#9ca3af"}/>
+      <circle cx="17" cy="14" r="1.5" fill={active?"#c8ff4d":"#9ca3af"} stroke="none"/>
     </svg>
   ),
   charging:(active,highlight)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#0a0e1a":"none"} stroke={active?"#0a0e1a":highlight?"#ff7a45":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill={active?"#0a0e1a":highlight?"rgba(255,122,69,.15)":"none"}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#111111":"none"} stroke={active?"#111111":highlight?"#ff7a45":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill={active?"#111111":highlight?"rgba(255,122,69,.15)":"none"}/>
     </svg>
   ),
   history:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" fill={active?"#0a0e1a":undefined}/>
-      <polyline points="12 7 12 12 15 15" stroke={active?"#2de3ab":"#9ca3af"}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" fill={active?"#111111":undefined}/>
+      <polyline points="12 7 12 12 15 15" stroke={active?"#c8ff4d":"#9ca3af"}/>
     </svg>
   ),
   profile:(active)=>(
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="4" fill={active?"#0a0e1a":undefined}/>
-      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" fill={active?"#0a0e1a":undefined}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#111111":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" fill={active?"#111111":undefined}/>
+      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" fill={active?"#111111":undefined}/>
     </svg>
   ),
 };
@@ -421,10 +446,10 @@ function BottomNav({screen,setScreen,hasActiveSession}){
               style={{WebkitTapHighlightColor:"transparent",outline:"none"}}>
               {it.highlight&&<span className="absolute top-0.5 right-[26%] w-2.5 h-2.5 rounded-full bg-sunset-500 border-2 border-white pulse-dot" style={{zIndex:2}}></span>}
               <div className={"nav-item-icon w-11 h-9 rounded-2xl flex items-center justify-center "+(active?"scale-105":"scale-100")}
-                style={active?{background:"linear-gradient(135deg,#2de3ab 0%,#00b386 100%)",boxShadow:"0 3px 12px rgba(0,212,154,.40)"}:{}}>
+                style={active?{background:"#c8ff4d"}:{}}>
                 {NAV_ICONS[it.id]?.(active,it.highlight)}
               </div>
-              <span className={"text-[10px] font-bold tracking-tight transition-colors duration-150 "+(active?"text-brand-700":"text-gray-400")}>{it.label}</span>
+              <span className={"text-[10px] font-bold tracking-tight transition-colors duration-150 "+(active?"text-[#aaee1f]":"text-gray-400")}>{it.label}</span>
             </button>
           );
         })}
@@ -484,20 +509,20 @@ function NotifPanel({notifs,onRead,onClose}){
             <p className="font-extrabold text-ink">Notificações</p>
             {unread>0&&<span className="badge-pill bg-sunset-500 text-white">{unread} nova{unread>1?"s":""}</span>}
           </div>
-          <button onClick={onClose} style={{width:32,height:32,borderRadius:"50%",background:"#f3f5f9",border:"none",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",color:"#6b7280"}}>✕</button>
+          <button onClick={onClose} style={{width:32,height:32,borderRadius:"50%",background:"#111111",border:"none",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",color:"#6b7280"}}>✕</button>
         </div>
         <div style={{overflowY:"auto",maxHeight:"calc(72vh - 80px)"}}>
           {notifs.map((n,i)=>(
             <div key={n.id} onClick={()=>onRead(n.id)}
               className="flex gap-3 px-5 py-4 cursor-pointer"
-              style={{opacity:n.read?.5:1,borderBottom:i<notifs.length-1?"1px solid #f9fafb":"none",background:n.read?"transparent":"rgba(0,212,154,.03)"}}>
+              style={{opacity:n.read?.5:1,borderBottom:i<notifs.length-1?"1px solid #1e1e1e":"none",background:n.read?"transparent":"rgba(200,255,77,.03)"}}>
               <div style={{width:40,height:40,borderRadius:14,background:n.read?"#f3f5f9":"#e6fff6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{n.icon}</div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-ink">{n.title}</p>
                 <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{n.body}</p>
                 <p className="text-[10px] text-gray-300 mt-1">{n.time}</p>
               </div>
-              {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#2de3ab",flexShrink:0,marginTop:6}}></div>}
+              {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#c8ff4d",flexShrink:0,marginTop:6}}></div>}
             </div>
           ))}
         </div>
@@ -513,30 +538,28 @@ function LGPDScreen({onAccept}){
   const [checked,setChecked]=useState(false);
   return(
     <div className="screen flex flex-col bg-ink text-white px-6 pt-16 pb-10 fade-in overflow-hidden relative">
-      <div className="blob w-64 h-64 bg-brand-500 -top-20 -right-20 float-slow"></div>
-      <div className="blob w-48 h-48 bg-accent-600 bottom-20 -left-16 float-slower"></div>
       <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-3xl mb-6 glow-pulse">🔒</div>
+        <div className="w-16 h-16 rounded-2xl bg-[#1c1c1c] border border-[#2a2a2a] flex items-center justify-center text-3xl mb-6">🔒</div>
         <h1 className="text-2xl font-extrabold mb-3">Privacidade e Dados</h1>
         <p className="text-sm text-gray-300 leading-relaxed mb-4">
           A EletroGo coleta dados pessoais (nome, e-mail, CPF, localização e histórico de recargas) para operar o serviço, processar pagamentos e personalizar ofertas.
         </p>
         <div className="bg-white/10 border border-white/10 rounded-2xl p-4 space-y-2.5 text-sm text-gray-300">
-          <p className="flex gap-2"><span className="text-brand-400">✓</span>Tratamento conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong></p>
-          <p className="flex gap-2"><span className="text-brand-400">✓</span>Dados não são vendidos a terceiros</p>
-          <p className="flex gap-2"><span className="text-brand-400">✓</span>Você pode solicitar exclusão a qualquer momento</p>
-          <p className="flex gap-2"><span className="text-brand-400">✓</span>Pagamentos processados com criptografia SSL</p>
+          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Tratamento conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong></p>
+          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Dados não são vendidos a terceiros</p>
+          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Você pode solicitar exclusão a qualquer momento</p>
+          <p className="flex gap-2"><span className="text-[#c8ff4d]">✓</span>Pagamentos processados com criptografia SSL</p>
         </div>
         <label className="flex items-start gap-3 mt-6 cursor-pointer" onClick={()=>setChecked(!checked)}>
-          <div className={"w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(checked?"bg-brand-500 border-brand-500":"border-white/30")}>
+          <div className={"w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(checked?"bg-[#c8ff4d] border-[#c8ff4d]":"border-white/30")}>
             {checked&&<span className="text-ink text-xs font-bold">✓</span>}
           </div>
-          <p className="text-sm text-gray-300 leading-snug">Li e concordo com a <span className="text-brand-400 underline">Política de Privacidade</span> e os <span className="text-brand-400 underline">Termos de Uso</span>.</p>
+          <p className="text-sm text-gray-300 leading-snug">Li e concordo com a <span className="text-[#c8ff4d] underline">Política de Privacidade</span> e os <span className="text-[#c8ff4d] underline">Termos de Uso</span>.</p>
         </label>
       </div>
       <div className="relative z-10 mt-6">
         <button disabled={!checked} onClick={onAccept}
-          className="w-full py-4 rounded-2xl font-extrabold transition shadow-lg disabled:opacity-40 bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-brand-500/30">
+          className="w-full py-4 rounded-2xl font-extrabold transition shadow-lg disabled:opacity-40 bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-black/30">
           Aceitar e continuar →
         </button>
         <p className="text-center text-[11px] text-gray-500 mt-3">EletroGo · Curitiba, PR · v1.0</p>
@@ -549,7 +572,7 @@ function LGPDScreen({onAccept}){
    TELA: ONBOARDING
 ════════════════════════════ */
 const SLIDES=[
-  {icon:"⚡",title:"Carregue onde quiser",body:"Encontre eletropostos CCS2 e Type 2 em Curitiba. Veja disponibilidade em tempo real e inicie a recarga direto pelo app.",color:"from-brand-500 to-brand-700"},
+  {icon:"⚡",title:"Carregue onde quiser",body:"Encontre eletropostos CCS2 e Type 2 em Curitiba. Veja disponibilidade em tempo real e inicie a recarga direto pelo app.",color:"from-[#c8ff4d] to-[#aaee1f]"},
   {icon:"💰",title:"Pague menos a cada carga",body:"Cashback automático, cupons exclusivos e planos EletroPass que travam sua tarifa. Quanto mais você carrega, mais você economiza.",color:"from-accent-500 to-accent-700"},
   {icon:"🔒",title:"Simples e seguro",body:"PIX, cartão Mercado Pago ou saldo EletroGo. O conector só é liberado após confirmação do pagamento — você no controle.",color:"from-sunset-400 to-sunset-600"},
 ];
@@ -559,19 +582,18 @@ function OnboardingScreen({onDone}){
   const next=()=>slide<SLIDES.length-1?setSlide(slide+1):onDone();
   return(
     <div className="screen flex flex-col bg-ink text-white overflow-hidden relative fade-in">
-      <div className="blob w-80 h-80 -top-28 -right-28 float-slow" style={{background:"linear-gradient(135deg, rgba(0,212,154,.4), rgba(139,92,246,.3))",opacity:.5}}></div>
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center relative z-10">
-        <div className={"w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mb-8 shadow-2xl bg-gradient-to-br "+s.color+" glow-pulse"}>{s.icon}</div>
+        <div className={"w-24 h-24 rounded-2xl flex items-center justify-center text-5xl mb-8 bg-[#1c1c1c] border border-[#2a2a2a]"}>{s.icon}</div>
         <h2 className="text-2xl font-extrabold mb-3 leading-tight">{s.title}</h2>
         <p className="text-gray-300 text-sm leading-relaxed max-w-[280px]">{s.body}</p>
         <div className="flex gap-2 mt-10">
           {SLIDES.map((_,i)=>(
-            <div key={i} className={"h-1.5 rounded-full transition-all "+(i===slide?"w-8 bg-brand-400":"w-2 bg-white/20")}></div>
+            <div key={i} className={"h-1.5 rounded-full transition-all "+(i===slide?"w-8 bg-[#c8ff4d]":"w-2 bg-white/20")}></div>
           ))}
         </div>
       </div>
       <div className="px-6 pb-10 relative z-10 space-y-3">
-        <button onClick={next} className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30">
+        <button onClick={next} className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30">
           {slide<SLIDES.length-1?"Próximo →":"Começar →"}
         </button>
         {slide<SLIDES.length-1&&<button onClick={onDone} className="w-full py-2 text-sm text-gray-500 font-semibold">Pular</button>}
@@ -642,18 +664,16 @@ function AuthScreen({onLogin}){
 
   return(
     <div className="screen flex flex-col bg-ink text-white px-6 pt-14 pb-8 fade-in overflow-hidden relative">
-      <div className="blob w-72 h-72 bg-brand-500 -top-20 -right-24 float-slow"></div>
-      <div className="blob w-64 h-64 bg-accent-600 bottom-24 -left-24 float-slower"></div>
       <div className="relative z-10 mb-5">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-2xl font-bold mb-4 glow-pulse">⚡</div>
-        <h1 className="text-3xl font-extrabold leading-tight">EletroGo</h1>
+        <div className="w-14 h-14 rounded-2xl bg-[#1c1c1c] border border-[#2a2a2a] flex items-center justify-center text-2xl font-bold mb-4">⚡</div>
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tight">EletroGo</h1>
         <p className="text-gray-400 text-xs mt-1">Rede de Eletropostos · Curitiba, PR</p>
       </div>
 
       <div className="relative z-10 flex bg-white/5 rounded-2xl p-1 mb-5">
         {["login","register"].map(t=>(
           <button key={t} onClick={()=>{setTab(t);setLoginErr("");setRErr("");}}
-            className={"flex-1 py-2 rounded-xl text-sm font-bold transition "+(tab===t?"bg-brand-500 text-ink shadow":"text-gray-400")}>
+            className={"flex-1 py-2 rounded-xl text-sm font-bold transition "+(tab===t?"bg-[#c8ff4d] text-ink shadow":"text-gray-400")}>
             {t==="login"?"Entrar":"Criar conta"}
           </button>
         ))}
@@ -661,20 +681,20 @@ function AuthScreen({onLogin}){
 
       {tab==="forgot"&&(
         <div className="relative z-10 space-y-4 slide-up">
-          <button onClick={()=>setTab("login")} className="text-brand-400 text-sm font-semibold">← Voltar</button>
+          <button onClick={()=>setTab("login")} className="text-[#c8ff4d] text-sm font-semibold">← Voltar</button>
           <h2 className="text-lg font-extrabold">Redefinir senha</h2>
           {fSent?(
-            <div className="bg-brand-500/20 border border-brand-400/30 rounded-2xl p-5 text-center">
+            <div className="bg-[#c8ff4d]/20 border border-[#c8ff4d]/20 rounded-2xl p-5 text-center">
               <p className="text-3xl mb-2">📧</p>
-              <p className="font-bold text-brand-300">E-mail enviado!</p>
+              <p className="font-bold text-[#c8ff4d]">E-mail enviado!</p>
               <p className="text-sm text-gray-400 mt-1">Verifique <strong className="text-white">{fEmail}</strong> e siga as instruções.</p>
-              <button onClick={()=>setTab("login")} className="mt-4 text-brand-400 text-sm font-semibold">Voltar ao login</button>
+              <button onClick={()=>setTab("login")} className="mt-4 text-[#c8ff4d] text-sm font-semibold">Voltar ao login</button>
             </div>
           ):(
             <>
               <p className="text-sm text-gray-400">Informe seu e-mail e enviaremos um link para redefinir sua senha.</p>
               <input value={fEmail} onChange={e=>setFEmail(e.target.value)} placeholder="voce@email.com" className={inp}/>
-              <button onClick={doForgotPassword} className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-400 to-brand-600 font-bold text-ink">Enviar link</button>
+              <button onClick={doForgotPassword} className="w-full py-3.5 rounded-xl bg-gradient-to-r bg-[#c8ff4d] font-bold text-ink">Enviar link</button>
             </>
           )}
         </div>
@@ -686,7 +706,7 @@ function AuthScreen({onLogin}){
           <input value={loginPass} onChange={e=>setLoginPass(e.target.value)} type="password" placeholder="Senha" className={inp}/>
           {loginErr&&<p className="text-rose-400 text-xs font-semibold">{loginErr}</p>}
           <button onClick={doLogin} disabled={loginLoading}
-            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30 disabled:opacity-60">
+            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30 disabled:opacity-60">
             {loginLoading?"Entrando...":"Entrar →"}
           </button>
           <button onClick={()=>{setTab("forgot");setFSent(false);setFEmail("");}} className="w-full text-center text-xs text-gray-400 font-semibold pt-1">
@@ -704,14 +724,14 @@ function AuthScreen({onLogin}){
           <input value={rPass} onChange={e=>setRPass(e.target.value)} type="password" placeholder="Senha (mín. 8 caracteres)" className={inp}/>
           <input value={rPass2} onChange={e=>setRPass2(e.target.value)} type="password" placeholder="Confirmar senha" className={inp}/>
           <label className="flex items-start gap-2 cursor-pointer pt-1" onClick={()=>setRTC(!rTC)}>
-            <div className={"w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(rTC?"bg-brand-500 border-brand-500":"border-white/30")}>
+            <div className={"w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(rTC?"bg-[#c8ff4d] border-[#c8ff4d]":"border-white/30")}>
               {rTC&&<span className="text-ink text-[10px] font-extrabold">✓</span>}
             </div>
-            <p className="text-xs text-gray-400 leading-snug">Li e aceito os <span className="text-brand-400">Termos de Uso</span> e a <span className="text-brand-400">Política de Privacidade</span>.</p>
+            <p className="text-xs text-gray-400 leading-snug">Li e aceito os <span className="text-[#c8ff4d]">Termos de Uso</span> e a <span className="text-[#c8ff4d]">Política de Privacidade</span>.</p>
           </label>
           {rErr&&<p className="text-rose-400 text-xs font-semibold">{rErr}</p>}
           <button onClick={doRegister} disabled={rLoading}
-            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30 disabled:opacity-60 mt-1">
+            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r bg-[#c8ff4d] text-ink shadow-lg shadow-black/30 disabled:opacity-60 mt-1">
             {rLoading?"Criando conta...":"Criar conta →"}
           </button>
         </div>
@@ -749,7 +769,7 @@ function PartnerAdsSection(){
 function StaticMap({stations,onSelect}){
   const positions=[{top:"38%",left:"32%"},{top:"22%",left:"66%"},{top:"68%",left:"58%"}];
   return(
-    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,background:"linear-gradient(135deg,#eef9f5 0%,#e8f4fd 50%,#f0eeff 100%)",border:"1px solid rgba(0,212,154,.12)",boxShadow:"0 2px 12px rgba(10,14,26,.06)"}}>
+    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,background:"#1c1c1c",border:"1px solid #2a2a2a"}}>
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 148" preserveAspectRatio="none" style={{opacity:.3}}>
         <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#94a3b8" strokeWidth=".5"/></pattern></defs>
         <rect width="100%" height="100%" fill="url(#grid)"/>
@@ -760,7 +780,7 @@ function StaticMap({stations,onSelect}){
         const occ=st.connectors.some(c=>c.status==="disponivel");
         return(
           <button key={st.id} onClick={()=>onSelect(st)} style={{top:positions[i].top,left:positions[i].left,position:"absolute",transform:"translate(-50%,-50%)"}} className="active:scale-90 transition-transform">
-            <div style={{width:34,height:34,borderRadius:"50%",background:occ?"linear-gradient(135deg,#2de3ab,#00b386)":"linear-gradient(135deg,#ff7a45,#f4622a)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:occ?"0 4px 12px rgba(0,212,154,.45)":"0 4px 12px rgba(255,122,69,.45)",border:"3px solid white"}}>
+            <div style={{width:34,height:34,borderRadius:"50%",background:occ?"linear-gradient(135deg,#c8ff4d,#aaee1f)":"linear-gradient(135deg,#ff7a45,#f4622a)",display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #111111"}}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             </div>
           </button>
@@ -776,7 +796,7 @@ function StaticMap({stations,onSelect}){
 }
 
 /* ─── Google Maps real ─── */
-const GMAPS_DARK=[{elementType:"geometry",stylers:[{color:"#1a1f2e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#0a0e1a"}]},{elementType:"labels.text.fill",stylers:[{color:"#6b7280"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#253047"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#1e2f48"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#0a111f"}]},{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}];
+const GMAPS_DARK=[{elementType:"geometry",stylers:[{color:"#1a1f2e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#111111"}]},{elementType:"labels.text.fill",stylers:[{color:"#6b7280"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#253047"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#1e2f48"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#0a111f"}]},{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}];
 
 function GoogleMapComponent({stations,onSelect}){
   const mapRef=useRef(null);
@@ -810,7 +830,7 @@ function GoogleMapComponent({stations,onSelect}){
       const coord=STATION_COORDS[st.id];
       if(!coord)return;
       const occ=st.connectors.some(c=>c.status==="disponivel");
-      const color=occ?"#2de3ab":"#ff7a45";
+      const color=occ?"#c8ff4d":"#ff7a45";
       const marker=new window.google.maps.Marker({
         position:coord,map,title:st.name,
         icon:{path:window.google.maps.SymbolPath.CIRCLE,scale:12,fillColor:color,fillOpacity:1,strokeColor:"#fff",strokeWeight:2.5},
@@ -838,7 +858,7 @@ function GoogleMapComponent({stations,onSelect}){
         <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"rgba(255,255,255,.7)",fontWeight:600}}>📡 Localizando…</div>
       )}
       {geoStatus==="ok"&&(
-        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#2de3ab",fontWeight:600}}>📍 Localização ativa</div>
+        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#c8ff4d",fontWeight:600}}>📍 Localização ativa</div>
       )}
       {geoStatus==="denied"&&(
         <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#ff7a45",fontWeight:600}}>📍 Curitiba, PR</div>
@@ -853,7 +873,7 @@ function PromoCarousel({coupons,onGo}){
     <div className="mt-4">
       <div className="flex items-center justify-between px-4 mb-2">
         <h2 className="text-sm font-bold text-ink">🔥 Ofertas para você</h2>
-        <button onClick={onGo} className="text-xs font-bold text-brand-700">Ver todas</button>
+        <button onClick={onGo} className="text-xs font-bold text-[#aaee1f]">Ver todas</button>
       </div>
       <div className="flex gap-3 overflow-x-auto px-4 pb-1 hscroll snap-x">
         {active.map(c=>(
@@ -877,8 +897,8 @@ function StationCard({station,onSelect}){
   const minPrice=Math.min(...station.connectors.map(c=>c.priceKwh));
   const hasAvail=available>0;
   const estMins=maxPower>=60?Math.round(1800/maxPower):Math.round(1200/maxPower);
-  const accentColor=hasAvail?"#2de3ab":station.connectors.some(c=>c.status==="manutencao")?"#f43f5e":"#ff7a45";
-  const iconBg=hasAvail?"linear-gradient(135deg,#2de3ab,#00b386)":station.connectors.some(c=>c.status==="manutencao")?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+  const accentColor=hasAvail?"#c8ff4d":station.connectors.some(c=>c.status==="manutencao")?"#f43f5e":"#ff7a45";
+  const iconBg=hasAvail?"linear-gradient(135deg,#c8ff4d,#aaee1f)":station.connectors.some(c=>c.status==="manutencao")?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
   return(
     <button onClick={()=>onSelect(station)} className="w-full text-left card-hover flex items-start gap-0 overflow-hidden"
       style={{background:"#fff",border:"1px solid rgba(10,14,26,.06)",borderRadius:22,boxShadow:"0 1px 3px rgba(10,14,26,.04),0 4px 16px rgba(10,14,26,.05)",padding:0,display:"flex",width:"100%"}}>
@@ -896,22 +916,22 @@ function StationCard({station,onSelect}){
           <div className="flex items-start justify-between gap-1.5">
             <p className="font-extrabold text-ink text-[13px] leading-tight tracking-tight">{station.name}</p>
             <div className="flex-shrink-0 text-right">
-              <p className="text-[12px] font-extrabold text-brand-700 leading-none">{fmtMoney(minPrice)}</p>
+              <p className="text-[12px] font-extrabold text-[#aaee1f] leading-none">{fmtMoney(minPrice)}</p>
               <p className="text-[10px] text-gray-400 font-medium">/kWh</p>
             </div>
           </div>
           <p className="text-[11px] text-gray-400 mt-0.5 truncate">{station.address}</p>
           {/* info chips */}
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               {station.distanceKm.toFixed(1)} km
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               {maxPower} kW
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+            <span className="inline-flex items-center gap-1 text-[11px] text-white/40 font-medium bg-[#1c1c1c] px-2 py-0.5 rounded-full border border-[#2a2a2a]">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
               ~{estMins} min
             </span>
@@ -920,10 +940,10 @@ function StationCard({station,onSelect}){
           <div className="flex items-center gap-2 mt-2.5">
             <div className="flex gap-1" style={{flex:1,maxWidth:80}}>
               {station.connectors.map((c,i)=>(
-                <div key={i} style={{height:3,flex:1,borderRadius:2,background:c.status==="disponivel"?"#2de3ab":c.status==="manutencao"?"#f43f5e":"#ff7a45",opacity:.8}}></div>
+                <div key={i} style={{height:3,flex:1,borderRadius:2,background:c.status==="disponivel"?"#c8ff4d":c.status==="manutencao"?"#f43f5e":"#ff7a45",opacity:.8}}></div>
               ))}
             </div>
-            <span className={"badge-pill "+(hasAvail?"bg-brand-50 text-brand-700 border border-brand-100":"bg-rose-50 text-rose-600 border border-rose-100")} style={{fontSize:10}}>
+            <span className={"badge-pill "+(hasAvail?"bg-[#c8ff4d]/10 text-[#c8ff4d] border border-[#c8ff4d]/20":"bg-rose-50 text-rose-600 border border-rose-100")} style={{fontSize:10}}>
               {hasAvail?`${available}/${total} livre${available>1?"s":""}`:"Sem vagas"}
             </span>
           </div>
@@ -941,16 +961,14 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
   const tier=getTier(wallet.points);
   const available=stations.reduce((a,s)=>a+s.connectors.filter(c=>c.status==="disponivel").length,0);
   return(
-    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+    <div className="screen fade-in" style={{background:"#111111"}}>
       {/* ── HEADER ── */}
-      <div style={{background:"linear-gradient(160deg,#0a0e1a 0%,#111827 55%,#0d1a14 100%)",borderRadius:"0 0 32px 32px",paddingBottom:22,position:"relative",overflow:"hidden"}}>
-        <div className="blob w-64 h-64 bg-brand-500 float-slow" style={{top:-90,right:-50,opacity:.22}}></div>
-        <div className="blob w-44 h-44 bg-accent-600 float-slower" style={{top:30,left:-50,opacity:.15}}></div>
+      <div style={{background:"#1c1c1c",borderBottom:"1px solid #2a2a2a",paddingBottom:22,position:"relative"}}>
         <div className="relative z-10 px-4 pt-12">
           {/* row 1: avatar + actions */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <div style={{width:42,height:42,borderRadius:14,background:"linear-gradient(135deg,#2de3ab,#00b386)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:17,color:"#0a0e1a",boxShadow:"0 4px 16px rgba(0,212,154,.38)",letterSpacing:0,flexShrink:0}}>
+              <div style={{width:42,height:42,borderRadius:12,background:"#c8ff4d",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:17,color:"#111111",letterSpacing:0,flexShrink:0}}>
                 {initials}
               </div>
               <div>
@@ -965,8 +983,8 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
                 </svg>
                 {unreadCount>0&&<span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-sunset-500 text-white text-[9px] font-extrabold flex items-center justify-center pulse-dot border border-ink" style={{lineHeight:1}}>{unreadCount}</span>}
               </button>
-              <button onClick={onGoWallet} className="flex items-center gap-1.5 active:scale-95 transition-transform" style={{background:"linear-gradient(135deg,#2de3ab,#00b386)",borderRadius:12,padding:"8px 13px",boxShadow:"0 4px 14px rgba(0,212,154,.35)"}}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#0a0e1a"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <button onClick={onGoWallet} className="flex items-center gap-1.5 active:scale-95 transition-transform" style={{background:"#c8ff4d",borderRadius:12,padding:"8px 13px"}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#111111"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
                 <span className="text-ink text-[12px] font-extrabold tracking-tight">{fmtMoney(wallet.balance)}</span>
               </button>
             </div>
@@ -981,7 +999,7 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
               <div key={i} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:"10px 8px",textAlign:"center"}}>
                 <p className="text-[11px] text-white/35 font-medium tracking-wide">{s.label}</p>
                 <p className="text-[15px] font-extrabold text-white mt-0.5 leading-none">{s.value}</p>
-                <p className="text-[10px] text-brand-400/80 mt-0.5 font-medium">{s.unit}</p>
+                <p className="text-[10px] text-[#c8ff4d]/80 mt-0.5 font-medium">{s.unit}</p>
               </div>
             ))}
           </div>
@@ -1002,10 +1020,10 @@ function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotif
       <PartnerAdsSection/>
       <div className="px-4 mt-5 mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#2de3ab,#00b386)"}}></div>
+          <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#c8ff4d,#aaee1f)"}}></div>
           <h2 className="text-[13px] font-extrabold text-ink tracking-tight">Eletropostos próximos</h2>
         </div>
-        <span className="text-[11px] text-brand-700 font-bold bg-brand-50 border border-brand-100 px-2.5 py-1 rounded-full">{filtered.length} encontrado{filtered.length!==1?"s":""}</span>
+        <span className="text-[11px] text-[#aaee1f] font-bold bg-[#1c1c1c] border border-[#2a2a2a] px-2.5 py-1 rounded-full">{filtered.length} encontrado{filtered.length!==1?"s":""}</span>
       </div>
       <div className="px-4 space-y-3 pb-6">
         {filtered.map(s=><StationCard key={s.id} station={s} onSelect={onSelectStation}/>)}
@@ -1028,14 +1046,13 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
   const maxPower=Math.max(...station.connectors.map(c=>c.powerKw));
   const isGold=userPlan==="eletropass-gold";
   return(
-    <div className="screen bg-gray-50 fade-in">
-      <div className="relative bg-gradient-to-br from-brand-600 to-brand-900 text-white pb-6 rounded-b-[28px] overflow-hidden">
-        <div className="blob w-48 h-48 bg-brand-400 -top-10 -right-10"></div>
+    <div className="screen bg-[#111111] fade-in">
+      <div className="relative bg-[#1c1c1c] text-white pb-6" style={{borderBottom:"1px solid #2a2a2a"}}>
         <TopBar title="Detalhes do posto" onBack={onBack} dark/>
         <div className="px-4 relative z-10 mt-1">
-          <span className="text-[11px] font-semibold bg-white/15 px-2.5 py-1 rounded-full">{station.badge}</span>
-          <h2 className="text-xl font-extrabold mt-2">{station.name}</h2>
-          <p className="text-xs text-brand-100 mt-1">{station.address}</p>
+          <span className="text-[11px] font-semibold bg-[#c8ff4d]/10 text-[#c8ff4d] px-2.5 py-1 rounded-full border border-[#c8ff4d]/20">{station.badge}</span>
+          <h2 className="text-xl font-bold mt-2 tracking-tight">{station.name}</h2>
+          <p className="text-xs text-white/40 mt-1">{station.address}</p>
           <div className="flex items-center gap-4 mt-3 text-xs">
             <span>📍 {station.distanceKm.toFixed(1)} km</span>
             <span>🔌 até {maxPower} kW</span>
@@ -1066,8 +1083,8 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
               const key=station.id+"-"+c.id;
               const res=reservations&&reservations[key];
               const minsLeft=res?Math.ceil(res.secsLeft/60):0;
-              const ringColor=c.status==="disponivel"?"rgba(0,212,154,.35)":c.status==="manutencao"?"rgba(244,63,94,.3)":"rgba(255,122,69,.3)";
-              const iconBg=c.status==="disponivel"?"linear-gradient(135deg,#2de3ab,#00b386)":c.status==="manutencao"?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+              const ringColor=c.status==="disponivel"?"rgba(200,255,77,.25)":c.status==="manutencao"?"rgba(244,63,94,.3)":"rgba(255,122,69,.3)";
+              const iconBg=c.status==="disponivel"?"linear-gradient(135deg,#c8ff4d,#aaee1f)":c.status==="manutencao"?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
               return(
                 <div key={c.id} className="card p-4" style={{boxShadow:`0 0 0 3px ${ringColor}, 0 2px 10px rgba(10,14,26,.05)`}}>
                   <div className="flex items-center justify-between gap-3">
@@ -1080,12 +1097,12 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
                           <span className="text-[10px] text-gray-300">·</span>
                           <span className="text-[11px] font-bold text-gray-500">{c.powerKw} kW</span>
                         </div>
-                        <p className="text-[11px] font-extrabold text-brand-700 mt-1">{fmtMoney(c.priceKwh)} / kWh</p>
+                        <p className="text-[11px] font-extrabold text-[#aaee1f] mt-1">{fmtMoney(c.priceKwh)} / kWh</p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1.5 items-end flex-shrink-0">
                       <button disabled={c.status!=="disponivel"} onClick={()=>onStartCharge(station,c)}
-                        style={c.status==="disponivel"?{background:"linear-gradient(135deg,#2de3ab,#00b386)",color:"#0a0e1a",fontWeight:800,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"pointer",boxShadow:"0 4px 14px rgba(0,212,154,.35)"}:{background:"#f3f5f9",color:"#d1d5db",fontWeight:700,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"not-allowed"}}>
+                        style={c.status==="disponivel"?{background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",color:"#111111",fontWeight:800,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"pointer",boxShadow:"0 4px 14px rgba(200,255,77,.25)"}:{background:"#111111",color:"#d1d5db",fontWeight:700,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"not-allowed"}}>
                         {c.status==="disponivel"?"⚡ Carregar":"—"}
                       </button>
                       {isGold&&c.status==="disponivel"&&!res&&(
@@ -1110,11 +1127,11 @@ function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,user
 function ChargingScreen({session,onStop,onBack,wallet}){
   if(!session){
     return(
-      <div className="screen bg-gray-50 fade-in flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center text-4xl mb-4">⚡</div>
+      <div className="screen bg-[#111111] fade-in flex flex-col items-center justify-center px-6 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br bg-[#1c1c1c] flex items-center justify-center text-4xl mb-4">⚡</div>
         <p className="font-bold text-ink text-lg">Nenhuma carga em andamento</p>
         <p className="text-xs text-gray-400 mt-1 max-w-[220px]">Escolha um eletroposto na tela inicial para iniciar uma recarga.</p>
-        <button onClick={onBack} className="mt-5 px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink text-sm font-bold shadow-lg shadow-brand-500/30">Buscar eletropostos</button>
+        <button onClick={onBack} className="mt-5 px-6 py-3 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink text-sm font-bold shadow-lg shadow-black/30">Buscar eletropostos</button>
       </div>
     );
   }
@@ -1130,25 +1147,23 @@ function ChargingScreen({session,onStop,onBack,wallet}){
   const r=84,circumference=2*Math.PI*r,offset=circumference-(pct/100)*circumference;
   return(
     <div className="screen bg-ink text-white fade-in flex flex-col overflow-hidden relative">
-      <div className="blob w-72 h-72 bg-brand-500 -top-24 -left-20 float-slow"></div>
-      <div className="blob w-56 h-56 bg-accent-600 bottom-10 -right-16 float-slower"></div>
       <div className="relative z-10">
-        <TopBar title="Carregando" onBack={onBack} dark right={<span className="text-[11px] bg-white/10 px-2.5 py-1 rounded-full font-semibold text-brand-300">● em andamento</span>}/>
+        <TopBar title="Carregando" onBack={onBack} dark right={<span className="text-[11px] bg-white/10 px-2.5 py-1 rounded-full font-semibold text-[#c8ff4d]">● em andamento</span>}/>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-6 -mt-4 relative z-10">
         <p className="text-sm text-gray-300 font-medium mb-1">{station.name}</p>
         <div className="relative w-56 h-56 flex items-center justify-center">
           <svg className="absolute inset-0" viewBox="0 0 200 200">
             <circle cx="100" cy="100" r={r} stroke="#1c2438" strokeWidth="12" fill="none"/>
-            <circle cx="100" cy="100" r={r} stroke="#00d49a" strokeWidth="12" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 100 100)" className="progress-ring"/>
+            <circle cx="100" cy="100" r={r} stroke="#c8ff4d" strokeWidth="12" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 100 100)" className="progress-ring"/>
           </svg>
           <div className="text-center">
             <p className="text-4xl font-extrabold tracking-tight">{fmtKwh(kwh)}</p>
-            <p className="text-xs text-brand-300 mt-1 font-semibold">{connector.powerKw} kW · {connector.type}</p>
+            <p className="text-xs text-[#c8ff4d] mt-1 font-semibold">{connector.powerKw} kW · {connector.type}</p>
           </div>
         </div>
         <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 flex items-center justify-between w-full">
-          <div className="flex items-center gap-2 text-xs text-gray-300"><span className="text-brand-400 font-bold">⚡</span><span>Tarifa</span></div>
+          <div className="flex items-center gap-2 text-xs text-gray-300"><span className="text-[#c8ff4d] font-bold">⚡</span><span>Tarifa</span></div>
           <div className="text-right"><span className="font-extrabold text-white">{fmtMoney(connector.priceKwh)}</span><span className="text-gray-400 text-xs"> / kWh</span></div>
         </div>
         <div className="grid grid-cols-3 gap-3 w-full mt-3">
@@ -1158,14 +1173,14 @@ function ChargingScreen({session,onStop,onBack,wallet}){
           </div>
           <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Total</p>
-            <p className="font-bold mt-1 text-brand-300">{fmtMoney(finalCost)}</p>
+            <p className="font-bold mt-1 text-[#c8ff4d]">{fmtMoney(finalCost)}</p>
           </div>
           <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Economia</p>
-            <p className="font-bold mt-1 text-brand-400">{discountValue>0?"-"+fmtMoney(discountValue):"—"}</p>
+            <p className="font-bold mt-1 text-[#c8ff4d]">{discountValue>0?"-"+fmtMoney(discountValue):"—"}</p>
           </div>
         </div>
-        {coupon&&<div className="mt-3 w-full glass rounded-2xl px-3 py-2.5 text-xs text-brand-200 text-center font-semibold border border-brand-400/20">{coupon.icon} Cupom ativo: {coupon.big} — {coupon.title}</div>}
+        {coupon&&<div className="mt-3 w-full glass rounded-2xl px-3 py-2.5 text-xs text-[#c8ff4d] text-center font-semibold border border-[#c8ff4d]/20">{coupon.icon} Cupom ativo: {coupon.big} — {coupon.title}</div>}
         {/* ETA + sessão */}
         <div className="mt-4 w-full glass rounded-2xl px-4 py-3 flex items-center justify-between">
           <div className="text-center">
@@ -1175,7 +1190,7 @@ function ChargingScreen({session,onStop,onBack,wallet}){
           <div className="w-px h-8 bg-white/10"></div>
           <div className="text-center">
             <p className="text-[10px] text-gray-400 font-semibold uppercase">Potência</p>
-            <p className="text-xs font-extrabold text-brand-300 mt-0.5">{connector.powerKw} kW</p>
+            <p className="text-xs font-extrabold text-[#c8ff4d] mt-0.5">{connector.powerKw} kW</p>
           </div>
           <div className="w-px h-8 bg-white/10"></div>
           <div className="text-center">
@@ -1236,19 +1251,19 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
   const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 
   const billSummary=(
-    <div className="rounded-2xl overflow-hidden border border-gray-100 mb-4">
-      <div className="bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-3 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg">⚡</div>
-        <div><p className="font-extrabold text-white text-sm">Recarga concluída</p><p className="text-[11px] text-brand-100">{station.name} · {connector.type}</p></div>
-        <div className="ml-auto text-right"><p className="text-[10px] text-brand-100 font-semibold">Duração</p><p className="font-extrabold text-white text-sm">{durationMin} min</p></div>
+    <div className="rounded-2xl overflow-hidden border border-[#2a2a2a] mb-4">
+      <div className="bg-[#1c1c1c] px-4 py-3 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-[#c8ff4d]/10 border border-[#c8ff4d]/20 flex items-center justify-center text-lg">⚡</div>
+        <div><p className="font-bold text-white text-sm">Recarga concluída</p><p className="text-[11px] text-white/40">{station.name} · {connector.type}</p></div>
+        <div className="ml-auto text-right"><p className="text-[10px] text-white/40 font-semibold">Duração</p><p className="font-bold text-white text-sm">{durationMin} min</p></div>
       </div>
-      <div className="bg-white px-4 py-3 space-y-2">
-        <div className="flex justify-between text-sm"><span className="text-gray-500">Energia consumida</span><span className="font-bold text-ink">{fmtKwh(kwh)}</span></div>
-        <div className="flex justify-between text-sm"><span className="text-gray-500">Tarifa</span><span className="font-bold text-ink">{fmtMoney(connector.priceKwh)} / kWh</span></div>
-        {discount>0&&<div className="flex justify-between text-sm"><span className="text-green-600 font-semibold">Desconto cupom</span><span className="font-bold text-green-600">− {fmtMoney(discount)}</span></div>}
-        <div className="border-t border-dashed border-gray-200 pt-2 flex justify-between items-center">
-          <span className="font-extrabold text-gray-700">Total a pagar</span>
-          <span className="font-extrabold text-2xl text-brand-700">{fmtMoney(finalCost)}</span>
+      <div className="bg-[#111111] px-4 py-3 space-y-2">
+        <div className="flex justify-between text-sm"><span className="text-white/40">Energia consumida</span><span className="font-bold text-white">{fmtKwh(kwh)}</span></div>
+        <div className="flex justify-between text-sm"><span className="text-white/40">Tarifa</span><span className="font-bold text-white">{fmtMoney(connector.priceKwh)} / kWh</span></div>
+        {discount>0&&<div className="flex justify-between text-sm"><span className="text-[#c8ff4d] font-semibold">Desconto cupom</span><span className="font-bold text-[#c8ff4d]">− {fmtMoney(discount)}</span></div>}
+        <div className="border-t border-[#2a2a2a] pt-2 flex justify-between items-center">
+          <span className="font-bold text-white/60">Total a pagar</span>
+          <span className="font-bold text-2xl text-[#c8ff4d]">{fmtMoney(finalCost)}</span>
         </div>
       </div>
       <div className="bg-amber-50 border-t border-amber-100 px-4 py-2 flex items-center gap-2">
@@ -1260,25 +1275,24 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(!method){
     return(
-      <div className="screen bg-gray-50 fade-in">
-        <div className="bg-gradient-to-br from-ink to-ink2 text-white pb-6 rounded-b-[28px] relative overflow-hidden">
-          <div className="blob w-48 h-48 bg-brand-500 -top-16 -right-10 float-slow"></div>
+      <div className="screen bg-[#111111] fade-in">
+        <div className="bg-[#1c1c1c] text-white pb-6" style={{borderBottom:"1px solid #2a2a2a"}}>
           <TopBar title="Pagamento" dark onBack={onBack}/>
           <div className="px-4 relative z-10 -mt-1"><p className="font-extrabold text-xl">Forma de pagamento</p><p className="text-xs text-gray-400 mt-0.5">Conector liberado só após confirmação.</p></div>
         </div>
         <div className="px-4 pt-4 pb-6 space-y-3">
           {billSummary}
           {[
-            {id:"pix",icon:"🔑",label:"PIX",sub:"Aprovação instantânea · 0,99% de taxa",badge:"Recomendado",badgeColor:"#e6fff6",badgeText:"#018a69",border:"#2de3ab",action:()=>setMethod("pix"),enabled:true},
+            {id:"pix",icon:"🔑",label:"PIX",sub:"Aprovação instantânea · 0,99% de taxa",badge:"Recomendado",badgeColor:"#e6fff6",badgeText:"#018a69",border:"#c8ff4d",action:()=>setMethod("pix"),enabled:true},
             {id:"card",icon:"💳",label:"Cartão de crédito / débito",sub:"Via Mercado Pago · Visa, Master, Elo",badge:"MP",badgeColor:"#009ee3",badgeText:"#fff",border:"#009ee3",action:()=>{setMethod("card");setCardErr(false);setCardOpened(false);},enabled:true},
             {id:"saldo",icon:"💰",label:"Saldo EletroGo",sub:`Disponível: ${fmtMoney(wallet.balance)}`,badge:hasSaldoParcial?"Parcial":(!hasSaldo&&!hasSaldoParcial?"Insuficiente":""),badgeColor:"#fef3c7",badgeText:"#92400e",border:"#8b5cf6",action:()=>(hasSaldo||hasSaldoParcial)&&setMethod("saldo"),enabled:hasSaldo||hasSaldoParcial},
           ].map(m=>(
             <button key={m.id} onClick={m.action} disabled={!m.enabled}
               className="w-full text-left card card-hover flex items-center gap-3 p-4"
-              style={{opacity:m.enabled?1:.45,border:`1.5px solid #eef0f5`,transition:"border-color .2s"}}
+              style={{opacity:m.enabled?1:.45,border:`1.5px solid #2a2a2a`,transition:"border-color .2s"}}
               onMouseEnter={e=>{if(m.enabled)e.currentTarget.style.borderColor=m.border}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor="#eef0f5"}}>
-              <div style={{width:46,height:46,borderRadius:14,background:"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{m.icon}</div>
+              <div style={{width:46,height:46,borderRadius:14,background:"#111111",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{m.icon}</div>
               <div className="flex-1 min-w-0">
                 <p className="font-extrabold text-ink text-sm">{m.label}</p>
                 <p className="text-[11px] text-gray-400 mt-0.5">{m.sub}</p>
@@ -1294,7 +1308,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="pix"){
     return(
-      <div className="screen bg-gray-50 fade-in">
+      <div className="screen bg-[#111111] fade-in">
         <TopBar title="Pagar com PIX" onBack={()=>{setMethod(null);setPixStatus("idle");setPixSecs(1800);}}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
@@ -1303,17 +1317,17 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
               <div className="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl">⏰</div>
               <p className="font-extrabold text-lg text-rose-600">QR Code expirado</p>
               <p className="text-sm text-gray-500 text-center">O prazo de 30 minutos foi atingido.</p>
-              <button onClick={()=>{setPixStatus("idle");setPixSecs(1800);}} className="mt-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-bold">Gerar novo QR</button>
+              <button onClick={()=>{setPixStatus("idle");setPixSecs(1800);}} className="mt-2 px-6 py-3 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-bold">Gerar novo QR</button>
             </div>
           ):pixStatus==="confirmed"?(
             <div className="flex flex-col items-center py-10 gap-3">
-              <div className="w-20 h-20 rounded-full bg-brand-100 flex items-center justify-center text-4xl">✅</div>
-              <p className="font-extrabold text-lg text-brand-700">Pagamento confirmado!</p>
+              <div className="w-20 h-20 rounded-full bg-[#c8ff4d] flex items-center justify-center text-4xl">✅</div>
+              <p className="font-extrabold text-lg text-[#aaee1f]">Pagamento confirmado!</p>
               <p className="text-sm text-gray-500">Liberando o conector…</p>
             </div>
           ):pixStatus==="scanning"?(
             <div className="flex flex-col items-center py-8 gap-4">
-              <div className="w-16 h-16 rounded-full border-4 border-brand-400 border-t-transparent animate-spin"></div>
+              <div className="w-16 h-16 rounded-full border-4 border-[#c8ff4d] border-t-transparent animate-spin"></div>
               <p className="font-bold text-ink">Aguardando confirmação…</p>
             </div>
           ):(
@@ -1321,7 +1335,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
               <div className="flex flex-col items-center bg-white rounded-2xl border border-gray-100 p-6 shadow-sm gap-4">
                 <div className="flex items-center justify-between w-full">
                   <p className="text-sm font-bold text-ink">Escaneie o QR Code</p>
-                  <span className={"text-xs font-bold px-2 py-1 rounded-full "+(pixSecs<300?"bg-rose-100 text-rose-600":"bg-brand-100 text-brand-700")}>⏱ {fmt(pixSecs)}</span>
+                  <span className={"text-xs font-bold px-2 py-1 rounded-full "+(pixSecs<300?"bg-rose-100 text-rose-600":"bg-[#c8ff4d]/10 text-[#c8ff4d]")}>⏱ {fmt(pixSecs)}</span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-gray-200 shadow-sm"><QRMock size={160}/></div>
                 <div className="w-full">
@@ -1329,7 +1343,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
                     <span className="text-xs text-gray-600 flex-1 truncate font-mono">{PIX_KEY}</span>
                     <button onClick={()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}}
-                      className={"text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition "+(copied?"bg-brand-100 text-brand-700":"bg-gray-200 text-gray-600")}>
+                      className={"text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition "+(copied?"bg-[#c8ff4d]/10 text-[#c8ff4d]":"bg-gray-200 text-gray-600")}>
                       {copied?"Copiado ✓":"Copiar"}
                     </button>
                   </div>
@@ -1339,7 +1353,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   <p className="text-[11px] text-gray-400 mt-1">Pague exatamente este valor</p>
                 </div>
               </div>
-              <button onClick={()=>setPixStatus("scanning")} className="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+              <button onClick={()=>setPixStatus("scanning")} className="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
                 Já paguei — Confirmar
               </button>
               <p className="text-center text-[11px] text-gray-400 mt-2">QR válido por 30 min · expira às {new Date(Date.now()+pixSecs*1000).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</p>
@@ -1352,11 +1366,11 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="card"){
     return(
-      <div className="screen bg-gray-50 fade-in">
+      <div className="screen bg-[#111111] fade-in">
         <TopBar title="Mercado Pago" onBack={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center gap-4">
+          <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] p-6 flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-md" style={{background:"#009ee3"}}><span className="text-white font-extrabold text-xl">MP</span></div>
             {cardErr?(
               <>
@@ -1365,7 +1379,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   <p className="font-bold text-rose-600">Pagamento não confirmado</p>
                   <p className="text-xs text-rose-500 mt-1">Não identificamos o pagamento. Tente novamente ou use outro método.</p>
                 </div>
-                <button onClick={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-bold">Tentar outro método</button>
+                <button onClick={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}} className="w-full py-3.5 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-bold">Tentar outro método</button>
                 <button onClick={()=>{setCardErr(false);setCardOpened(false);}} className="w-full py-3 rounded-2xl border border-gray-200 text-gray-600 text-sm font-semibold">Tentar novamente</button>
               </>
             ):(
@@ -1379,7 +1393,7 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
                   💳 Ir para o Mercado Pago →
                 </a>
                 {cardOpened&&(
-                  <button onClick={()=>onConfirm("card")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+                  <button onClick={()=>onConfirm("card")} className="w-full py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
                     ✅ Já paguei — Liberar conector
                   </button>
                 )}
@@ -1394,11 +1408,11 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 
   if(method==="saldo"){
     return(
-      <div className="screen bg-gray-50 fade-in">
+      <div className="screen bg-[#111111] fade-in">
         <TopBar title="Saldo EletroGo" onBack={()=>setMethod(null)}/>
         <div className="px-4 pt-2 pb-6">
           {billSummary}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center gap-4">
+          <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] p-6 flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-3xl shadow-md">💰</div>
             <p className="font-extrabold text-ink text-lg">Saldo EletroGo</p>
             <p className="text-4xl font-extrabold text-accent-700">{fmtMoney(wallet.balance)}</p>
@@ -1427,22 +1441,21 @@ function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
 function ReceiptScreen({receipt,onDone}){
   const [copied,setCopied]=useState(false);
   return(
-    <div className="screen bg-gray-50 fade-in">
-      <div className="bg-gradient-to-br from-brand-500 to-brand-700 text-white pb-8 rounded-b-[28px] relative overflow-hidden">
-        <div className="blob w-48 h-48 bg-brand-300 -top-10 -right-10"></div>
+    <div className="screen bg-[#111111] fade-in">
+      <div className="bg-[#1c1c1c] pb-8" style={{borderBottom:"1px solid #2a2a2a"}}>
         <div style={{position:"absolute",top:0,left:0,right:0,zIndex:20,paddingTop:12,paddingLeft:12}}>
-          <button onClick={onDone} style={{display:"flex",alignItems:"center",gap:4,color:"rgba(255,255,255,.8)",fontSize:13,fontWeight:700,background:"rgba(255,255,255,.15)",border:"none",borderRadius:10,padding:"6px 12px"}}>
+          <button onClick={onDone} style={{display:"flex",alignItems:"center",gap:4,color:"rgba(255,255,255,.6)",fontSize:13,fontWeight:600,background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"6px 12px"}}>
             ‹ Histórico
           </button>
         </div>
         <div className="pt-14 pb-2 px-6 relative z-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl mb-3">✅</div>
-          <p className="text-xl font-extrabold">Recarga paga!</p>
-          <p className="text-xs text-brand-100 mt-1">Conector liberado com sucesso</p>
+          <div className="w-16 h-16 rounded-full bg-[#c8ff4d] flex items-center justify-center text-3xl mb-3">✅</div>
+          <p className="text-xl font-bold text-white">Recarga paga!</p>
+          <p className="text-xs text-white/40 mt-1">Conector liberado com sucesso</p>
         </div>
       </div>
       <div className="px-4 pt-5 pb-6 space-y-3">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-[#1c1c1c] rounded-2xl border border-[#2a2a2a] overflow-hidden">
           <div className="px-5 py-4 border-b border-dashed border-gray-100 space-y-2.5">
             <div className="flex justify-between text-sm"><span className="text-gray-500">Sessão</span><span className="font-bold text-ink font-mono">{receipt.id}</span></div>
             <div className="flex justify-between text-sm"><span className="text-gray-500">Posto</span><span className="font-bold text-ink">{receipt.stationName}</span></div>
@@ -1455,12 +1468,12 @@ function ReceiptScreen({receipt,onDone}){
           </div>
           <div className="px-5 py-4 flex justify-between items-center">
             <span className="font-extrabold text-gray-700">Total pago</span>
-            <span className="font-extrabold text-2xl text-brand-700">{fmtMoney(receipt.cost)}</span>
+            <span className="font-extrabold text-2xl text-[#aaee1f]">{fmtMoney(receipt.cost)}</span>
           </div>
           {receipt.cashback>0&&(
-            <div className="bg-brand-50 border-t border-brand-100 px-5 py-3 flex items-center gap-2">
-              <span className="text-brand-500 text-lg">💚</span>
-              <p className="text-xs text-brand-700 font-semibold">+{fmtMoney(receipt.cashback)} de cashback creditado!</p>
+            <div className="bg-[#c8ff4d]/10 border-t border-[#c8ff4d]/20 px-5 py-3 flex items-center gap-2">
+              <span className="text-[#c8ff4d] text-lg">💚</span>
+              <p className="text-xs text-[#aaee1f] font-semibold">+{fmtMoney(receipt.cashback)} de cashback creditado!</p>
             </div>
           )}
         </div>
@@ -1470,10 +1483,10 @@ function ReceiptScreen({receipt,onDone}){
           const kmEq=Math.round(receipt.kwh*6.5);
           return(
             <div style={{background:"linear-gradient(135deg,#052a1a,#0d3320)",borderRadius:20,padding:"14px 16px"}} className="flex items-center gap-3">
-              <div style={{width:40,height:40,borderRadius:12,background:"rgba(45,227,171,.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🌿</div>
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(200,255,77,.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🌿</div>
               <div>
-                <p className="text-xs font-bold text-brand-300">Impacto ambiental desta carga</p>
-                <p className="text-[11px] text-brand-400/80 mt-0.5">{co2Avoided.toFixed(2)} kg CO₂ evitado · equivale a {kmEq} km elétricos</p>
+                <p className="text-xs font-bold text-[#c8ff4d]">Impacto ambiental desta carga</p>
+                <p className="text-[11px] text-[#c8ff4d]/80 mt-0.5">{co2Avoided.toFixed(2)} kg CO₂ evitado · equivale a {kmEq} km elétricos</p>
               </div>
             </div>
           );
@@ -1503,23 +1516,23 @@ function WalletScreen({wallet,onToggleCoupon,userPlan,onGoPlans,onBack}){
   const levelPct=nextTier?Math.min(100,((wallet.points-tier.min)/(nextTier.min-tier.min))*100):100;
   const projectedMonthly=(wallet.balance+50*tier.cashbackRate).toFixed(2);
   return(
-    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
-      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
-        <div className="blob w-56 h-56 bg-brand-500 float-slow" style={{top:-60,right:-30,opacity:.25}}></div>
+    <div className="screen fade-in" style={{background:"#111111"}}>
+      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="hidden" style={{top:-60,right:-30,opacity:.25}}></div>
         <TopBar title="Carteira e Ofertas" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
           {/* saldo card */}
           <div className="shimmer glass rounded-2xl p-4 mb-3">
-            <p className="text-[10px] uppercase tracking-widest text-brand-300 font-bold">Saldo de cashback</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#c8ff4d] font-bold">Saldo de cashback</p>
             <p className="text-4xl font-extrabold text-white mt-1">{fmtMoney(wallet.balance)}</p>
-            <p className="text-[11px] text-gray-400 mt-1">Projeção mensal: <span className="text-brand-300 font-bold">R$ {projectedMonthly}</span></p>
+            <p className="text-[11px] text-gray-400 mt-1">Projeção mensal: <span className="text-[#c8ff4d] font-bold">R$ {projectedMonthly}</span></p>
             <div className="mt-3">
               <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
                 <span>{tier.icon} {tier.label} — {wallet.points} pts</span>
                 <span>{nextTier?`${nextTier.min-wallet.points} pts para ${nextTier.icon} ${nextTier.label}`:"Nível máximo 🏆"}</span>
               </div>
               <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
-                <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3}}></div>
+                <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3}}></div>
               </div>
             </div>
           </div>
@@ -1588,22 +1601,22 @@ function HistoryScreen({history,onBack}){
   const sessions=history.length;
   const filters=[{id:"all",label:"Todas"},{id:"month",label:"Este mês"},{id:"week",label:"Esta semana"}];
   return(
-    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+    <div className="screen fade-in" style={{background:"#111111"}}>
       {/* header */}
-      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
-        <div className="blob w-40 h-40 bg-brand-500 float-slow" style={{top:-30,right:-20,opacity:.2}}></div>
+      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="hidden" style={{top:-30,right:-20,opacity:.2}}></div>
         <TopBar title="Histórico" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
           <div className="grid grid-cols-2 gap-2 mb-3">
             <div className="glass rounded-2xl p-3">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Energia total</p>
               <p className="text-lg font-extrabold text-white mt-0.5">{fmtKwh(totalKwh)}</p>
-              <p className="text-[10px] text-brand-400 font-semibold mt-0.5">{sessions} sessões</p>
+              <p className="text-[10px] text-[#c8ff4d] font-semibold mt-0.5">{sessions} sessões</p>
             </div>
             <div className="glass rounded-2xl p-3">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Total investido</p>
               <p className="text-lg font-extrabold text-white mt-0.5">{fmtMoney(totalCost)}</p>
-              <p className="text-[10px] text-brand-400 font-semibold mt-0.5">+{fmtMoney(totalCashback)} cashback</p>
+              <p className="text-[10px] text-[#c8ff4d] font-semibold mt-0.5">+{fmtMoney(totalCashback)} cashback</p>
             </div>
           </div>
           {/* CO2 */}
@@ -1612,7 +1625,7 @@ function HistoryScreen({history,onBack}){
             <div className="flex-1">
               <p className="text-[10px] text-gray-400 font-semibold uppercase mb-1">CO₂ evitado</p>
               <div className="co2-bar" style={{width:`${Math.min(100,(totalCo2/50)*100)}%`}}></div>
-              <p className="text-[11px] text-brand-300 font-bold mt-1">{totalCo2.toFixed(2)} kg · {Math.round(totalKwh*6.5)} km elétricos</p>
+              <p className="text-[11px] text-[#c8ff4d] font-bold mt-1">{totalCo2.toFixed(2)} kg · {Math.round(totalKwh*6.5)} km elétricos</p>
             </div>
           </div>
         </div>
@@ -1622,7 +1635,7 @@ function HistoryScreen({history,onBack}){
         {filters.map(f=>(
           <button key={f.id} onClick={()=>setFilter(f.id)}
             className={"text-xs font-bold px-4 py-2 rounded-full transition "+(filter===f.id?"text-ink shadow-sm":"bg-white text-gray-400 border border-gray-100")}
-            style={filter===f.id?{background:"linear-gradient(135deg,#2de3ab,#00b386)",boxShadow:"0 2px 8px rgba(0,212,154,.3)"}:{}}>
+            style={filter===f.id?{background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",boxShadow:"0 2px 8px rgba(200,255,77,.2)"}:{}}>
             {f.label}
           </button>
         ))}
@@ -1631,7 +1644,7 @@ function HistoryScreen({history,onBack}){
         {history.map((h,idx)=>(
           <div key={h.id} className="card flex gap-3 p-4">
             <div className="flex flex-col items-center">
-              <div className="tl-dot bg-brand-50 text-sm">⚡</div>
+              <div className="tl-dot bg-[#1c1c1c] text-sm">⚡</div>
               {idx<history.length-1&&<div className="w-px flex-1 bg-gray-100 mt-1 mb-1"></div>}
             </div>
             <div className="flex-1 min-w-0">
@@ -1642,7 +1655,7 @@ function HistoryScreen({history,onBack}){
               <div className="flex flex-wrap gap-1.5 mt-1.5">
                 <span className="badge-pill bg-gray-100 text-gray-500">{fmtKwh(h.kwh)}</span>
                 <span className="badge-pill bg-gray-100 text-gray-500">{h.durationMin} min</span>
-                {h.cashback>0&&<span className="badge-pill bg-brand-50 text-brand-700">+{fmtMoney(h.cashback)} cashback</span>}
+                {h.cashback>0&&<span className="badge-pill bg-brand-50 text-[#aaee1f]">+{fmtMoney(h.cashback)} cashback</span>}
                 {h.discount>0&&<span className="badge-pill bg-accent-50 text-accent-700">-{fmtMoney(h.discount)} cupom</span>}
               </div>
               <div className="flex items-center justify-between mt-2">
@@ -1685,22 +1698,22 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
     {icon:"📄",label:"Termos de Uso",value:"Ver termos"},
   ];
   return(
-    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+    <div className="screen fade-in" style={{background:"#111111"}}>
       {/* header */}
-      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
-        <div className="blob w-56 h-56 bg-brand-500 float-slow" style={{top:-60,left:-30,opacity:.2}}></div>
+      <div style={{background:"linear-gradient(160deg,#111111,#1c1c1c)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="hidden" style={{top:-60,left:-30,opacity:.2}}></div>
         <TopBar title="Perfil" dark onBack={onBack}/>
         <div className="px-4 relative z-10">
           {/* avatar + nome */}
           <div className="flex items-center gap-4 mb-4">
-            <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,#2de3ab,#00b386)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:22,color:"#0a0e1a",boxShadow:"0 6px 20px rgba(0,212,154,.4)",flexShrink:0}}>
+            <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,#c8ff4d,#aaee1f)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:22,color:"#111111",boxShadow:"0 6px 20px rgba(200,255,77,.2)",flexShrink:0}}>
               {initials}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-extrabold text-white capitalize truncate">{displayName}</p>
               <p className="text-[11px] text-gray-400 truncate">{displayEmail}</p>
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="badge-pill bg-brand-500/20 text-brand-300" style={{border:"1px solid rgba(45,227,171,.2)"}}>{tier.icon} {tier.label}</span>
+                <span className="badge-pill bg-[#c8ff4d]/20 text-[#c8ff4d]" style={{border:"1px solid rgba(200,255,77,.15)"}}>{tier.icon} {tier.label}</span>
                 <span className="badge-pill bg-white/10 text-gray-300">{wallet.points} pts</span>
               </div>
             </div>
@@ -1709,10 +1722,10 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
           <div className="glass rounded-2xl px-4 py-3">
             <div className="flex items-center justify-between mb-1.5">
               <p className="text-[10px] text-gray-400 font-semibold uppercase">Progresso para {nextTier?nextTier.label:"nível máximo"}</p>
-              <p className="text-[10px] text-brand-300 font-bold">{nextTier?`${nextTier.min-wallet.points} pts`:"✓ Máximo"}</p>
+              <p className="text-[10px] text-[#c8ff4d] font-bold">{nextTier?`${nextTier.min-wallet.points} pts`:"✓ Máximo"}</p>
             </div>
             <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
-              <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3,transition:"width .6s"}}></div>
+              <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3,transition:"width .6s"}}></div>
             </div>
           </div>
         </div>
@@ -1733,23 +1746,23 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
           ))}
         </div>
         {/* EV card */}
-        <div style={{background:"linear-gradient(135deg,#0d1f1a,#052a1a)",borderRadius:20,padding:"14px 16px",border:"1px solid rgba(45,227,171,.15)"}}>
+        <div style={{background:"linear-gradient(135deg,#0d1f1a,#052a1a)",borderRadius:20,padding:"14px 16px",border:"1px solid rgba(200,255,77,.12)"}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div style={{width:40,height:40,borderRadius:12,background:"rgba(45,227,171,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🚗</div>
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(200,255,77,.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🚗</div>
               <div>
                 <p className="text-sm font-extrabold text-white">BYD Dolphin</p>
                 <p className="text-[11px] text-gray-400">44,9 kWh · CCS2</p>
               </div>
             </div>
-            <button className="text-[11px] font-bold text-brand-400" style={{background:"rgba(45,227,171,.1)",padding:"5px 12px",borderRadius:10}}>Editar</button>
+            <button className="text-[11px] font-bold text-[#c8ff4d]" style={{background:"rgba(200,255,77,.08)",padding:"5px 12px",borderRadius:10}}>Editar</button>
           </div>
           <div className="mt-3">
             <div className="flex justify-between text-[10px] text-gray-400 mb-1">
-              <span>Bateria estimada</span><span className="text-brand-300 font-bold">72%</span>
+              <span>Bateria estimada</span><span className="text-[#c8ff4d] font-bold">72%</span>
             </div>
             <div style={{height:6,background:"rgba(255,255,255,.08)",borderRadius:3}}>
-              <div style={{height:"100%",width:"72%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3}}></div>
+              <div style={{height:"100%",width:"72%",background:"linear-gradient(90deg,#c8ff4d,#aaee1f)",borderRadius:3}}></div>
             </div>
           </div>
         </div>
@@ -1757,10 +1770,10 @@ function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
         <div className="card overflow-hidden" style={{padding:0}}>
           {rows.map((r,i)=>(
             <div key={r.label} onClick={r.action||(r.href?()=>window.open(r.href,"_blank"):undefined)}
-              className={"flex items-center justify-between px-4 py-3.5 "+(r.action||r.href?"cursor-pointer active:bg-gray-50":"")}
+              className={"flex items-center justify-between px-4 py-3.5 "+(r.action||r.href?"cursor-pointer active:bg-[#1a1a1a]":"")}
               style={i<rows.length-1?{borderBottom:"1px solid #f3f5f9"}:{}}>
               <div className="flex items-center gap-3">
-                <div style={{width:34,height:34,borderRadius:10,background:"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{r.icon}</div>
+                <div style={{width:34,height:34,borderRadius:10,background:"#111111",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{r.icon}</div>
                 <span className="text-sm font-semibold text-ink">{r.label}</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -1785,9 +1798,9 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
   const [confirmed,setConfirmed]=useState(false);
   const handleConfirm=()=>{onSelectPlan(selected);setConfirmed(true);setTimeout(onBack,1200);};
   return(
-    <div className="screen bg-gray-50 fade-in">
+    <div className="screen bg-[#111111] fade-in">
       <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-ink pb-6 rounded-b-[28px] relative overflow-hidden">
-        <div className="blob w-48 h-48 bg-yellow-300 -top-10 -right-10"></div>
+        <div className="hidden"></div>
         <TopBar title="EletroPass" onBack={onBack}/>
         <div className="px-4 relative z-10 -mt-1">
           <p className="font-extrabold text-xl">Escolha seu plano</p>
@@ -1801,12 +1814,12 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
           return(
             <button key={plan.id} onClick={()=>setSelected(plan.id)}
               className="w-full text-left rounded-2xl transition-all card-hover overflow-hidden"
-              style={{border:isActive?"2px solid #2de3ab":"2px solid #eef0f5",boxShadow:isActive?"0 4px 20px rgba(0,212,154,.15)":"0 2px 8px rgba(10,14,26,.05)",background:"#fff",position:"relative"}}>
+              style={{border:isActive?"2px solid #c8ff4d":"2px solid #eef0f5",boxShadow:isActive?"0 4px 20px rgba(200,255,77,.1)":"0 2px 8px rgba(10,14,26,.05)",background:"#fff",position:"relative"}}>
               {isGold&&<div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#fbbf24,#f59e0b)"}}></div>}
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <div style={{width:38,height:38,borderRadius:12,background:isGold?"linear-gradient(135deg,#fbbf24,#f59e0b)":isActive?"linear-gradient(135deg,#2de3ab,#00b386)":"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                    <div style={{width:38,height:38,borderRadius:12,background:isGold?"linear-gradient(135deg,#fbbf24,#f59e0b)":isActive?"linear-gradient(135deg,#c8ff4d,#aaee1f)":"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
                       {plan.icon}
                     </div>
                     <div>
@@ -1824,24 +1837,24 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
                 <div className="mt-3 space-y-1.5">
                   {plan.features.map((f,i)=>(
                     <div key={i} className="flex items-center gap-2">
-                      <div style={{width:16,height:16,borderRadius:"50%",background:isActive?"#2de3ab":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                        <span style={{fontSize:9,fontWeight:800,color:isActive?"#0a0e1a":"#9ca3af"}}>✓</span>
+                      <div style={{width:16,height:16,borderRadius:"50%",background:isActive?"#c8ff4d":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        <span style={{fontSize:9,fontWeight:800,color:isActive?"#111111":"#9ca3af"}}>✓</span>
                       </div>
                       <span className="text-[12px] text-gray-600">{f}</span>
                     </div>
                   ))}
                 </div>
-                {isActive&&<div style={{marginTop:12,padding:"8px 12px",borderRadius:12,background:"rgba(0,212,154,.08)",border:"1px solid rgba(0,212,154,.2)"}}>
-                  <p className="text-[11px] text-brand-700 font-bold text-center">✓ Plano selecionado</p>
+                {isActive&&<div style={{marginTop:12,padding:"8px 12px",borderRadius:12,background:"rgba(200,255,77,.06)",border:"1px solid rgba(200,255,77,.15)"}}>
+                  <p className="text-[11px] text-[#aaee1f] font-bold text-center">✓ Plano selecionado</p>
                 </div>}
               </div>
             </button>
           );
         })}
         {confirmed?(
-          <div className="py-4 text-center text-brand-700 font-bold text-sm">✅ Plano atualizado com sucesso!</div>
+          <div className="py-4 text-center text-[#aaee1f] font-bold text-sm">✅ Plano atualizado com sucesso!</div>
         ):(
-          <button onClick={handleConfirm} className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+          <button onClick={handleConfirm} className="w-full py-4 rounded-2xl bg-gradient-to-r bg-[#c8ff4d] text-ink font-extrabold shadow-lg shadow-black/30">
             {selected==="free"?"Continuar grátis":`Assinar ${PLANS.find(p=>p.id===selected)?.label}`}
           </button>
         )}
@@ -2050,8 +2063,8 @@ function App(){
   const unreadCount=notifs.filter(n=>!n.read).length;
 
   if(authLoading) return(
-    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",background:"#0a0e1a",gap:16}}>
-      <div style={{width:48,height:48,border:"3px solid #1e3a5f",borderTop:"3px solid #00d4ff",borderRadius:"50%",animation:"spin 0.9s linear infinite"}}/>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",background:"#111111",gap:16}}>
+      <div style={{width:48,height:48,border:"3px solid #1e3a5f",borderTop:"3px solid #c8ff4d",borderRadius:"50%",animation:"spin 0.9s linear infinite"}}/>
       <p style={{color:"#8899aa",fontSize:13,letterSpacing:1}}>Carregando...</p>
     </div>
   );
