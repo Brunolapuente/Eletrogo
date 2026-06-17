@@ -186,11 +186,11 @@ const SK_ONBOARD = "eg_onboard";
 /* ─── DADOS MOCK ─── */
 const STATIONS = [
   { id:"ELP-001", name:"Eletroposto Batel", address:"Av. N. Sra. Aparecida - Seminário, Curitiba - PR", distanceKm:1.8, rating:null, badge:"⚡ Polo Batel",
-    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:2.49,status:"disponivel"},{id:"C2",type:"CCS2",powerKw:60,priceKwh:2.49,status:"disponivel"},{id:"C3",type:"Type 2",powerKw:22,priceKwh:1.99,status:"disponivel"}]},
+    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:1.99,status:"disponivel"},{id:"C2",type:"CCS2",powerKw:60,priceKwh:1.99,status:"disponivel"},{id:"C3",type:"Type 2",powerKw:22,priceKwh:1.49,status:"disponivel"}]},
   { id:"ELP-002", name:"Eletroposto Alto da XV", address:"R. Prof. Brandão, 434-A - Curitiba - PR", distanceKm:4.2, rating:null, badge:"🏥 Próx. Hospitais/UFPR",
-    connectors:[{id:"C1",type:"CCS2",powerKw:120,priceKwh:2.79,status:"disponivel"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.99,status:"disponivel"}]},
+    connectors:[{id:"C1",type:"CCS2",powerKw:120,priceKwh:2.19,status:"disponivel"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.49,status:"disponivel"}]},
   { id:"ELP-003", name:"Hub Trajano Reis", address:"R. Trajano Reis, 477 - São Francisco, Curitiba - PR", distanceKm:2.5, rating:null, badge:"🚧 Em implantação",
-    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:2.49,status:"manutencao"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.99,status:"manutencao"}]},
+    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:1.99,status:"manutencao"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.49,status:"manutencao"}]},
 ];
 
 const INITIAL_COUPONS = [
@@ -960,6 +960,7 @@ function StationCard({station,onSelect}){
           <div className="flex items-start justify-between gap-1.5">
             <p className="font-extrabold text-white text-[13px] leading-tight tracking-tight">{station.name}</p>
             <div className="flex-shrink-0 text-right">
+              <p className="text-[9px] text-gray-500 font-semibold leading-none mb-0.5">a partir de</p>
               <p className="text-[12px] font-extrabold text-[#FFAB00] leading-none">{fmtMoney(minPrice)}</p>
               <p className="text-[10px] text-gray-400 font-medium">/kWh</p>
             </div>
