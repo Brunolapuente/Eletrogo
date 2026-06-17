@@ -657,9 +657,12 @@ function AuthScreen({onLogin}){
     const {user,error}=await SbAuth.login(loginEmail,loginPass);
     setLoginLoading(false);
     if(error){
-      const msg=error.message?.includes("Invalid login")||error.message?.includes("invalid_grant")
+      const raw=typeof error.message==="string"?error.message:JSON.stringify(error);
+      const msg=raw.includes("Email not confirmed")||raw.includes("email_not_confirmed")
+        ?"📧 E-mail ainda não confirmado. Verifique sua caixa de entrada e clique no link que enviamos."
+        :raw.includes("Invalid login")||raw.includes("invalid_grant")||raw.includes("Invalid email or password")
         ?"E-mail ou senha incorretos."
-        :error.message||"Erro ao entrar. Tente novamente.";
+        :raw||"Erro ao entrar. Tente novamente.";
       setLoginErr(msg);return;
     }
     if(user) onLogin({id:user.id,name:user.user_metadata?.name||loginEmail.split("@")[0],email:user.email,isNew:false});
