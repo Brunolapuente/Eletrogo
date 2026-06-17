@@ -285,6 +285,20 @@ const SbAuth = {
 };
 
 /* ─── Supabase DB helpers ─── */
+async function sbLoadStations() {
+  if (!sb) return null;
+  try {
+    const { data, error } = await sb.from("stations").select("*").order("id");
+    if (error) return null;
+    return data.map(s => ({
+      id: s.id, name: s.name, address: s.address,
+      distanceKm: parseFloat(s.distance_km)||0,
+      badge: s.badge,
+      connectors: s.connectors||[],
+    }));
+  } catch { return null; }
+}
+
 async function sbLoadUserData(userId) {
   if (!sb) return null;
   try {
@@ -658,15 +672,28 @@ function AuthScreen({onLogin}){
     if(!rTC){setRErr("Aceite os termos para continuar.");return;}
     if(parseInt(captchaVal)!==captcha.ans){setCaptchaErr(true);refreshCaptcha();return;}
     setRLoading(true);setRErr("");setCaptchaErr(false);
-    const {user,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
-    setRLoading(false);
-    if(error){
-      const msg=error.message?.includes("already registered")||error.message?.includes("already been registered")
-        ?"Este e-mail já está cadastrado."
-        :error.message||"Erro ao criar conta. Tente novamente.";
-      setRErr(msg);return;
+    try {
+      const {user,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
+      setRLoading(false);
+      if(error){
+        const raw=typeof error.message==="string"?error.message:JSON.stringify(error);
+        const msg=raw.includes("already registered")||raw.includes("already been registered")||raw.includes("user_already_exists")
+          ?"Este e-mail já está cadastrado. Tente fazer login."
+          :raw.includes("Password should")||raw.includes("weak")
+          ?"Senha muito fraca. Use letras, números e símbolos."
+          :raw||"Erro ao criar conta. Tente novamente.";
+        setRErr(msg);return;
+      }
+      if(user){
+        onLogin({id:user.id,name:rName,email:rEmail,isNew:true});
+      } else {
+        // Supabase com confirmação de e-mail ativa — cadastro feito, aguarda confirmação
+        setRErr("✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta antes de entrar.");
+      }
+    } catch(e) {
+      setRLoading(false);
+      setRErr("Erro de conexão. Verifique sua internet e tente novamente.");
     }
-    if(user) onLogin({id:user.id,name:rName,email:rEmail,isNew:true});
   };
   const doForgotPassword=async()=>{
     if(!fEmail){return;}
@@ -773,7 +800,7 @@ function AuthScreen({onLogin}){
             </div>
             {captchaErr&&<span className="text-rose-400 text-[10px] font-bold">Incorreto</span>}
           </div>
-          {rErr&&<p className="text-rose-400 text-xs font-semibold">{rErr}</p>}
+          {rErr&&<p className={`text-xs font-semibold ${rErr.startsWith("✅")?"text-[#FFAB00]":"text-rose-400"}`}>{rErr}</p>}
           <button onClick={doRegister} disabled={rLoading}
             className="w-full py-4 rounded-2xl font-extrabold bg-[#FF5C00] text-white shadow-lg shadow-black/30 disabled:opacity-60 mt-1">
             {rLoading?"Criando conta...":"Criar conta →"}
@@ -1921,6 +1948,13 @@ function App(){
   const [selectedStation,setSelectedStation] = useState(null);
   const [stations,setStations]   = useState(STATIONS);
   const [session,setSession]     = useState(null);
+
+  /* ── Carrega estações do Supabase (preços/status em tempo real) ── */
+  useEffect(()=>{
+    sbLoadStations().then(data=>{
+      if(data&&data.length) setStations(data);
+    });
+  },[]);
   const [completedSession,setCompletedSession] = useState(null);
   const [pendingReceipt,setPendingReceipt]     = useState(null);
   const [history,setHistory]     = useState([]);
