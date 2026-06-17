@@ -1,0 +1,51 @@
+{
+  "name": "EletroGo",
+  "short_name": "EletroGo",
+  "description": "Recarregue seu veículo elétrico com facilidade",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela inicial do EletroGo"
+    }
+  ],
+  "categories": ["utilities", "travel"],
+  "shortcuts": [
+    {
+      "name": "Mapa de Estações",
+      "short_name": "Mapa",
+      "description": "Ver estações próximas",
+      "url": "/index.html?screen=home",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Minha Carteira",
+      "short_name": "Carteira",
+      "description": "Ver saldo e cashback",
+      "url": "/index.html?screen=wallet",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

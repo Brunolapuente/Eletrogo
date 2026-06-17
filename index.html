@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+<title>EletroGo - Rede de Eletropostos</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0a0e1a" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="EletroGo" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<!-- OG / Share -->
+<meta property="og:title" content="EletroGo — Rede de Eletropostos" />
+<meta property="og:description" content="Carregue seu EV em Curitiba. Recarregue, pague e acompanhe tudo pelo app." />
+<meta property="og:type" content="website" />
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- React + Babel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Supabase v2 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+        colors: {
+          brand: { 50:'#e6fff6',100:'#c2ffe9',300:'#6df0c2',400:'#2de3ab',500:'#00d49a',600:'#00b386',700:'#018a69',900:'#053d30' },
+          accent: { 400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9' },
+          sunset: { 400:'#ff9a6c',500:'#ff7a45',600:'#f4622a' },
+          ink: '#0a0e1a', ink2: '#121a2e'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{margin:0;padding:0;background:#05070d;font-family:'Plus Jakarta Sans',sans-serif;}
+  #phone-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
+  #phone{width:100%;max-width:430px;height:100%;min-height:850px;max-height:932px;background:#f3f5f9;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 0 10px #1c2638,0 0 0 11px rgba(255,255,255,.04),0 30px 80px rgba(0,0,0,.65),0 10px 40px rgba(0,212,154,.08);display:flex;flex-direction:column;}
+  @media(max-width:480px){#phone-wrap{padding:0;}#phone{border-radius:0;box-shadow:none;min-height:100vh;max-height:none;}}
+  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;}
+  .screen::-webkit-scrollbar{width:0px;}
+  .hscroll::-webkit-scrollbar{height:0px;}
+  .fade-in{animation:fadeIn .3s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .pulse-dot{animation:pulseDot 1.4s ease-in-out infinite;}
+  @keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .progress-ring{transition:stroke-dashoffset .6s linear;filter:drop-shadow(0 0 6px rgba(0,212,154,.7));}
+  .glow-pulse{animation:glowPulse 2.4s ease-in-out infinite;}
+  @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,154,.35);}50%{box-shadow:0 0 0 14px rgba(0,212,154,0);}}
+  .blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55;}
+  .float-slow{animation:floaty 7s ease-in-out infinite;}
+  .float-slower{animation:floaty 10s ease-in-out infinite reverse;}
+  @keyframes floaty{0%,100%{transform:translateY(0px) scale(1);}50%{transform:translateY(-18px) scale(1.05);}}
+  .shimmer{position:relative;overflow:hidden;}
+  .shimmer::after{content:'';position:absolute;top:0;left:-150%;width:80%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmerMove 3s ease-in-out infinite;}
+  @keyframes shimmerMove{0%{left:-150%;}100%{left:150%;}}
+  .slide-up{animation:slideUp .35s cubic-bezier(.16,1,.3,1);}
+  @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .notif-overlay{position:absolute;top:0;right:0;bottom:0;left:0;z-index:50;background:rgba(10,14,26,.8);backdrop-filter:blur(6px);}
+  /* ── glass cards ── */
+  .glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(12px);}
+  .glass-dark{background:rgba(10,14,26,.55);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px);}
+  /* ── card shadows ── */
+  .card{background:#fff;border:1px solid #eef0f5;border-radius:20px;box-shadow:0 2px 12px rgba(10,14,26,.06);}
+  .card-hover{transition:box-shadow .2s,border-color .2s,transform .15s;}
+  .card-hover:active{transform:scale(.985);}
+  /* ── btn styles ── */
+  .btn-primary{background:linear-gradient(135deg,#2de3ab 0%,#00b386 100%);color:#0a0e1a;font-weight:800;border-radius:16px;padding:14px 20px;box-shadow:0 6px 20px rgba(0,212,154,.28);transition:opacity .15s,transform .15s;}
+  .btn-primary:active{opacity:.85;transform:scale(.97);}
+  .btn-secondary{background:#f3f5f9;color:#0a0e1a;font-weight:700;border-radius:16px;padding:13px 20px;border:1.5px solid #eef0f5;transition:background .15s,transform .15s;}
+  .btn-secondary:active{background:#e8eaf0;transform:scale(.97);}
+  /* ── status chip ── */
+  .status-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+  /* ── section title ── */
+  .sec-title{font-size:13px;font-weight:800;color:#0a0e1a;letter-spacing:-.01em;}
+  /* ── stat card ── */
+  .stat-card{border-radius:18px;padding:14px 16px;}
+  /* ── input ── */
+  .inp-dark{width:100%;border-radius:14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.10);color:#fff;padding:13px 16px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;}
+  .inp-dark:focus{border-color:#2de3ab;}
+  .inp-dark::placeholder{color:#4b5563;}
+  /* ── connector status ring ── */
+  .ring-disponivel{box-shadow:0 0 0 3px rgba(0,212,154,.25);}
+  .ring-ocupado{box-shadow:0 0 0 3px rgba(255,122,69,.25);}
+  .ring-manutencao{box-shadow:0 0 0 3px rgba(244,63,94,.20);}
+  /* ── pill nav ── */
+  .nav-pill{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:36px;height:3px;border-radius:2px;background:linear-gradient(90deg,#2de3ab,#00b386);}
+  /* ── timeline dot ── */
+  .tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  /* ── spin ── */
+  .spin{animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  /* ── badge pill ── */
+  .badge-pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+  /* ── co2 bar ── */
+  .co2-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#2de3ab,#00b386);}
+  /* ── 2025 polish ── */
+  *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  button{cursor:pointer;border:none;background:none;font-family:inherit;}
+  input,button{font-family:'Plus Jakarta Sans',sans-serif;}
+  /* phone wrap gradient mesh */
+  #phone-wrap{
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 15%, rgba(0,212,154,.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 85%, rgba(139,92,246,.10) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 10%, rgba(255,122,69,.06) 0%, transparent 50%),
+      #05070d;
+  }
+  /* improved card */
+  .card{background:#fff;border:1px solid rgba(10,14,26,.06);border-radius:20px;box-shadow:0 1px 3px rgba(10,14,26,.04),0 4px 16px rgba(10,14,26,.06);}
+  /* section divider */
+  .sec-divider{height:1px;background:linear-gradient(90deg,transparent,#eef0f5,transparent);margin:0 16px;}
+  /* improved inp-dark focus ring */
+  .inp-dark:focus{border-color:#2de3ab;box-shadow:0 0 0 3px rgba(45,227,171,.15);}
+  /* status dot glow */
+  .dot-disponivel{background:#2de3ab;box-shadow:0 0 0 3px rgba(0,212,154,.2);}
+  .dot-ocupado{background:#ff7a45;box-shadow:0 0 0 3px rgba(255,122,69,.2);}
+  .dot-manutencao{background:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.15);}
+  /* better btn active */
+  .btn-primary{background:linear-gradient(135deg,#2de3ab 0%,#00b386 100%);color:#0a0e1a;font-weight:800;border-radius:16px;padding:14px 20px;box-shadow:0 4px 16px rgba(0,212,154,.30),0 1px 2px rgba(0,212,154,.15);transition:opacity .12s,transform .12s,box-shadow .12s;}
+  .btn-primary:hover{box-shadow:0 6px 24px rgba(0,212,154,.42),0 2px 4px rgba(0,212,154,.2);}
+  .btn-primary:active{opacity:.88;transform:scale(.97);box-shadow:0 2px 8px rgba(0,212,154,.25);}
+  /* nav item transition */
+  .nav-item-icon{transition:background .2s, box-shadow .2s, transform .15s;}
+  /* floating action shadow */
+  .fab-shadow{box-shadow:0 4px 20px rgba(0,0,0,.25),0 1px 4px rgba(0,0,0,.15);}
+  /* top gradient handle */
+  .screen-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto;}
+  /* improved glass */
+  .glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  /* reduced motion */
+  @media(prefers-reduced-motion:reduce){.fade-in,.slide-up,.glow-pulse,.float-slow,.float-slower,.shimmer::after{animation:none;}}
+</style>
+</head>
+<body>
+<div id="phone-wrap"><div id="phone"><div id="root"></div></div></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ─── STORAGE KEYS ─── */
+const SK_USER    = "eg_user";
+const SK_WALLET  = "eg_wallet";
+const SK_HISTORY = "eg_history";
+const SK_LGPD    = "eg_lgpd";
+const SK_ONBOARD = "eg_onboard";
+
+/* ─── DADOS MOCK ─── */
+const STATIONS = [
+  { id:"ELP-001", name:"Eletroposto Batel", address:"Av. N. Sra. Aparecida - Seminário, Curitiba - PR", distanceKm:1.8, rating:null, badge:"⚡ Polo Batel",
+    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:2.49,status:"disponivel"},{id:"C2",type:"CCS2",powerKw:60,priceKwh:2.49,status:"disponivel"},{id:"C3",type:"Type 2",powerKw:22,priceKwh:1.99,status:"disponivel"}]},
+  { id:"ELP-002", name:"Eletroposto Alto da XV", address:"R. Prof. Brandão, 434-A - Curitiba - PR", distanceKm:4.2, rating:null, badge:"🏥 Próx. Hospitais/UFPR",
+    connectors:[{id:"C1",type:"CCS2",powerKw:120,priceKwh:2.79,status:"disponivel"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.99,status:"disponivel"}]},
+  { id:"ELP-003", name:"Hub Trajano Reis", address:"R. Trajano Reis, 477 - São Francisco, Curitiba - PR", distanceKm:2.5, rating:null, badge:"🚧 Em implantação",
+    connectors:[{id:"C1",type:"CCS2",powerKw:60,priceKwh:2.49,status:"manutencao"},{id:"C2",type:"Type 2",powerKw:22,priceKwh:1.99,status:"manutencao"}]},
+];
+
+const INITIAL_COUPONS = [
+  {id:"WELCOME20",title:"Boas-vindas",big:"20% OFF",description:"na sua primeira recarga na rede EletroGo",type:"percent",value:20,used:false,active:false,icon:"🎉",color:"from-accent-500 to-accent-700"},
+  {id:"HAPPY15",title:"Happy Hour Elétrico",big:"15% OFF",description:"em recargas entre 22h e 06h",type:"percent",value:15,used:false,active:false,icon:"🌙",color:"from-sky-500 to-indigo-600"},
+  {id:"CASHBACK10",title:"Cashback turbo",big:"+R$ 10",description:"de volta em recargas acima de 20 kWh",type:"cashback",value:10,minKwh:20,used:false,active:false,icon:"💰",color:"from-sunset-400 to-sunset-600"},
+];
+
+const HISTORY_SEED = [
+  {id:"H-1042",stationName:"Eletroposto Batel",date:"12/06/2026",kwh:28.4,durationMin:42,cost:70.7,discount:0,cashback:0.71},
+  {id:"H-1031",stationName:"Eletroposto Alto da XV",date:"08/06/2026",kwh:14.1,durationMin:38,cost:26.65,discount:0,cashback:0.27},
+];
+
+const PARTNER_ADS = [
+  {id:"ad-001",partner:"BYD Curitiba",headline:"Test drive grátis",description:"Até R$ 5.000 de desconto para usuários EletroGo em modelos BYD elétricos.",icon:"🚗",color:"from-gray-800 to-gray-950",cta:"Agendar"},
+  {id:"ad-002",partner:"Olivas Bistrô · Batel",headline:"20% OFF enquanto carrega",description:"Peça delivery durante sua recarga e ganhe desconto exclusivo no app.",icon:"🍽️",color:"from-orange-500 to-red-600",cta:"Pedir agora"},
+  {id:"ad-003",partner:"Porto Seguro EV",headline:"Seguro exclusivo para elétricos",description:"Cobertura completa para VEs. Cotação em 2 minutos direto pelo app.",icon:"🛡️",color:"from-blue-600 to-blue-800",cta:"Cotar"},
+];
+
+const TIERS = [
+  {id:"bronze",label:"Bronze",icon:"🥉",min:0,max:299,cashbackRate:0.01,color:"from-amber-600 to-amber-800",perks:["Cashback de 1% em toda recarga","Acesso às ofertas padrão da rede"]},
+  {id:"prata",label:"Prata",icon:"🥈",min:300,max:799,cashbackRate:0.02,color:"from-slate-400 to-slate-600",perks:["Cashback de 2% em toda recarga","Cupons exclusivos mensais","Suporte com prioridade"]},
+  {id:"gold",label:"Gold",icon:"🥇",min:800,max:Infinity,cashbackRate:0.05,color:"from-yellow-400 to-yellow-600",perks:["Cashback de 5% em toda recarga","Reserva de conector grátis (15 min)","Acesso antecipado a promoções","Sem taxa de conveniência em DC"]},
+];
+
+const PLANS = [
+  {id:"free",label:"Freemium",icon:"🆓",priceMonth:0,color:"from-gray-400 to-gray-600",highlight:false,features:["Acesso básico à rede EletroGo","Cashback por pontos (Bronze/Prata/Gold)","Cupons de boas-vindas"]},
+  {id:"eletropass-prata",label:"EletroPass Prata",icon:"⚡",priceMonth:29.90,color:"from-slate-400 to-slate-600",highlight:false,features:["Tarifa travada — sem surpresas","Sem taxa de conveniência em AC","Cupons exclusivos mensais","Suporte com prioridade"]},
+  {id:"eletropass-gold",label:"EletroPass Gold",icon:"👑",priceMonth:79.90,color:"from-yellow-400 to-yellow-600",highlight:true,features:["Reserva de conector grátis (15 min)","Sem taxa de conveniência DC + AC","Cashback extra 5% acumulativo","Acesso antecipado a promoções","Suporte VIP 24h"]},
+];
+
+const MP_PAYMENT_LINK = "https://mpago.la/SEU_LINK_AQUI"; // ⚠️ Substitua pelo link real do Mercado Pago
+const PIX_KEY = "eletropostos@pavi.com.br";
+const WA_SUPPORT = "https://wa.me/5541999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20o%20EletroGo";
+
+/* ─────────────────────────────────────────────
+   ⚙️  CONFIGURAÇÃO — preencha antes do lançamento
+   ───────────────────────────────────────────── */
+// 1. Crie um projeto em https://supabase.com → Settings → API
+const SUPABASE_URL  = "https://XXXXXXXXXXXXXXXXXXX.supabase.co";
+const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.SUBSTITUA_PELA_SUA_ANON_KEY";
+
+// 2. Crie uma API Key em https://console.cloud.google.com → Maps JavaScript API
+const GMAPS_KEY     = "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXX_SUA_KEY";
+
+/* ─── Coordenadas dos eletropostos (lat/lng reais) ─── */
+const CURITIBA_CENTER = {lat:-25.4284, lng:-49.2733};
+const STATION_COORDS  = {
+  "ELP-001":{lat:-25.4425, lng:-49.2900}, // Batel / Seminário
+  "ELP-002":{lat:-25.4148, lng:-49.2585}, // Alto da XV / UFPR
+  "ELP-003":{lat:-25.4169, lng:-49.2693}, // São Francisco / Trajano Reis
+};
+
+/* ─── Supabase client (null se não configurado) ─── */
+const SB_READY = !SUPABASE_URL.includes("XXXXXXXXXX");
+const sb = SB_READY && window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+/* ─── Supabase auth wrapper ─── */
+const SbAuth = {
+  async login(email, password) {
+    if (!sb) return {user:{id:email,email,user_metadata:{name:email.split("@")[0]}},error:null};
+    const {data,error} = await sb.auth.signInWithPassword({email,password});
+    return {user:data?.user||null, error};
+  },
+  async register(email, password, name, cpf, phone) {
+    if (!sb) return {user:{id:email,email,user_metadata:{name,cpf,phone}},error:null};
+    const {data,error} = await sb.auth.signUp({email,password,options:{data:{name,cpf,phone}}});
+    if (!error && data?.user) {
+      await sb.from("profiles").upsert({id:data.user.id,name,cpf,phone,email});
+    }
+    return {user:data?.user||null, error};
+  },
+  async resetPassword(email) {
+    if (!sb) return {error:null};
+    return sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  },
+  async logout() {
+    if (sb) await sb.auth.signOut();
+  },
+  async getSession() {
+    if (!sb) return null;
+    const {data:{session}} = await sb.auth.getSession();
+    return session;
+  },
+  onAuthChange(cb) {
+    if (!sb) return ()=>{};
+    const {data:{subscription}} = sb.auth.onAuthStateChange(cb);
+    return ()=>subscription.unsubscribe();
+  }
+};
+
+/* ─── Supabase DB helpers ─── */
+async function sbLoadUserData(userId) {
+  if (!sb) return null;
+  try {
+    const [wRes, sRes] = await Promise.all([
+      sb.from("wallets").select("*").eq("user_id",userId).single(),
+      sb.from("charging_sessions").select("*").eq("user_id",userId)
+        .order("created_at",{ascending:false}).limit(50),
+    ]);
+    return {
+      wallet: wRes.data||null,
+      sessions: sRes.data||[],
+    };
+  } catch { return null; }
+}
+
+async function sbUpsertWallet(userId, w) {
+  if (!sb||!userId) return;
+  await sb.from("wallets").upsert(
+    {user_id:userId, balance:w.balance, points:w.points, coupons:w.coupons},
+    {onConflict:"user_id"}
+  );
+}
+
+async function sbAddSession(userId, entry) {
+  if (!sb||!userId) return;
+  const {id,stationName,kwh,durationMin,cost,discount,cashback,paymentMethod} = entry;
+  await sb.from("charging_sessions").insert({
+    id, user_id:userId, station_name:stationName,
+    kwh, duration_min:durationMin, cost, discount,
+    cashback, payment_method:paymentMethod,
+  });
+}
+
+/* ─── Google Maps lazy loader ─── */
+function useGoogleMaps() {
+  const [loaded, setLoaded] = useState(!!window.google?.maps);
+  useEffect(()=>{
+    if (window.google?.maps){setLoaded(true);return;}
+    if (GMAPS_KEY.includes("SUA_KEY")||GMAPS_KEY.includes("XXXXX")) return;
+    const s = document.createElement("script");
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&language=pt-BR&region=BR`;
+    s.async = true;
+    s.onload = ()=>setLoaded(true);
+    s.onerror = ()=>console.warn("Google Maps: verifique sua API Key");
+    document.head.appendChild(s);
+  },[]);
+  return loaded;
+}
+
+/* ─── HELPERS ─── */
+const fmtMoney = (v) => `R$ ${Number(v).toFixed(2).replace(".",",")}`;
+const fmtKwh   = (v) => `${Number(v).toFixed(1).replace(".",",")} kWh`;
+function getTier(pts) { return TIERS.find(t=>pts>=t.min&&pts<=t.max)||TIERS[0]; }
+function getNextTier(pts) { const i=TIERS.findIndex(t=>pts>=t.min&&pts<=t.max); return TIERS[i+1]||null; }
+
+const STATUS_LABEL = {
+  disponivel:{label:"Disponível",dot:"bg-brand-400",text:"text-brand-700"},
+  ocupado:{label:"Ocupado",dot:"bg-sunset-500",text:"text-sunset-600"},
+  manutencao:{label:"Manutenção",dot:"bg-rose-500",text:"text-rose-600"},
+  carregando:{label:"Carregando",dot:"bg-sky-500",text:"text-sky-600"},
+  reservado:{label:"Reservado",dot:"bg-amber-400",text:"text-amber-600"},
+};
+
+/* ─── VALIDAÇÕES ─── */
+function validCPF(s){
+  const d=s.replace(/\D/g,"");
+  if(d.length!==11||/^(\d)\1+$/.test(d))return false;
+  let s1=0,s2=0;
+  for(let i=0;i<9;i++)s1+=+d[i]*(10-i);
+  let r1=(s1*10)%11;if(r1>=10)r1=0;if(r1!==+d[9])return false;
+  for(let i=0;i<10;i++)s2+=+d[i]*(11-i);
+  let r2=(s2*10)%11;if(r2>=10)r2=0;return r2===+d[10];
+}
+function maskCPF(v){return v.replace(/\D/g,"").slice(0,11).replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");}
+function maskPhone(v){return v.replace(/\D/g,"").slice(0,11).replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");}
+
+/* ─── QR MOCK ─── */
+function QRMock({size=152}){
+  const bits="1111111010110111111110000010010100001011100101001101011001101000101100001011101000101000000101110001000101100101101100000011111110100011111110000000011010000000001011010001001011010000010110101000000100100001001001001100001111111000110111111110";
+  const n=19;
+  return(
+    <svg width={size} height={size} viewBox={`0 0 ${n} ${n}`} style={{display:"block",borderRadius:4}}>
+      <rect width={n} height={n} fill="white"/>
+      {bits.split("").map((c,i)=>c==="1"?<rect key={i} x={i%n} y={Math.floor(i/n)} width={1} height={1} fill="#0a0e1a"/>:null)}
+    </svg>
+  );
+}
+
+/* ════════════════════════════
+   COMPONENTES BASE
+════════════════════════════ */
+
+function TopBar({title,onBack,right,dark}){
+  return(
+    <div className={"flex items-center justify-between px-4 pt-12 pb-3 sticky top-0 z-10 "+(dark?"bg-transparent":"bg-white/92 backdrop-blur-sm border-b border-gray-100/80")} style={dark?{}:{backdropFilter:"blur(16px)"}}>
+      <div className="flex items-center gap-2.5">
+        {onBack&&(
+          <button onClick={onBack}
+            className={"w-9 h-9 flex items-center justify-center rounded-full transition active:scale-90 "+(dark?"bg-white/10 hover:bg-white/15 text-white":"bg-gray-100 hover:bg-gray-200 text-gray-600")}
+            style={{flexShrink:0}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+        )}
+        <h1 className={"text-[17px] font-bold tracking-tight "+(dark?"text-white":"text-ink")}>{title}</h1>
+      </div>
+      {right}
+    </div>
+  );
+}
+
+const NAV_ICONS={
+  home:(active)=>(
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#0a0e1a":"none"} stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
+      <path d="M9 21V12h6v9" fill={active?"#fff":undefined} stroke={active?"#0a0e1a":"#9ca3af"}/>
+    </svg>
+  ),
+  wallet:(active)=>(
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2" fill={active?"#0a0e1a":undefined}/>
+      <path d="M16 3H5a3 3 0 00-3 3v1" stroke={active?"#0a0e1a":"#9ca3af"}/>
+      <circle cx="17" cy="14" r="1.5" fill={active?"#2de3ab":"#9ca3af"} stroke="none"/>
+    </svg>
+  ),
+  charging:(active,highlight)=>(
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active?"#0a0e1a":"none"} stroke={active?"#0a0e1a":highlight?"#ff7a45":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill={active?"#0a0e1a":highlight?"rgba(255,122,69,.15)":"none"}/>
+    </svg>
+  ),
+  history:(active)=>(
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" fill={active?"#0a0e1a":undefined}/>
+      <polyline points="12 7 12 12 15 15" stroke={active?"#2de3ab":"#9ca3af"}/>
+    </svg>
+  ),
+  profile:(active)=>(
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active?"#0a0e1a":"#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" fill={active?"#0a0e1a":undefined}/>
+      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" fill={active?"#0a0e1a":undefined}/>
+    </svg>
+  ),
+};
+
+function BottomNav({screen,setScreen,hasActiveSession}){
+  const items=[
+    {id:"home",label:"Início"},
+    {id:"wallet",label:"Ofertas"},
+    {id:"charging",label:"Carga",highlight:hasActiveSession},
+    {id:"history",label:"Histórico"},
+    {id:"profile",label:"Perfil"},
+  ];
+  return(
+    <div style={{background:"rgba(255,255,255,.96)",borderTop:"1px solid rgba(10,14,26,.05)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 -1px 0 rgba(10,14,26,.04),0 -8px 24px rgba(10,14,26,.06)"}}>
+      <div className="flex justify-between px-2 pt-2 pb-6">
+        {items.map(it=>{
+          const active=screen===it.id;
+          return(
+            <button key={it.id} onClick={()=>setScreen(it.id)}
+              className="flex-1 flex flex-col items-center gap-1 py-1 relative select-none"
+              style={{WebkitTapHighlightColor:"transparent",outline:"none"}}>
+              {it.highlight&&<span className="absolute top-0.5 right-[26%] w-2.5 h-2.5 rounded-full bg-sunset-500 border-2 border-white pulse-dot" style={{zIndex:2}}></span>}
+              <div className={"nav-item-icon w-11 h-9 rounded-2xl flex items-center justify-center "+(active?"scale-105":"scale-100")}
+                style={active?{background:"linear-gradient(135deg,#2de3ab 0%,#00b386 100%)",boxShadow:"0 3px 12px rgba(0,212,154,.40)"}:{}}>
+                {NAV_ICONS[it.id]?.(active,it.highlight)}
+              </div>
+              <span className={"text-[10px] font-bold tracking-tight transition-colors duration-150 "+(active?"text-brand-700":"text-gray-400")}>{it.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Badge({status}){
+  const s=STATUS_LABEL[status]||STATUS_LABEL.disponivel;
+  return(<span className={"inline-flex items-center gap-1.5 text-xs font-semibold "+s.text}><span className={"w-2 h-2 rounded-full "+s.dot}></span>{s.label}</span>);
+}
+
+function Toast({msg,onDone}){
+  useEffect(()=>{const t=setTimeout(onDone,2800);return()=>clearTimeout(t);},[]);
+  return(
+    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 slide-up pointer-events-none"
+      style={{transform:"translateX(-50%)",whiteSpace:"nowrap"}}>
+      <div style={{background:"rgba(10,14,26,.92)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:99,padding:"10px 18px",boxShadow:"0 8px 32px rgba(0,0,0,.3),0 1px 0 rgba(255,255,255,.06) inset",border:"1px solid rgba(255,255,255,.10)",display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:13,color:"#fff",fontWeight:600,letterSpacing:"-.01em"}}>{msg}</span>
+      </div>
+    </div>
+  );
+}
+
+function SupportButton(){
+  return(
+    <a href={WA_SUPPORT} target="_blank" rel="noopener noreferrer"
+      className="absolute bottom-24 right-4 z-40 w-13 h-13 rounded-full flex items-center justify-center fab-shadow active:scale-95 transition-transform"
+      style={{width:50,height:50,background:"linear-gradient(135deg,#25D366,#128C7E)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.542 5.877L0 24l6.305-1.513A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.663-.5-5.197-1.375l-.374-.22-3.743.898.934-3.65-.243-.38A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+      </svg>
+    </a>
+  );
+}
+
+/* ─── PAINEL DE NOTIFICAÇÕES ─── */
+const INITIAL_NOTIFS = [
+  {id:1,icon:"⚡",title:"Bem-vindo à EletroGo!",body:"Seu app de recarga EV em Curitiba está pronto.",time:"agora",read:false},
+  {id:2,icon:"🎉",title:"Cupom WELCOME20 disponível",body:"20% de desconto na sua primeira recarga.",time:"há 2 min",read:false},
+  {id:3,icon:"📍",title:"Novo posto próximo",body:"Eletroposto Batel está a 1,8 km de você.",time:"há 5 min",read:true},
+];
+
+function NotifPanel({notifs,onRead,onClose}){
+  const unread=notifs.filter(n=>!n.read).length;
+  return(
+    <div className="notif-overlay flex flex-col" onClick={onClose}>
+      <div className="mt-auto rounded-t-3xl overflow-hidden shadow-2xl slide-up" style={{background:"#fff",maxHeight:"72%"}} onClick={e=>e.stopPropagation()}>
+        {/* handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div style={{width:36,height:4,borderRadius:2,background:"#e5e7eb"}}></div>
+        </div>
+        <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:"1px solid #f3f5f9"}}>
+          <div className="flex items-center gap-2">
+            <p className="font-extrabold text-ink">Notificações</p>
+            {unread>0&&<span className="badge-pill bg-sunset-500 text-white">{unread} nova{unread>1?"s":""}</span>}
+          </div>
+          <button onClick={onClose} style={{width:32,height:32,borderRadius:"50%",background:"#f3f5f9",border:"none",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",color:"#6b7280"}}>✕</button>
+        </div>
+        <div style={{overflowY:"auto",maxHeight:"calc(72vh - 80px)"}}>
+          {notifs.map((n,i)=>(
+            <div key={n.id} onClick={()=>onRead(n.id)}
+              className="flex gap-3 px-5 py-4 cursor-pointer"
+              style={{opacity:n.read?.5:1,borderBottom:i<notifs.length-1?"1px solid #f9fafb":"none",background:n.read?"transparent":"rgba(0,212,154,.03)"}}>
+              <div style={{width:40,height:40,borderRadius:14,background:n.read?"#f3f5f9":"#e6fff6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{n.icon}</div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm text-ink">{n.title}</p>
+                <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{n.body}</p>
+                <p className="text-[10px] text-gray-300 mt-1">{n.time}</p>
+              </div>
+              {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#2de3ab",flexShrink:0,marginTop:6}}></div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   TELA: LGPD
+════════════════════════════ */
+function LGPDScreen({onAccept}){
+  const [checked,setChecked]=useState(false);
+  return(
+    <div className="screen flex flex-col bg-ink text-white px-6 pt-16 pb-10 fade-in overflow-hidden relative">
+      <div className="blob w-64 h-64 bg-brand-500 -top-20 -right-20 float-slow"></div>
+      <div className="blob w-48 h-48 bg-accent-600 bottom-20 -left-16 float-slower"></div>
+      <div className="relative z-10 flex-1 flex flex-col justify-center">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-3xl mb-6 glow-pulse">🔒</div>
+        <h1 className="text-2xl font-extrabold mb-3">Privacidade e Dados</h1>
+        <p className="text-sm text-gray-300 leading-relaxed mb-4">
+          A EletroGo coleta dados pessoais (nome, e-mail, CPF, localização e histórico de recargas) para operar o serviço, processar pagamentos e personalizar ofertas.
+        </p>
+        <div className="bg-white/10 border border-white/10 rounded-2xl p-4 space-y-2.5 text-sm text-gray-300">
+          <p className="flex gap-2"><span className="text-brand-400">✓</span>Tratamento conforme a <strong className="text-white">LGPD (Lei 13.709/2018)</strong></p>
+          <p className="flex gap-2"><span className="text-brand-400">✓</span>Dados não são vendidos a terceiros</p>
+          <p className="flex gap-2"><span className="text-brand-400">✓</span>Você pode solicitar exclusão a qualquer momento</p>
+          <p className="flex gap-2"><span className="text-brand-400">✓</span>Pagamentos processados com criptografia SSL</p>
+        </div>
+        <label className="flex items-start gap-3 mt-6 cursor-pointer" onClick={()=>setChecked(!checked)}>
+          <div className={"w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(checked?"bg-brand-500 border-brand-500":"border-white/30")}>
+            {checked&&<span className="text-ink text-xs font-bold">✓</span>}
+          </div>
+          <p className="text-sm text-gray-300 leading-snug">Li e concordo com a <span className="text-brand-400 underline">Política de Privacidade</span> e os <span className="text-brand-400 underline">Termos de Uso</span>.</p>
+        </label>
+      </div>
+      <div className="relative z-10 mt-6">
+        <button disabled={!checked} onClick={onAccept}
+          className="w-full py-4 rounded-2xl font-extrabold transition shadow-lg disabled:opacity-40 bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-brand-500/30">
+          Aceitar e continuar →
+        </button>
+        <p className="text-center text-[11px] text-gray-500 mt-3">EletroGo · Curitiba, PR · v1.0</p>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   TELA: ONBOARDING
+════════════════════════════ */
+const SLIDES=[
+  {icon:"⚡",title:"Carregue onde quiser",body:"Encontre eletropostos CCS2 e Type 2 em Curitiba. Veja disponibilidade em tempo real e inicie a recarga direto pelo app.",color:"from-brand-500 to-brand-700"},
+  {icon:"💰",title:"Pague menos a cada carga",body:"Cashback automático, cupons exclusivos e planos EletroPass que travam sua tarifa. Quanto mais você carrega, mais você economiza.",color:"from-accent-500 to-accent-700"},
+  {icon:"🔒",title:"Simples e seguro",body:"PIX, cartão Mercado Pago ou saldo EletroGo. O conector só é liberado após confirmação do pagamento — você no controle.",color:"from-sunset-400 to-sunset-600"},
+];
+function OnboardingScreen({onDone}){
+  const [slide,setSlide]=useState(0);
+  const s=SLIDES[slide];
+  const next=()=>slide<SLIDES.length-1?setSlide(slide+1):onDone();
+  return(
+    <div className="screen flex flex-col bg-ink text-white overflow-hidden relative fade-in">
+      <div className="blob w-80 h-80 -top-28 -right-28 float-slow" style={{background:"linear-gradient(135deg, rgba(0,212,154,.4), rgba(139,92,246,.3))",opacity:.5}}></div>
+      <div className="flex-1 flex flex-col items-center justify-center px-8 text-center relative z-10">
+        <div className={"w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mb-8 shadow-2xl bg-gradient-to-br "+s.color+" glow-pulse"}>{s.icon}</div>
+        <h2 className="text-2xl font-extrabold mb-3 leading-tight">{s.title}</h2>
+        <p className="text-gray-300 text-sm leading-relaxed max-w-[280px]">{s.body}</p>
+        <div className="flex gap-2 mt-10">
+          {SLIDES.map((_,i)=>(
+            <div key={i} className={"h-1.5 rounded-full transition-all "+(i===slide?"w-8 bg-brand-400":"w-2 bg-white/20")}></div>
+          ))}
+        </div>
+      </div>
+      <div className="px-6 pb-10 relative z-10 space-y-3">
+        <button onClick={next} className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30">
+          {slide<SLIDES.length-1?"Próximo →":"Começar →"}
+        </button>
+        {slide<SLIDES.length-1&&<button onClick={onDone} className="w-full py-2 text-sm text-gray-500 font-semibold">Pular</button>}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   TELA: LOGIN / REGISTRO / ESQUECI SENHA
+════════════════════════════ */
+function AuthScreen({onLogin}){
+  const [tab,setTab]=useState("login");
+  const [loginEmail,setLoginEmail]=useState("");
+  const [loginPass,setLoginPass]=useState("");
+  const [loginErr,setLoginErr]=useState("");
+  const [loginLoading,setLoginLoading]=useState(false);
+  const [rName,setRName]=useState("");
+  const [rEmail,setREmail]=useState("");
+  const [rCPF,setRCPF]=useState("");
+  const [rPhone,setRPhone]=useState("");
+  const [rPass,setRPass]=useState("");
+  const [rPass2,setRPass2]=useState("");
+  const [rTC,setRTC]=useState(false);
+  const [rErr,setRErr]=useState("");
+  const [rLoading,setRLoading]=useState(false);
+  const [fEmail,setFEmail]=useState("");
+  const [fSent,setFSent]=useState(false);
+
+  const doLogin=async()=>{
+    if(!loginEmail){setLoginErr("Informe seu e-mail.");return;}
+    if(!loginPass){setLoginErr("Informe sua senha.");return;}
+    setLoginLoading(true);setLoginErr("");
+    const {user,error}=await SbAuth.login(loginEmail,loginPass);
+    setLoginLoading(false);
+    if(error){
+      const msg=error.message?.includes("Invalid login")||error.message?.includes("invalid_grant")
+        ?"E-mail ou senha incorretos."
+        :error.message||"Erro ao entrar. Tente novamente.";
+      setLoginErr(msg);return;
+    }
+    if(user) onLogin({id:user.id,name:user.user_metadata?.name||loginEmail.split("@")[0],email:user.email,isNew:false});
+  };
+  const doRegister=async()=>{
+    if(!rName||!rEmail||!rCPF||!rPhone||!rPass||!rPass2){setRErr("Preencha todos os campos.");return;}
+    if(!validCPF(rCPF)){setRErr("CPF inválido.");return;}
+    if(rPass!==rPass2){setRErr("As senhas não coincidem.");return;}
+    if(rPass.length<8){setRErr("Senha precisa ter ao menos 8 caracteres.");return;}
+    if(!rTC){setRErr("Aceite os termos para continuar.");return;}
+    setRLoading(true);setRErr("");
+    const {user,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
+    setRLoading(false);
+    if(error){
+      const msg=error.message?.includes("already registered")||error.message?.includes("already been registered")
+        ?"Este e-mail já está cadastrado."
+        :error.message||"Erro ao criar conta. Tente novamente.";
+      setRErr(msg);return;
+    }
+    if(user) onLogin({id:user.id,name:rName,email:rEmail,isNew:true});
+  };
+  const doForgotPassword=async()=>{
+    if(!fEmail){return;}
+    const {error}=await SbAuth.resetPassword(fEmail);
+    if(!error) setFSent(true);
+  };
+
+  const inp="inp-dark";
+
+  return(
+    <div className="screen flex flex-col bg-ink text-white px-6 pt-14 pb-8 fade-in overflow-hidden relative">
+      <div className="blob w-72 h-72 bg-brand-500 -top-20 -right-24 float-slow"></div>
+      <div className="blob w-64 h-64 bg-accent-600 bottom-24 -left-24 float-slower"></div>
+      <div className="relative z-10 mb-5">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-2xl font-bold mb-4 glow-pulse">⚡</div>
+        <h1 className="text-3xl font-extrabold leading-tight">EletroGo</h1>
+        <p className="text-gray-400 text-xs mt-1">Rede de Eletropostos · Curitiba, PR</p>
+      </div>
+
+      <div className="relative z-10 flex bg-white/5 rounded-2xl p-1 mb-5">
+        {["login","register"].map(t=>(
+          <button key={t} onClick={()=>{setTab(t);setLoginErr("");setRErr("");}}
+            className={"flex-1 py-2 rounded-xl text-sm font-bold transition "+(tab===t?"bg-brand-500 text-ink shadow":"text-gray-400")}>
+            {t==="login"?"Entrar":"Criar conta"}
+          </button>
+        ))}
+      </div>
+
+      {tab==="forgot"&&(
+        <div className="relative z-10 space-y-4 slide-up">
+          <button onClick={()=>setTab("login")} className="text-brand-400 text-sm font-semibold">← Voltar</button>
+          <h2 className="text-lg font-extrabold">Redefinir senha</h2>
+          {fSent?(
+            <div className="bg-brand-500/20 border border-brand-400/30 rounded-2xl p-5 text-center">
+              <p className="text-3xl mb-2">📧</p>
+              <p className="font-bold text-brand-300">E-mail enviado!</p>
+              <p className="text-sm text-gray-400 mt-1">Verifique <strong className="text-white">{fEmail}</strong> e siga as instruções.</p>
+              <button onClick={()=>setTab("login")} className="mt-4 text-brand-400 text-sm font-semibold">Voltar ao login</button>
+            </div>
+          ):(
+            <>
+              <p className="text-sm text-gray-400">Informe seu e-mail e enviaremos um link para redefinir sua senha.</p>
+              <input value={fEmail} onChange={e=>setFEmail(e.target.value)} placeholder="voce@email.com" className={inp}/>
+              <button onClick={doForgotPassword} className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-400 to-brand-600 font-bold text-ink">Enviar link</button>
+            </>
+          )}
+        </div>
+      )}
+
+      {tab==="login"&&(
+        <div className="relative z-10 space-y-3 slide-up">
+          <input value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} placeholder="E-mail" className={inp}/>
+          <input value={loginPass} onChange={e=>setLoginPass(e.target.value)} type="password" placeholder="Senha" className={inp}/>
+          {loginErr&&<p className="text-rose-400 text-xs font-semibold">{loginErr}</p>}
+          <button onClick={doLogin} disabled={loginLoading}
+            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30 disabled:opacity-60">
+            {loginLoading?"Entrando...":"Entrar →"}
+          </button>
+          <button onClick={()=>{setTab("forgot");setFSent(false);setFEmail("");}} className="w-full text-center text-xs text-gray-400 font-semibold pt-1">
+            Esqueci minha senha
+          </button>
+        </div>
+      )}
+
+      {tab==="register"&&(
+        <div className="relative z-10 space-y-2.5 slide-up">
+          <input value={rName} onChange={e=>setRName(e.target.value)} placeholder="Nome completo" className={inp}/>
+          <input value={rEmail} onChange={e=>setREmail(e.target.value)} placeholder="E-mail" className={inp}/>
+          <input value={rCPF} onChange={e=>setRCPF(maskCPF(e.target.value))} placeholder="CPF (000.000.000-00)" className={inp}/>
+          <input value={rPhone} onChange={e=>setRPhone(maskPhone(e.target.value))} placeholder="Celular ((00) 00000-0000)" className={inp}/>
+          <input value={rPass} onChange={e=>setRPass(e.target.value)} type="password" placeholder="Senha (mín. 8 caracteres)" className={inp}/>
+          <input value={rPass2} onChange={e=>setRPass2(e.target.value)} type="password" placeholder="Confirmar senha" className={inp}/>
+          <label className="flex items-start gap-2 cursor-pointer pt-1" onClick={()=>setRTC(!rTC)}>
+            <div className={"w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition "+(rTC?"bg-brand-500 border-brand-500":"border-white/30")}>
+              {rTC&&<span className="text-ink text-[10px] font-extrabold">✓</span>}
+            </div>
+            <p className="text-xs text-gray-400 leading-snug">Li e aceito os <span className="text-brand-400">Termos de Uso</span> e a <span className="text-brand-400">Política de Privacidade</span>.</p>
+          </label>
+          {rErr&&<p className="text-rose-400 text-xs font-semibold">{rErr}</p>}
+          <button onClick={doRegister} disabled={rLoading}
+            className="w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-brand-400 to-brand-600 text-ink shadow-lg shadow-brand-500/30 disabled:opacity-60 mt-1">
+            {rLoading?"Criando conta...":"Criar conta →"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   HOME
+════════════════════════════ */
+function PartnerAdsSection(){
+  return(
+    <div className="mt-4">
+      <div className="flex items-center justify-between px-4 mb-2">
+        <h2 className="text-sm font-bold text-ink">🤝 Parceiros perto de você</h2>
+        <span className="text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Patrocinado</span>
+      </div>
+      <div className="flex gap-3 overflow-x-auto px-4 pb-1 hscroll snap-x">
+        {PARTNER_ADS.map(ad=>(
+          <div key={ad.id} className={"snap-start flex-shrink-0 w-52 rounded-2xl p-4 text-white bg-gradient-to-br shadow-lg relative overflow-hidden "+ad.color}>
+            <div className="absolute -right-3 -bottom-3 text-5xl opacity-20">{ad.icon}</div>
+            <span className="text-[9px] font-bold uppercase tracking-wider opacity-60 bg-white/10 px-1.5 py-0.5 rounded-full">{ad.partner}</span>
+            <p className="text-base font-extrabold leading-tight mt-1.5">{ad.headline}</p>
+            <p className="text-[11px] opacity-85 mt-1 leading-snug">{ad.description}</p>
+            <button className="mt-3 text-[11px] font-bold bg-white/20 px-3 py-1.5 rounded-lg">{ad.cta} →</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Mapa estático (fallback quando Google Maps não configurado) ─── */
+function StaticMap({stations,onSelect}){
+  const positions=[{top:"38%",left:"32%"},{top:"22%",left:"66%"},{top:"68%",left:"58%"}];
+  return(
+    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,background:"linear-gradient(135deg,#eef9f5 0%,#e8f4fd 50%,#f0eeff 100%)",border:"1px solid rgba(0,212,154,.12)",boxShadow:"0 2px 12px rgba(10,14,26,.06)"}}>
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 148" preserveAspectRatio="none" style={{opacity:.3}}>
+        <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#94a3b8" strokeWidth=".5"/></pattern></defs>
+        <rect width="100%" height="100%" fill="url(#grid)"/>
+        <path d="M0,74 Q100,50 200,74 Q300,98 400,74" stroke="#a0aec0" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <path d="M180,0 Q190,40 200,74 Q210,110 195,148" stroke="#a0aec0" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      </svg>
+      {stations.slice(0,3).map((st,i)=>{
+        const occ=st.connectors.some(c=>c.status==="disponivel");
+        return(
+          <button key={st.id} onClick={()=>onSelect(st)} style={{top:positions[i].top,left:positions[i].left,position:"absolute",transform:"translate(-50%,-50%)"}} className="active:scale-90 transition-transform">
+            <div style={{width:34,height:34,borderRadius:"50%",background:occ?"linear-gradient(135deg,#2de3ab,#00b386)":"linear-gradient(135deg,#ff7a45,#f4622a)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:occ?"0 4px 12px rgba(0,212,154,.45)":"0 4px 12px rgba(255,122,69,.45)",border:"3px solid white"}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+          </button>
+        );
+      })}
+      <a href="https://brunolapuente.github.io/Evhub-mapas/Mapa%20Atualizado%20Junho.html" target="_blank" rel="noopener noreferrer"
+        style={{position:"absolute",bottom:10,right:12,fontSize:10,background:"rgba(255,255,255,.9)",backdropFilter:"blur(8px)",border:"1px solid rgba(10,14,26,.08)",borderRadius:99,padding:"5px 10px",color:"#374151",fontWeight:700,boxShadow:"0 2px 8px rgba(10,14,26,.08)",display:"flex",alignItems:"center",gap:4,textDecoration:"none"}}>
+        🗺 Mapa EVHub+
+      </a>
+      <div style={{position:"absolute",top:10,left:12,fontSize:11,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"rgba(255,255,255,.9)",fontWeight:600,border:"1px solid rgba(255,255,255,.1)"}}>📍 Curitiba, PR</div>
+    </div>
+  );
+}
+
+/* ─── Google Maps real ─── */
+const GMAPS_DARK=[{elementType:"geometry",stylers:[{color:"#1a1f2e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#0a0e1a"}]},{elementType:"labels.text.fill",stylers:[{color:"#6b7280"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#253047"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#1e2f48"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#0a111f"}]},{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}];
+
+function GoogleMapComponent({stations,onSelect}){
+  const mapRef=useRef(null);
+  const mapsLoaded=useGoogleMaps();
+  const [userPos,setUserPos]=useState(null);
+  const [geoStatus,setGeoStatus]=useState("idle"); // idle | loading | ok | denied
+
+  // Get geolocation once
+  useEffect(()=>{
+    if(!navigator.geolocation){return;}
+    setGeoStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      pos=>{setUserPos({lat:pos.coords.latitude,lng:pos.coords.longitude});setGeoStatus("ok");},
+      ()=>{setGeoStatus("denied");},
+      {timeout:8000,maximumAge:60000}
+    );
+  },[]);
+
+  // Init map
+  useEffect(()=>{
+    if(!mapsLoaded||!mapRef.current)return;
+    const center=userPos||CURITIBA_CENTER;
+    const map=new window.google.maps.Map(mapRef.current,{
+      center,zoom:13,disableDefaultUI:true,
+      zoomControl:true,gestureHandling:"greedy",
+      styles:GMAPS_DARK,
+    });
+
+    // Station markers
+    stations.forEach(st=>{
+      const coord=STATION_COORDS[st.id];
+      if(!coord)return;
+      const occ=st.connectors.some(c=>c.status==="disponivel");
+      const color=occ?"#2de3ab":"#ff7a45";
+      const marker=new window.google.maps.Marker({
+        position:coord,map,title:st.name,
+        icon:{path:window.google.maps.SymbolPath.CIRCLE,scale:12,fillColor:color,fillOpacity:1,strokeColor:"#fff",strokeWeight:2.5},
+      });
+      marker.addListener("click",()=>onSelect(st));
+    });
+
+    // User location marker
+    if(userPos){
+      new window.google.maps.Marker({
+        position:userPos,map,title:"Você está aqui",
+        icon:{path:window.google.maps.SymbolPath.CIRCLE,scale:8,fillColor:"#8b5cf6",fillOpacity:1,strokeColor:"#fff",strokeWeight:3},
+      });
+    }
+  },[mapsLoaded,userPos]);
+
+  if(!mapsLoaded){
+    return <StaticMap stations={stations} onSelect={onSelect}/>;
+  }
+
+  return(
+    <div className="relative mx-4 mt-4 overflow-hidden" style={{height:148,borderRadius:24,boxShadow:"0 2px 12px rgba(10,14,26,.1)"}}>
+      <div ref={mapRef} style={{width:"100%",height:"100%"}}/>
+      {geoStatus==="loading"&&(
+        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"rgba(255,255,255,.7)",fontWeight:600}}>📡 Localizando…</div>
+      )}
+      {geoStatus==="ok"&&(
+        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#2de3ab",fontWeight:600}}>📍 Localização ativa</div>
+      )}
+      {geoStatus==="denied"&&(
+        <div style={{position:"absolute",bottom:8,left:12,fontSize:10,background:"rgba(10,14,26,.75)",backdropFilter:"blur(8px)",borderRadius:99,padding:"4px 10px",color:"#ff7a45",fontWeight:600}}>📍 Curitiba, PR</div>
+      )}
+    </div>
+  );
+}
+
+function PromoCarousel({coupons,onGo}){
+  const active=coupons.filter(c=>!c.used);
+  return(
+    <div className="mt-4">
+      <div className="flex items-center justify-between px-4 mb-2">
+        <h2 className="text-sm font-bold text-ink">🔥 Ofertas para você</h2>
+        <button onClick={onGo} className="text-xs font-bold text-brand-700">Ver todas</button>
+      </div>
+      <div className="flex gap-3 overflow-x-auto px-4 pb-1 hscroll snap-x">
+        {active.map(c=>(
+          <button key={c.id} onClick={onGo} className={"snap-start flex-shrink-0 w-44 rounded-2xl p-4 text-left text-white bg-gradient-to-br shadow-lg relative overflow-hidden "+c.color}>
+            <div className="absolute -right-4 -bottom-4 text-6xl opacity-20">{c.icon}</div>
+            <p className="text-2xl font-extrabold leading-none">{c.big}</p>
+            <p className="text-xs font-semibold mt-1.5">{c.title}</p>
+            <p className="text-[11px] opacity-85 mt-1 leading-snug">{c.description}</p>
+          </button>
+        ))}
+        {active.length===0&&<p className="text-xs text-gray-400 px-2">Nenhuma oferta ativa.</p>}
+      </div>
+    </div>
+  );
+}
+
+function StationCard({station,onSelect}){
+  const available=station.connectors.filter(c=>c.status==="disponivel").length;
+  const total=station.connectors.length;
+  const maxPower=Math.max(...station.connectors.map(c=>c.powerKw));
+  const minPrice=Math.min(...station.connectors.map(c=>c.priceKwh));
+  const hasAvail=available>0;
+  const estMins=maxPower>=60?Math.round(1800/maxPower):Math.round(1200/maxPower);
+  const accentColor=hasAvail?"#2de3ab":station.connectors.some(c=>c.status==="manutencao")?"#f43f5e":"#ff7a45";
+  const iconBg=hasAvail?"linear-gradient(135deg,#2de3ab,#00b386)":station.connectors.some(c=>c.status==="manutencao")?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+  return(
+    <button onClick={()=>onSelect(station)} className="w-full text-left card-hover flex items-start gap-0 overflow-hidden"
+      style={{background:"#fff",border:"1px solid rgba(10,14,26,.06)",borderRadius:22,boxShadow:"0 1px 3px rgba(10,14,26,.04),0 4px 16px rgba(10,14,26,.05)",padding:0,display:"flex",width:"100%"}}>
+      {/* left accent bar */}
+      <div style={{width:4,background:accentColor,borderRadius:"22px 0 0 22px",alignSelf:"stretch",flexShrink:0,opacity:.85}}></div>
+      <div className="flex items-start gap-3.5 p-4 flex-1 min-w-0">
+        {/* icon */}
+        <div style={{width:46,height:46,borderRadius:14,background:iconBg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:`0 4px 12px ${accentColor}44`}}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="white" stroke="none"/>
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          {/* name + price */}
+          <div className="flex items-start justify-between gap-1.5">
+            <p className="font-extrabold text-ink text-[13px] leading-tight tracking-tight">{station.name}</p>
+            <div className="flex-shrink-0 text-right">
+              <p className="text-[12px] font-extrabold text-brand-700 leading-none">{fmtMoney(minPrice)}</p>
+              <p className="text-[10px] text-gray-400 font-medium">/kWh</p>
+            </div>
+          </div>
+          <p className="text-[11px] text-gray-400 mt-0.5 truncate">{station.address}</p>
+          {/* info chips */}
+          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              {station.distanceKm.toFixed(1)} km
+            </span>
+            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="#9ca3af"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              {maxPower} kW
+            </span>
+            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+              ~{estMins} min
+            </span>
+          </div>
+          {/* connector status bars */}
+          <div className="flex items-center gap-2 mt-2.5">
+            <div className="flex gap-1" style={{flex:1,maxWidth:80}}>
+              {station.connectors.map((c,i)=>(
+                <div key={i} style={{height:3,flex:1,borderRadius:2,background:c.status==="disponivel"?"#2de3ab":c.status==="manutencao"?"#f43f5e":"#ff7a45",opacity:.8}}></div>
+              ))}
+            </div>
+            <span className={"badge-pill "+(hasAvail?"bg-brand-50 text-brand-700 border border-brand-100":"bg-rose-50 text-rose-600 border border-rose-100")} style={{fontSize:10}}>
+              {hasAvail?`${available}/${total} livre${available>1?"s":""}`:"Sem vagas"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotifs,unreadCount}){
+  const [query,setQuery]=useState("");
+  const filtered=stations.filter(s=>s.name.toLowerCase().includes(query.toLowerCase()));
+  const firstName=(user.name||(user.email||"").split("@")[0]||"Motorista").split(" ")[0];
+  const initials=firstName.charAt(0).toUpperCase();
+  const tier=getTier(wallet.points);
+  const available=stations.reduce((a,s)=>a+s.connectors.filter(c=>c.status==="disponivel").length,0);
+  return(
+    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+      {/* ── HEADER ── */}
+      <div style={{background:"linear-gradient(160deg,#0a0e1a 0%,#111827 55%,#0d1a14 100%)",borderRadius:"0 0 32px 32px",paddingBottom:22,position:"relative",overflow:"hidden"}}>
+        <div className="blob w-64 h-64 bg-brand-500 float-slow" style={{top:-90,right:-50,opacity:.22}}></div>
+        <div className="blob w-44 h-44 bg-accent-600 float-slower" style={{top:30,left:-50,opacity:.15}}></div>
+        <div className="relative z-10 px-4 pt-12">
+          {/* row 1: avatar + actions */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div style={{width:42,height:42,borderRadius:14,background:"linear-gradient(135deg,#2de3ab,#00b386)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:17,color:"#0a0e1a",boxShadow:"0 4px 16px rgba(0,212,154,.38)",letterSpacing:0,flexShrink:0}}>
+                {initials}
+              </div>
+              <div>
+                <p className="text-[11px] text-white/40 font-medium tracking-wide">Bem-vindo de volta</p>
+                <p className="font-extrabold text-white text-[15px] capitalize leading-tight tracking-tight">{firstName}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={onOpenNotifs} className="relative w-9 h-9 rounded-2xl flex items-center justify-center transition active:scale-90" style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.1)"}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
+                </svg>
+                {unreadCount>0&&<span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-sunset-500 text-white text-[9px] font-extrabold flex items-center justify-center pulse-dot border border-ink" style={{lineHeight:1}}>{unreadCount}</span>}
+              </button>
+              <button onClick={onGoWallet} className="flex items-center gap-1.5 active:scale-95 transition-transform" style={{background:"linear-gradient(135deg,#2de3ab,#00b386)",borderRadius:12,padding:"8px 13px",boxShadow:"0 4px 14px rgba(0,212,154,.35)"}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#0a0e1a"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <span className="text-ink text-[12px] font-extrabold tracking-tight">{fmtMoney(wallet.balance)}</span>
+              </button>
+            </div>
+          </div>
+          {/* quick stats */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              {label:"Disponíveis",value:`${available}`,unit:"conectores"},
+              {label:"Nível",value:tier.label,unit:tier.icon},
+              {label:"Cashback",value:`${Math.round(tier.cashbackRate*100)}%`,unit:"por carga"},
+            ].map((s,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:"10px 8px",textAlign:"center"}}>
+                <p className="text-[11px] text-white/35 font-medium tracking-wide">{s.label}</p>
+                <p className="text-[15px] font-extrabold text-white mt-0.5 leading-none">{s.value}</p>
+                <p className="text-[10px] text-brand-400/80 mt-0.5 font-medium">{s.unit}</p>
+              </div>
+            ))}
+          </div>
+          {/* search */}
+          <div className="relative">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(156,163,175,1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+            </span>
+            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar eletroposto ou bairro..."
+              className="inp-dark" style={{paddingLeft:38}}/>
+          </div>
+        </div>
+      </div>
+      <PromoCarousel coupons={wallet.coupons} onGo={onGoWallet}/>
+      <GoogleMapComponent stations={stations} onSelect={onSelectStation}/>
+      <PartnerAdsSection/>
+      <div className="px-4 mt-5 mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#2de3ab,#00b386)"}}></div>
+          <h2 className="text-[13px] font-extrabold text-ink tracking-tight">Eletropostos próximos</h2>
+        </div>
+        <span className="text-[11px] text-brand-700 font-bold bg-brand-50 border border-brand-100 px-2.5 py-1 rounded-full">{filtered.length} encontrado{filtered.length!==1?"s":""}</span>
+      </div>
+      <div className="px-4 space-y-3 pb-6">
+        {filtered.map(s=><StationCard key={s.id} station={s} onSelect={onSelectStation}/>)}
+        {filtered.length===0&&(
+          <div className="text-center py-10">
+            <p className="text-3xl mb-2">🔍</p>
+            <p className="text-sm font-bold text-gray-400">Nenhum eletroposto encontrado.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   DETALHE DO POSTO
+════════════════════════════ */
+function StationDetailScreen({station,onBack,onStartCharge,onReserve,wallet,userPlan,reservations}){
+  const activeCoupon=wallet.coupons.find(c=>c.active&&!c.used);
+  const maxPower=Math.max(...station.connectors.map(c=>c.powerKw));
+  const isGold=userPlan==="eletropass-gold";
+  return(
+    <div className="screen bg-gray-50 fade-in">
+      <div className="relative bg-gradient-to-br from-brand-600 to-brand-900 text-white pb-6 rounded-b-[28px] overflow-hidden">
+        <div className="blob w-48 h-48 bg-brand-400 -top-10 -right-10"></div>
+        <TopBar title="Detalhes do posto" onBack={onBack} dark/>
+        <div className="px-4 relative z-10 mt-1">
+          <span className="text-[11px] font-semibold bg-white/15 px-2.5 py-1 rounded-full">{station.badge}</span>
+          <h2 className="text-xl font-extrabold mt-2">{station.name}</h2>
+          <p className="text-xs text-brand-100 mt-1">{station.address}</p>
+          <div className="flex items-center gap-4 mt-3 text-xs">
+            <span>📍 {station.distanceKm.toFixed(1)} km</span>
+            <span>🔌 até {maxPower} kW</span>
+            <span>{station.rating?`⭐ ${station.rating}`:"🆕 Novo na rede"}</span>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 pt-4 pb-4 space-y-4">
+        {activeCoupon&&(
+          <div className={"rounded-2xl p-4 text-white bg-gradient-to-r shadow-lg flex items-center gap-3 "+activeCoupon.color}>
+            <span className="text-2xl">{activeCoupon.icon}</span>
+            <div>
+              <p className="text-xs uppercase tracking-wide opacity-80 font-semibold">Cupom ativo</p>
+              <p className="font-bold">{activeCoupon.big} · {activeCoupon.title}</p>
+            </div>
+          </div>
+        )}
+        {isGold&&(
+          <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-3 flex items-center gap-2">
+            <span className="text-xl">👑</span>
+            <div><p className="text-xs font-bold text-yellow-700">EletroPass Gold — Reserva disponível</p><p className="text-[11px] text-yellow-600">Reserve um conector por até 15 minutos.</p></div>
+          </div>
+        )}
+        <div>
+          <h3 className="text-sm font-bold text-ink mb-2">Conectores disponíveis</h3>
+          <div className="space-y-2">
+            {station.connectors.map((c,ci)=>{
+              const key=station.id+"-"+c.id;
+              const res=reservations&&reservations[key];
+              const minsLeft=res?Math.ceil(res.secsLeft/60):0;
+              const ringColor=c.status==="disponivel"?"rgba(0,212,154,.35)":c.status==="manutencao"?"rgba(244,63,94,.3)":"rgba(255,122,69,.3)";
+              const iconBg=c.status==="disponivel"?"linear-gradient(135deg,#2de3ab,#00b386)":c.status==="manutencao"?"linear-gradient(135deg,#f43f5e,#e11d48)":"linear-gradient(135deg,#ff7a45,#f4622a)";
+              return(
+                <div key={c.id} className="card p-4" style={{boxShadow:`0 0 0 3px ${ringColor}, 0 2px 10px rgba(10,14,26,.05)`}}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div style={{width:44,height:44,borderRadius:14,background:iconBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0,boxShadow:`0 4px 12px ${ringColor}`}}>🔌</div>
+                      <div className="min-w-0">
+                        <p className="font-extrabold text-ink text-sm">{c.type}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge status={c.status}/>
+                          <span className="text-[10px] text-gray-300">·</span>
+                          <span className="text-[11px] font-bold text-gray-500">{c.powerKw} kW</span>
+                        </div>
+                        <p className="text-[11px] font-extrabold text-brand-700 mt-1">{fmtMoney(c.priceKwh)} / kWh</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1.5 items-end flex-shrink-0">
+                      <button disabled={c.status!=="disponivel"} onClick={()=>onStartCharge(station,c)}
+                        style={c.status==="disponivel"?{background:"linear-gradient(135deg,#2de3ab,#00b386)",color:"#0a0e1a",fontWeight:800,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"pointer",boxShadow:"0 4px 14px rgba(0,212,154,.35)"}:{background:"#f3f5f9",color:"#d1d5db",fontWeight:700,fontSize:13,padding:"10px 16px",borderRadius:14,border:"none",cursor:"not-allowed"}}>
+                        {c.status==="disponivel"?"⚡ Carregar":"—"}
+                      </button>
+                      {isGold&&c.status==="disponivel"&&!res&&(
+                        <button onClick={()=>onReserve(station,c)} style={{fontSize:11,fontWeight:700,padding:"6px 12px",borderRadius:10,background:"#fef9c3",color:"#92400e",border:"1px solid #fde68a",cursor:"pointer"}}>⏱ Reservar</button>
+                      )}
+                      {res&&<span className="badge-pill bg-amber-50 text-amber-600" style={{border:"1px solid #fde68a"}}>⏳ {minsLeft} min</span>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   CHARGING
+════════════════════════════ */
+function ChargingScreen({session,onStop,onBack,wallet}){
+  if(!session){
+    return(
+      <div className="screen bg-gray-50 fade-in flex flex-col items-center justify-center px-6 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center text-4xl mb-4">⚡</div>
+        <p className="font-bold text-ink text-lg">Nenhuma carga em andamento</p>
+        <p className="text-xs text-gray-400 mt-1 max-w-[220px]">Escolha um eletroposto na tela inicial para iniciar uma recarga.</p>
+        <button onClick={onBack} className="mt-5 px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink text-sm font-bold shadow-lg shadow-brand-500/30">Buscar eletropostos</button>
+      </div>
+    );
+  }
+  const {station,connector,kwh,elapsedSec}=session;
+  const pct=Math.min(100,(kwh/40)*100);
+  const coupon=wallet.coupons.find(c=>c.id===session.appliedCouponId);
+  const rawCost=kwh*connector.priceKwh;
+  let discountValue=0;
+  if(coupon&&coupon.type==="percent")discountValue=rawCost*(coupon.value/100);
+  const finalCost=Math.max(0,rawCost-discountValue);
+  const mins=Math.floor(elapsedSec/60);
+  const secs=elapsedSec%60;
+  const r=84,circumference=2*Math.PI*r,offset=circumference-(pct/100)*circumference;
+  return(
+    <div className="screen bg-ink text-white fade-in flex flex-col overflow-hidden relative">
+      <div className="blob w-72 h-72 bg-brand-500 -top-24 -left-20 float-slow"></div>
+      <div className="blob w-56 h-56 bg-accent-600 bottom-10 -right-16 float-slower"></div>
+      <div className="relative z-10">
+        <TopBar title="Carregando" onBack={onBack} dark right={<span className="text-[11px] bg-white/10 px-2.5 py-1 rounded-full font-semibold text-brand-300">● em andamento</span>}/>
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center px-6 -mt-4 relative z-10">
+        <p className="text-sm text-gray-300 font-medium mb-1">{station.name}</p>
+        <div className="relative w-56 h-56 flex items-center justify-center">
+          <svg className="absolute inset-0" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r={r} stroke="#1c2438" strokeWidth="12" fill="none"/>
+            <circle cx="100" cy="100" r={r} stroke="#00d49a" strokeWidth="12" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 100 100)" className="progress-ring"/>
+          </svg>
+          <div className="text-center">
+            <p className="text-4xl font-extrabold tracking-tight">{fmtKwh(kwh)}</p>
+            <p className="text-xs text-brand-300 mt-1 font-semibold">{connector.powerKw} kW · {connector.type}</p>
+          </div>
+        </div>
+        <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 flex items-center justify-between w-full">
+          <div className="flex items-center gap-2 text-xs text-gray-300"><span className="text-brand-400 font-bold">⚡</span><span>Tarifa</span></div>
+          <div className="text-right"><span className="font-extrabold text-white">{fmtMoney(connector.priceKwh)}</span><span className="text-gray-400 text-xs"> / kWh</span></div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 w-full mt-3">
+          <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">Tempo</p>
+            <p className="font-bold mt-1">{String(mins).padStart(2,"0")}:{String(secs).padStart(2,"0")}</p>
+          </div>
+          <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">Total</p>
+            <p className="font-bold mt-1 text-brand-300">{fmtMoney(finalCost)}</p>
+          </div>
+          <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">Economia</p>
+            <p className="font-bold mt-1 text-brand-400">{discountValue>0?"-"+fmtMoney(discountValue):"—"}</p>
+          </div>
+        </div>
+        {coupon&&<div className="mt-3 w-full glass rounded-2xl px-3 py-2.5 text-xs text-brand-200 text-center font-semibold border border-brand-400/20">{coupon.icon} Cupom ativo: {coupon.big} — {coupon.title}</div>}
+        {/* ETA + sessão */}
+        <div className="mt-4 w-full glass rounded-2xl px-4 py-3 flex items-center justify-between">
+          <div className="text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">Sessão</p>
+            <p className="text-xs font-extrabold text-white mt-0.5">{session.id}</p>
+          </div>
+          <div className="w-px h-8 bg-white/10"></div>
+          <div className="text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">Potência</p>
+            <p className="text-xs font-extrabold text-brand-300 mt-0.5">{connector.powerKw} kW</p>
+          </div>
+          <div className="w-px h-8 bg-white/10"></div>
+          <div className="text-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase">ETA completo</p>
+            <p className="text-xs font-extrabold text-white mt-0.5">
+              {(()=>{
+                const remaining=Math.max(0,40-kwh);
+                const hrsLeft=remaining/connector.powerKw;
+                const minsLeft=Math.round(hrsLeft*60);
+                return minsLeft<60?`~${minsLeft} min`:`~${Math.floor(minsLeft/60)}h${minsLeft%60}m`;
+              })()}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="px-6 pb-10 relative z-10 space-y-3">
+        <button onClick={onStop} style={{width:"100%",padding:"16px",borderRadius:18,fontWeight:800,fontSize:15,background:"linear-gradient(135deg,#f43f5e,#e11d48)",boxShadow:"0 8px 24px rgba(244,63,94,.35)",border:"none",color:"#fff",cursor:"pointer"}}>⏹ Encerrar carga</button>
+        <p className="text-center text-[10px] text-gray-600">Conector permanece bloqueado até confirmar pagamento</p>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   PAGAMENTO
+════════════════════════════ */
+function PaymentScreen({completedSession,wallet,onConfirm,onBack}){
+  const [method,setMethod]=useState(null);
+  const [pixStatus,setPixStatus]=useState("idle");
+  const [pixSecs,setPixSecs]=useState(1800);
+  const [copied,setCopied]=useState(false);
+  const [cardOpened,setCardOpened]=useState(false);
+  const [cardErr,setCardErr]=useState(false);
+
+  const {station,connector,kwh,elapsedSec,finalCost,discount}=completedSession;
+  const durationMin=Math.max(1,Math.round(elapsedSec/60));
+  const hasSaldo=wallet.balance>=finalCost;
+  const hasSaldoParcial=wallet.balance>=1&&wallet.balance<finalCost;
+
+  useEffect(()=>{
+    if(method!=="pix"||pixStatus!=="idle")return;
+    const t=setInterval(()=>setPixSecs(s=>{if(s<=1){clearInterval(t);setPixStatus("expired");return 0;}return s-1;}),1000);
+    return()=>clearInterval(t);
+  },[method,pixStatus]);
+
+  useEffect(()=>{
+    if(pixStatus!=="scanning")return;
+    const t=setTimeout(()=>{setPixStatus("confirmed");setTimeout(()=>onConfirm("pix"),900);},3000);
+    return()=>clearTimeout(t);
+  },[pixStatus]);
+
+  useEffect(()=>{
+    if(!cardOpened)return;
+    const t=setTimeout(()=>setCardErr(true),8000);
+    return()=>clearTimeout(t);
+  },[cardOpened]);
+
+  const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+
+  const billSummary=(
+    <div className="rounded-2xl overflow-hidden border border-gray-100 mb-4">
+      <div className="bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-3 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg">⚡</div>
+        <div><p className="font-extrabold text-white text-sm">Recarga concluída</p><p className="text-[11px] text-brand-100">{station.name} · {connector.type}</p></div>
+        <div className="ml-auto text-right"><p className="text-[10px] text-brand-100 font-semibold">Duração</p><p className="font-extrabold text-white text-sm">{durationMin} min</p></div>
+      </div>
+      <div className="bg-white px-4 py-3 space-y-2">
+        <div className="flex justify-between text-sm"><span className="text-gray-500">Energia consumida</span><span className="font-bold text-ink">{fmtKwh(kwh)}</span></div>
+        <div className="flex justify-between text-sm"><span className="text-gray-500">Tarifa</span><span className="font-bold text-ink">{fmtMoney(connector.priceKwh)} / kWh</span></div>
+        {discount>0&&<div className="flex justify-between text-sm"><span className="text-green-600 font-semibold">Desconto cupom</span><span className="font-bold text-green-600">− {fmtMoney(discount)}</span></div>}
+        <div className="border-t border-dashed border-gray-200 pt-2 flex justify-between items-center">
+          <span className="font-extrabold text-gray-700">Total a pagar</span>
+          <span className="font-extrabold text-2xl text-brand-700">{fmtMoney(finalCost)}</span>
+        </div>
+      </div>
+      <div className="bg-amber-50 border-t border-amber-100 px-4 py-2 flex items-center gap-2">
+        <span className="text-amber-500">🔒</span>
+        <p className="text-[11px] text-amber-700 font-semibold">Conector bloqueado · liberado após confirmação do pagamento</p>
+      </div>
+    </div>
+  );
+
+  if(!method){
+    return(
+      <div className="screen bg-gray-50 fade-in">
+        <div className="bg-gradient-to-br from-ink to-ink2 text-white pb-6 rounded-b-[28px] relative overflow-hidden">
+          <div className="blob w-48 h-48 bg-brand-500 -top-16 -right-10 float-slow"></div>
+          <TopBar title="Pagamento" dark onBack={onBack}/>
+          <div className="px-4 relative z-10 -mt-1"><p className="font-extrabold text-xl">Forma de pagamento</p><p className="text-xs text-gray-400 mt-0.5">Conector liberado só após confirmação.</p></div>
+        </div>
+        <div className="px-4 pt-4 pb-6 space-y-3">
+          {billSummary}
+          {[
+            {id:"pix",icon:"🔑",label:"PIX",sub:"Aprovação instantânea · 0,99% de taxa",badge:"Recomendado",badgeColor:"#e6fff6",badgeText:"#018a69",border:"#2de3ab",action:()=>setMethod("pix"),enabled:true},
+            {id:"card",icon:"💳",label:"Cartão de crédito / débito",sub:"Via Mercado Pago · Visa, Master, Elo",badge:"MP",badgeColor:"#009ee3",badgeText:"#fff",border:"#009ee3",action:()=>{setMethod("card");setCardErr(false);setCardOpened(false);},enabled:true},
+            {id:"saldo",icon:"💰",label:"Saldo EletroGo",sub:`Disponível: ${fmtMoney(wallet.balance)}`,badge:hasSaldoParcial?"Parcial":(!hasSaldo&&!hasSaldoParcial?"Insuficiente":""),badgeColor:"#fef3c7",badgeText:"#92400e",border:"#8b5cf6",action:()=>(hasSaldo||hasSaldoParcial)&&setMethod("saldo"),enabled:hasSaldo||hasSaldoParcial},
+          ].map(m=>(
+            <button key={m.id} onClick={m.action} disabled={!m.enabled}
+              className="w-full text-left card card-hover flex items-center gap-3 p-4"
+              style={{opacity:m.enabled?1:.45,border:`1.5px solid #eef0f5`,transition:"border-color .2s"}}
+              onMouseEnter={e=>{if(m.enabled)e.currentTarget.style.borderColor=m.border}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="#eef0f5"}}>
+              <div style={{width:46,height:46,borderRadius:14,background:"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{m.icon}</div>
+              <div className="flex-1 min-w-0">
+                <p className="font-extrabold text-ink text-sm">{m.label}</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">{m.sub}</p>
+              </div>
+              {m.badge&&<span className="badge-pill flex-shrink-0" style={{background:m.badgeColor,color:m.badgeText}}>{m.badge}</span>}
+              <span className="text-gray-300 text-base">›</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if(method==="pix"){
+    return(
+      <div className="screen bg-gray-50 fade-in">
+        <TopBar title="Pagar com PIX" onBack={()=>{setMethod(null);setPixStatus("idle");setPixSecs(1800);}}/>
+        <div className="px-4 pt-2 pb-6">
+          {billSummary}
+          {pixStatus==="expired"?(
+            <div className="flex flex-col items-center py-8 gap-3">
+              <div className="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl">⏰</div>
+              <p className="font-extrabold text-lg text-rose-600">QR Code expirado</p>
+              <p className="text-sm text-gray-500 text-center">O prazo de 30 minutos foi atingido.</p>
+              <button onClick={()=>{setPixStatus("idle");setPixSecs(1800);}} className="mt-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-bold">Gerar novo QR</button>
+            </div>
+          ):pixStatus==="confirmed"?(
+            <div className="flex flex-col items-center py-10 gap-3">
+              <div className="w-20 h-20 rounded-full bg-brand-100 flex items-center justify-center text-4xl">✅</div>
+              <p className="font-extrabold text-lg text-brand-700">Pagamento confirmado!</p>
+              <p className="text-sm text-gray-500">Liberando o conector…</p>
+            </div>
+          ):pixStatus==="scanning"?(
+            <div className="flex flex-col items-center py-8 gap-4">
+              <div className="w-16 h-16 rounded-full border-4 border-brand-400 border-t-transparent animate-spin"></div>
+              <p className="font-bold text-ink">Aguardando confirmação…</p>
+            </div>
+          ):(
+            <>
+              <div className="flex flex-col items-center bg-white rounded-2xl border border-gray-100 p-6 shadow-sm gap-4">
+                <div className="flex items-center justify-between w-full">
+                  <p className="text-sm font-bold text-ink">Escaneie o QR Code</p>
+                  <span className={"text-xs font-bold px-2 py-1 rounded-full "+(pixSecs<300?"bg-rose-100 text-rose-600":"bg-brand-100 text-brand-700")}>⏱ {fmt(pixSecs)}</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-gray-200 shadow-sm"><QRMock size={160}/></div>
+                <div className="w-full">
+                  <p className="text-xs text-gray-400 font-semibold mb-1">Ou copie a chave PIX:</p>
+                  <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
+                    <span className="text-xs text-gray-600 flex-1 truncate font-mono">{PIX_KEY}</span>
+                    <button onClick={()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}}
+                      className={"text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition "+(copied?"bg-brand-100 text-brand-700":"bg-gray-200 text-gray-600")}>
+                      {copied?"Copiado ✓":"Copiar"}
+                    </button>
+                  </div>
+                </div>
+                <div className="w-full text-center">
+                  <p className="text-3xl font-extrabold text-ink">{fmtMoney(finalCost)}</p>
+                  <p className="text-[11px] text-gray-400 mt-1">Pague exatamente este valor</p>
+                </div>
+              </div>
+              <button onClick={()=>setPixStatus("scanning")} className="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+                Já paguei — Confirmar
+              </button>
+              <p className="text-center text-[11px] text-gray-400 mt-2">QR válido por 30 min · expira às {new Date(Date.now()+pixSecs*1000).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</p>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if(method==="card"){
+    return(
+      <div className="screen bg-gray-50 fade-in">
+        <TopBar title="Mercado Pago" onBack={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}}/>
+        <div className="px-4 pt-2 pb-6">
+          {billSummary}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-md" style={{background:"#009ee3"}}><span className="text-white font-extrabold text-xl">MP</span></div>
+            {cardErr?(
+              <>
+                <div className="w-full bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center">
+                  <p className="text-2xl mb-1">❌</p>
+                  <p className="font-bold text-rose-600">Pagamento não confirmado</p>
+                  <p className="text-xs text-rose-500 mt-1">Não identificamos o pagamento. Tente novamente ou use outro método.</p>
+                </div>
+                <button onClick={()=>{setMethod(null);setCardErr(false);setCardOpened(false);}} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-bold">Tentar outro método</button>
+                <button onClick={()=>{setCardErr(false);setCardOpened(false);}} className="w-full py-3 rounded-2xl border border-gray-200 text-gray-600 text-sm font-semibold">Tentar novamente</button>
+              </>
+            ):(
+              <>
+                <p className="font-extrabold text-ink text-lg">Mercado Pago</p>
+                <p className="text-sm text-gray-500 text-center leading-snug">Após pagar, volte e clique em <strong>"Já paguei"</strong>.</p>
+                <p className="text-3xl font-extrabold text-ink">{fmtMoney(finalCost)}</p>
+                <a href={MP_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" onClick={()=>setCardOpened(true)}
+                  className="w-full py-4 rounded-2xl font-extrabold text-white text-center shadow-lg block"
+                  style={{background:"linear-gradient(135deg,#009ee3 0%,#0070b3 100%)"}}>
+                  💳 Ir para o Mercado Pago →
+                </a>
+                {cardOpened&&(
+                  <button onClick={()=>onConfirm("card")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+                    ✅ Já paguei — Liberar conector
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+          <p className="text-center text-[11px] text-gray-400 mt-3">Ambiente seguro · SSL · Certificado Mercado Pago</p>
+        </div>
+      </div>
+    );
+  }
+
+  if(method==="saldo"){
+    return(
+      <div className="screen bg-gray-50 fade-in">
+        <TopBar title="Saldo EletroGo" onBack={()=>setMethod(null)}/>
+        <div className="px-4 pt-2 pb-6">
+          {billSummary}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-3xl shadow-md">💰</div>
+            <p className="font-extrabold text-ink text-lg">Saldo EletroGo</p>
+            <p className="text-4xl font-extrabold text-accent-700">{fmtMoney(wallet.balance)}</p>
+            {hasSaldo?(
+              <>
+                <p className="text-sm text-gray-600 text-center">Serão debitados <strong>{fmtMoney(finalCost)}</strong>. Conector liberado imediatamente.</p>
+                <button onClick={()=>onConfirm("saldo")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 text-white font-extrabold shadow-lg">✅ Confirmar e liberar conector</button>
+              </>
+            ):(
+              <>
+                <p className="text-sm text-gray-500 text-center">Saldo cobre <strong>{fmtMoney(wallet.balance)}</strong>. O restante <strong>{fmtMoney(finalCost-wallet.balance)}</strong> via PIX.</p>
+                <button onClick={()=>onConfirm("saldo+pix")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-accent-500 to-accent-700 text-white font-extrabold shadow-lg">Usar saldo + PIX pelo restante</button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
+/* ════════════════════════════
+   RECIBO
+════════════════════════════ */
+function ReceiptScreen({receipt,onDone}){
+  const [copied,setCopied]=useState(false);
+  return(
+    <div className="screen bg-gray-50 fade-in">
+      <div className="bg-gradient-to-br from-brand-500 to-brand-700 text-white pb-8 rounded-b-[28px] relative overflow-hidden">
+        <div className="blob w-48 h-48 bg-brand-300 -top-10 -right-10"></div>
+        <div style={{position:"absolute",top:0,left:0,right:0,zIndex:20,paddingTop:12,paddingLeft:12}}>
+          <button onClick={onDone} style={{display:"flex",alignItems:"center",gap:4,color:"rgba(255,255,255,.8)",fontSize:13,fontWeight:700,background:"rgba(255,255,255,.15)",border:"none",borderRadius:10,padding:"6px 12px"}}>
+            ‹ Histórico
+          </button>
+        </div>
+        <div className="pt-14 pb-2 px-6 relative z-10 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl mb-3">✅</div>
+          <p className="text-xl font-extrabold">Recarga paga!</p>
+          <p className="text-xs text-brand-100 mt-1">Conector liberado com sucesso</p>
+        </div>
+      </div>
+      <div className="px-4 pt-5 pb-6 space-y-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-dashed border-gray-100 space-y-2.5">
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Sessão</span><span className="font-bold text-ink font-mono">{receipt.id}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Posto</span><span className="font-bold text-ink">{receipt.stationName}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Conector</span><span className="font-bold text-ink">{receipt.connectorType}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Energia</span><span className="font-bold text-ink">{fmtKwh(receipt.kwh)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Duração</span><span className="font-bold text-ink">{receipt.durationMin} min</span></div>
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Tarifa</span><span className="font-bold text-ink">{fmtMoney(receipt.priceKwh)} / kWh</span></div>
+            {receipt.discount>0&&<div className="flex justify-between text-sm"><span className="text-green-600 font-semibold">Desconto</span><span className="font-bold text-green-600">− {fmtMoney(receipt.discount)}</span></div>}
+            <div className="flex justify-between text-sm"><span className="text-gray-500">Pagamento</span><span className="font-bold text-ink capitalize">{receipt.paymentMethod}</span></div>
+          </div>
+          <div className="px-5 py-4 flex justify-between items-center">
+            <span className="font-extrabold text-gray-700">Total pago</span>
+            <span className="font-extrabold text-2xl text-brand-700">{fmtMoney(receipt.cost)}</span>
+          </div>
+          {receipt.cashback>0&&(
+            <div className="bg-brand-50 border-t border-brand-100 px-5 py-3 flex items-center gap-2">
+              <span className="text-brand-500 text-lg">💚</span>
+              <p className="text-xs text-brand-700 font-semibold">+{fmtMoney(receipt.cashback)} de cashback creditado!</p>
+            </div>
+          )}
+        </div>
+        {/* CO2 */}
+        {(()=>{
+          const co2Avoided=Math.round(receipt.kwh*0.089*1000)/1000;
+          const kmEq=Math.round(receipt.kwh*6.5);
+          return(
+            <div style={{background:"linear-gradient(135deg,#052a1a,#0d3320)",borderRadius:20,padding:"14px 16px"}} className="flex items-center gap-3">
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(45,227,171,.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🌿</div>
+              <div>
+                <p className="text-xs font-bold text-brand-300">Impacto ambiental desta carga</p>
+                <p className="text-[11px] text-brand-400/80 mt-0.5">{co2Avoided.toFixed(2)} kg CO₂ evitado · equivale a {kmEq} km elétricos</p>
+              </div>
+            </div>
+          );
+        })()}
+        <div className="flex gap-2">
+          <button onClick={()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);}}
+            className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center gap-2 card-hover">
+            {copied?"✓ Copiado!":"📋 Copiar"}
+          </button>
+          <button className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center gap-2 card-hover">
+            📤 Compartilhar
+          </button>
+        </div>
+        <button onClick={onDone} className="btn-primary w-full text-sm">Ver histórico →</button>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   CARTEIRA
+════════════════════════════ */
+function WalletScreen({wallet,onToggleCoupon,userPlan,onGoPlans,onBack}){
+  const tier=getTier(wallet.points);
+  const nextTier=getNextTier(wallet.points);
+  const activePlan=PLANS.find(p=>p.id===userPlan)||PLANS[0];
+  const levelPct=nextTier?Math.min(100,((wallet.points-tier.min)/(nextTier.min-tier.min))*100):100;
+  const projectedMonthly=(wallet.balance+50*tier.cashbackRate).toFixed(2);
+  return(
+    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="blob w-56 h-56 bg-brand-500 float-slow" style={{top:-60,right:-30,opacity:.25}}></div>
+        <TopBar title="Carteira e Ofertas" dark onBack={onBack}/>
+        <div className="px-4 relative z-10">
+          {/* saldo card */}
+          <div className="shimmer glass rounded-2xl p-4 mb-3">
+            <p className="text-[10px] uppercase tracking-widest text-brand-300 font-bold">Saldo de cashback</p>
+            <p className="text-4xl font-extrabold text-white mt-1">{fmtMoney(wallet.balance)}</p>
+            <p className="text-[11px] text-gray-400 mt-1">Projeção mensal: <span className="text-brand-300 font-bold">R$ {projectedMonthly}</span></p>
+            <div className="mt-3">
+              <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
+                <span>{tier.icon} {tier.label} — {wallet.points} pts</span>
+                <span>{nextTier?`${nextTier.min-wallet.points} pts para ${nextTier.icon} ${nextTier.label}`:"Nível máximo 🏆"}</span>
+              </div>
+              <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
+                <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3}}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 pt-4 space-y-3 pb-6">
+        <div className={"rounded-2xl p-4 text-white bg-gradient-to-r shadow-md "+tier.color}>
+          <p className="text-sm font-bold">{tier.icon} Benefícios do nível {tier.label}</p>
+          <ul className="mt-2 space-y-1 text-[12px] opacity-95">{tier.perks.map((p,i)=><li key={i} className="flex gap-1.5"><span>✓</span><span>{p}</span></li>)}</ul>
+          {nextTier&&<p className="text-[11px] opacity-80 mt-2 border-t border-white/20 pt-2">Alcance {nextTier.min} pts para virar {nextTier.icon} {nextTier.label} — cashback {Math.round(nextTier.cashbackRate*100)}%.</p>}
+        </div>
+        {activePlan.id==="free"?(
+          <button onClick={onGoPlans} className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-4 text-ink text-left shadow-md relative overflow-hidden">
+            <div className="absolute -right-4 -top-4 text-7xl opacity-15">👑</div>
+            <p className="text-xs font-bold uppercase tracking-wide opacity-70">EletroPass</p>
+            <p className="font-extrabold text-base mt-0.5">Assine e economize mais</p>
+            <p className="text-[11px] mt-1 opacity-80">Sem taxa de conveniência, reserva de conector e cashback acumulativo.</p>
+            <span className="mt-2 inline-block text-[11px] font-bold bg-ink/10 px-3 py-1.5 rounded-lg">Ver planos →</span>
+          </button>
+        ):(
+          <div className={"w-full rounded-2xl p-4 text-white shadow-md bg-gradient-to-r relative overflow-hidden "+activePlan.color}>
+            <div className="absolute -right-4 -top-4 text-7xl opacity-15">{activePlan.icon}</div>
+            <p className="text-xs font-bold uppercase tracking-wide opacity-70">Plano ativo</p>
+            <p className="font-extrabold text-base mt-0.5">{activePlan.label}</p>
+            <p className="text-[11px] mt-1 opacity-80">{fmtMoney(activePlan.priceMonth)}/mês · renovação automática</p>
+            <button onClick={onGoPlans} className="mt-2 text-[11px] font-bold bg-white/20 px-3 py-1.5 rounded-lg">Gerenciar plano →</button>
+          </div>
+        )}
+        <h3 className="text-sm font-bold text-ink">Ofertas disponíveis</h3>
+        {wallet.coupons.map(c=>(
+          <div key={c.id} className={"rounded-2xl p-4 text-white bg-gradient-to-r shadow-md relative overflow-hidden "+c.color+(c.used?" opacity-40":"")}>
+            <div className="absolute -right-3 -bottom-3 text-7xl opacity-15">{c.icon}</div>
+            <div className="flex items-center justify-between gap-3 relative z-10">
+              <div>
+                <p className="text-xl font-extrabold">{c.big}</p>
+                <p className="text-sm font-bold mt-0.5">{c.title}</p>
+                <p className="text-[11px] opacity-90 mt-1">{c.description}</p>
+              </div>
+              <button disabled={c.used} onClick={()=>onToggleCoupon(c.id)}
+                className={"text-xs font-bold px-3.5 py-2 rounded-xl whitespace-nowrap "+(c.used?"bg-white/20 cursor-not-allowed":c.active?"bg-white text-ink":"bg-white/20")}>
+                {c.used?"Usado":c.active?"Ativo ✓":"Ativar"}
+              </button>
+            </div>
+          </div>
+        ))}
+        <div className="bg-gradient-to-br from-accent-500 to-accent-700 rounded-2xl p-4 text-white text-center shadow-md relative overflow-hidden">
+          <div className="absolute -left-4 -top-4 text-7xl opacity-15">🤝</div>
+          <p className="text-sm font-bold relative z-10">Indique e ganhe</p>
+          <p className="text-[11px] opacity-90 mt-1 relative z-10">Convide amigos e ganhe R$ 15 por cada novo usuário.</p>
+          <button className="mt-3 px-5 py-2.5 rounded-xl bg-white text-accent-700 text-xs font-bold relative z-10">Compartilhar convite</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   HISTÓRICO
+════════════════════════════ */
+function HistoryScreen({history,onBack}){
+  const [filter,setFilter]=useState("all");
+  const totalKwh=history.reduce((a,h)=>a+h.kwh,0);
+  const totalCost=history.reduce((a,h)=>a+h.cost,0);
+  const totalCashback=history.reduce((a,h)=>a+(h.cashback||0),0);
+  const totalCo2=totalKwh*0.089;
+  const sessions=history.length;
+  const filters=[{id:"all",label:"Todas"},{id:"month",label:"Este mês"},{id:"week",label:"Esta semana"}];
+  return(
+    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+      {/* header */}
+      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="blob w-40 h-40 bg-brand-500 float-slow" style={{top:-30,right:-20,opacity:.2}}></div>
+        <TopBar title="Histórico" dark onBack={onBack}/>
+        <div className="px-4 relative z-10">
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="glass rounded-2xl p-3">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase">Energia total</p>
+              <p className="text-lg font-extrabold text-white mt-0.5">{fmtKwh(totalKwh)}</p>
+              <p className="text-[10px] text-brand-400 font-semibold mt-0.5">{sessions} sessões</p>
+            </div>
+            <div className="glass rounded-2xl p-3">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase">Total investido</p>
+              <p className="text-lg font-extrabold text-white mt-0.5">{fmtMoney(totalCost)}</p>
+              <p className="text-[10px] text-brand-400 font-semibold mt-0.5">+{fmtMoney(totalCashback)} cashback</p>
+            </div>
+          </div>
+          {/* CO2 */}
+          <div className="glass rounded-2xl px-4 py-3 flex items-center gap-3">
+            <span className="text-2xl">🌿</span>
+            <div className="flex-1">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase mb-1">CO₂ evitado</p>
+              <div className="co2-bar" style={{width:`${Math.min(100,(totalCo2/50)*100)}%`}}></div>
+              <p className="text-[11px] text-brand-300 font-bold mt-1">{totalCo2.toFixed(2)} kg · {Math.round(totalKwh*6.5)} km elétricos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* filters */}
+      <div className="flex gap-2 px-4 mt-4">
+        {filters.map(f=>(
+          <button key={f.id} onClick={()=>setFilter(f.id)}
+            className={"text-xs font-bold px-4 py-2 rounded-full transition "+(filter===f.id?"text-ink shadow-sm":"bg-white text-gray-400 border border-gray-100")}
+            style={filter===f.id?{background:"linear-gradient(135deg,#2de3ab,#00b386)",boxShadow:"0 2px 8px rgba(0,212,154,.3)"}:{}}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+      <div className="px-4 mt-3 space-y-2 pb-6">
+        {history.map((h,idx)=>(
+          <div key={h.id} className="card flex gap-3 p-4">
+            <div className="flex flex-col items-center">
+              <div className="tl-dot bg-brand-50 text-sm">⚡</div>
+              {idx<history.length-1&&<div className="w-px flex-1 bg-gray-100 mt-1 mb-1"></div>}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-extrabold text-ink text-sm leading-tight">{h.stationName}</p>
+                <p className="text-[11px] text-gray-400 flex-shrink-0">{h.date}</p>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
+                <span className="badge-pill bg-gray-100 text-gray-500">{fmtKwh(h.kwh)}</span>
+                <span className="badge-pill bg-gray-100 text-gray-500">{h.durationMin} min</span>
+                {h.cashback>0&&<span className="badge-pill bg-brand-50 text-brand-700">+{fmtMoney(h.cashback)} cashback</span>}
+                {h.discount>0&&<span className="badge-pill bg-accent-50 text-accent-700">-{fmtMoney(h.discount)} cupom</span>}
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-[11px] text-gray-400">🌿 {(h.kwh*0.089).toFixed(2)} kg CO₂ evitado</span>
+                <span className="font-extrabold text-ink">{fmtMoney(h.cost)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+        {history.length===0&&(
+          <div className="text-center py-12">
+            <p className="text-4xl mb-3">🔌</p>
+            <p className="font-bold text-gray-400 text-sm">Nenhuma recarga ainda.</p>
+            <p className="text-xs text-gray-300 mt-1">Sua primeira carga aparece aqui.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   PERFIL
+════════════════════════════ */
+function ProfileScreen({user,onLogout,wallet,userPlan,onGoPlans,onBack}){
+  const tier=getTier(wallet.points);
+  const nextTier=getNextTier(wallet.points);
+  const activePlan=PLANS.find(p=>p.id===userPlan)||PLANS[0];
+  const displayName=user.name||(user.email||"").split("@")[0]||"Motorista";
+  const displayEmail=user.email||"";
+  const initials=displayName.charAt(0).toUpperCase();
+  const levelPct=nextTier?Math.min(100,((wallet.points-tier.min)/(nextTier.min-tier.min))*100):100;
+  const rows=[
+    {icon:"👑",label:"Meu plano EletroPass",value:activePlan.label,action:onGoPlans},
+    {icon:"🚗",label:"Meus veículos",value:"1 cadastrado"},
+    {icon:"💳",label:"Métodos de pagamento",value:"Cartão •••• 4321"},
+    {icon:"🔔",label:"Notificações",value:"Ativadas"},
+    {icon:"💬",label:"Suporte WhatsApp",value:"Falar agora",href:WA_SUPPORT},
+    {icon:"🔒",label:"Privacidade (LGPD)",value:"Ver dados"},
+    {icon:"📄",label:"Termos de Uso",value:"Ver termos"},
+  ];
+  return(
+    <div className="screen fade-in" style={{background:"#f3f5f9"}}>
+      {/* header */}
+      <div style={{background:"linear-gradient(160deg,#0a0e1a,#121a2e)",borderRadius:"0 0 28px 28px",paddingBottom:20,position:"relative",overflow:"hidden"}}>
+        <div className="blob w-56 h-56 bg-brand-500 float-slow" style={{top:-60,left:-30,opacity:.2}}></div>
+        <TopBar title="Perfil" dark onBack={onBack}/>
+        <div className="px-4 relative z-10">
+          {/* avatar + nome */}
+          <div className="flex items-center gap-4 mb-4">
+            <div style={{width:56,height:56,borderRadius:18,background:"linear-gradient(135deg,#2de3ab,#00b386)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:22,color:"#0a0e1a",boxShadow:"0 6px 20px rgba(0,212,154,.4)",flexShrink:0}}>
+              {initials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-extrabold text-white capitalize truncate">{displayName}</p>
+              <p className="text-[11px] text-gray-400 truncate">{displayEmail}</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="badge-pill bg-brand-500/20 text-brand-300" style={{border:"1px solid rgba(45,227,171,.2)"}}>{tier.icon} {tier.label}</span>
+                <span className="badge-pill bg-white/10 text-gray-300">{wallet.points} pts</span>
+              </div>
+            </div>
+          </div>
+          {/* level progress */}
+          <div className="glass rounded-2xl px-4 py-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase">Progresso para {nextTier?nextTier.label:"nível máximo"}</p>
+              <p className="text-[10px] text-brand-300 font-bold">{nextTier?`${nextTier.min-wallet.points} pts`:"✓ Máximo"}</p>
+            </div>
+            <div style={{height:6,background:"rgba(255,255,255,.1)",borderRadius:3,overflow:"hidden"}}>
+              <div style={{height:"100%",width:levelPct+"%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3,transition:"width .6s"}}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 pt-4 pb-6 space-y-3">
+        {/* stats rápidas */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            {icon:"⚡",label:"Cashback",val:fmtMoney(wallet.balance)},
+            {icon:"🔌",label:"Sessões",val:"2"},
+            {icon:"🌿",label:"CO₂ evitado",val:"3,8 kg"},
+          ].map((s,i)=>(
+            <div key={i} className="card text-center py-3">
+              <p className="text-xl">{s.icon}</p>
+              <p className="text-[10px] text-gray-400 font-semibold mt-1">{s.label}</p>
+              <p className="text-xs font-extrabold text-ink mt-0.5">{s.val}</p>
+            </div>
+          ))}
+        </div>
+        {/* EV card */}
+        <div style={{background:"linear-gradient(135deg,#0d1f1a,#052a1a)",borderRadius:20,padding:"14px 16px",border:"1px solid rgba(45,227,171,.15)"}}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div style={{width:40,height:40,borderRadius:12,background:"rgba(45,227,171,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🚗</div>
+              <div>
+                <p className="text-sm font-extrabold text-white">BYD Dolphin</p>
+                <p className="text-[11px] text-gray-400">44,9 kWh · CCS2</p>
+              </div>
+            </div>
+            <button className="text-[11px] font-bold text-brand-400" style={{background:"rgba(45,227,171,.1)",padding:"5px 12px",borderRadius:10}}>Editar</button>
+          </div>
+          <div className="mt-3">
+            <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+              <span>Bateria estimada</span><span className="text-brand-300 font-bold">72%</span>
+            </div>
+            <div style={{height:6,background:"rgba(255,255,255,.08)",borderRadius:3}}>
+              <div style={{height:"100%",width:"72%",background:"linear-gradient(90deg,#2de3ab,#00b386)",borderRadius:3}}></div>
+            </div>
+          </div>
+        </div>
+        {/* menu */}
+        <div className="card overflow-hidden" style={{padding:0}}>
+          {rows.map((r,i)=>(
+            <div key={r.label} onClick={r.action||(r.href?()=>window.open(r.href,"_blank"):undefined)}
+              className={"flex items-center justify-between px-4 py-3.5 "+(r.action||r.href?"cursor-pointer active:bg-gray-50":"")}
+              style={i<rows.length-1?{borderBottom:"1px solid #f3f5f9"}:{}}>
+              <div className="flex items-center gap-3">
+                <div style={{width:34,height:34,borderRadius:10,background:"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{r.icon}</div>
+                <span className="text-sm font-semibold text-ink">{r.label}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-gray-400">{r.value}</span>
+                {(r.action||r.href)&&<span className="text-gray-300 text-base">›</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+        <button onClick={onLogout} className="w-full py-3.5 rounded-2xl text-sm font-bold text-rose-600 card-hover" style={{border:"1.5px solid #fecdd3",background:"#fff9f9"}}>Sair da conta</button>
+        <p className="text-center text-[11px] text-gray-300">EletroGo · v1.0 · Curitiba, PR</p>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════
+   PLANOS
+════════════════════════════ */
+function PlansScreen({onBack,userPlan,onSelectPlan}){
+  const [selected,setSelected]=useState(userPlan||"free");
+  const [confirmed,setConfirmed]=useState(false);
+  const handleConfirm=()=>{onSelectPlan(selected);setConfirmed(true);setTimeout(onBack,1200);};
+  return(
+    <div className="screen bg-gray-50 fade-in">
+      <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-ink pb-6 rounded-b-[28px] relative overflow-hidden">
+        <div className="blob w-48 h-48 bg-yellow-300 -top-10 -right-10"></div>
+        <TopBar title="EletroPass" onBack={onBack}/>
+        <div className="px-4 relative z-10 -mt-1">
+          <p className="font-extrabold text-xl">Escolha seu plano</p>
+          <p className="text-[12px] opacity-75 mt-0.5">Assinantes têm ARPU 4,6× maior e churn 38% menor.</p>
+        </div>
+      </div>
+      <div className="px-4 pt-4 pb-6 space-y-3">
+        {PLANS.map(plan=>{
+          const isActive=selected===plan.id;
+          const isGold=plan.id==="eletropass-gold";
+          return(
+            <button key={plan.id} onClick={()=>setSelected(plan.id)}
+              className="w-full text-left rounded-2xl transition-all card-hover overflow-hidden"
+              style={{border:isActive?"2px solid #2de3ab":"2px solid #eef0f5",boxShadow:isActive?"0 4px 20px rgba(0,212,154,.15)":"0 2px 8px rgba(10,14,26,.05)",background:"#fff",position:"relative"}}>
+              {isGold&&<div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#fbbf24,#f59e0b)"}}></div>}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div style={{width:38,height:38,borderRadius:12,background:isGold?"linear-gradient(135deg,#fbbf24,#f59e0b)":isActive?"linear-gradient(135deg,#2de3ab,#00b386)":"#f3f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                      {plan.icon}
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-ink text-sm">{plan.label}</p>
+                      {plan.highlight&&<span className="badge-pill bg-yellow-100 text-yellow-700">Mais popular</span>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {plan.priceMonth===0
+                      ?<p className="font-bold text-gray-400 text-sm">Grátis</p>
+                      :<><p className="font-extrabold text-ink text-lg leading-none">{fmtMoney(plan.priceMonth)}</p><p className="text-[10px] text-gray-400">/mês</p></>
+                    }
+                  </div>
+                </div>
+                <div className="mt-3 space-y-1.5">
+                  {plan.features.map((f,i)=>(
+                    <div key={i} className="flex items-center gap-2">
+                      <div style={{width:16,height:16,borderRadius:"50%",background:isActive?"#2de3ab":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        <span style={{fontSize:9,fontWeight:800,color:isActive?"#0a0e1a":"#9ca3af"}}>✓</span>
+                      </div>
+                      <span className="text-[12px] text-gray-600">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                {isActive&&<div style={{marginTop:12,padding:"8px 12px",borderRadius:12,background:"rgba(0,212,154,.08)",border:"1px solid rgba(0,212,154,.2)"}}>
+                  <p className="text-[11px] text-brand-700 font-bold text-center">✓ Plano selecionado</p>
+                </div>}
+              </div>
+            </button>
+          );
+        })}
+        {confirmed?(
+          <div className="py-4 text-center text-brand-700 font-bold text-sm">✅ Plano atualizado com sucesso!</div>
+        ):(
+          <button onClick={handleConfirm} className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 text-ink font-extrabold shadow-lg shadow-brand-500/30">
+            {selected==="free"?"Continuar grátis":`Assinar ${PLANS.find(p=>p.id===selected)?.label}`}
+          </button>
+        )}
+        <p className="text-center text-[10px] text-gray-400">Cobrança mensal · Cancele quando quiser</p>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════
+   APP PRINCIPAL
+════════════════════════════════════════ */
+function App(){
+  const [lgpdDone,setLgpdDone]   = useState(()=>!!localStorage.getItem(SK_LGPD));
+  const [onboarded,setOnboarded] = useState(()=>!!localStorage.getItem(SK_ONBOARD));
+  const [user,setUser]           = useState(null);
+  const [authLoading,setAuthLoading] = useState(SB_READY); // true only when Supabase configured
+  const [screen,setScreen]       = useState("home");
+  const [selectedStation,setSelectedStation] = useState(null);
+  const [stations,setStations]   = useState(STATIONS);
+  const [session,setSession]     = useState(null);
+  const [completedSession,setCompletedSession] = useState(null);
+  const [pendingReceipt,setPendingReceipt]     = useState(null);
+  const [history,setHistory]     = useState(()=>{try{return JSON.parse(localStorage.getItem(SK_HISTORY))||HISTORY_SEED;}catch{return HISTORY_SEED;}});
+  const [wallet,setWallet]       = useState(()=>{try{return JSON.parse(localStorage.getItem(SK_WALLET))||{balance:0,points:0,coupons:INITIAL_COUPONS};}catch{return {balance:0,points:0,coupons:INITIAL_COUPONS};}});
+  const [userPlan,setUserPlan]   = useState("free");
+  const [notifs,setNotifs]       = useState(INITIAL_NOTIFS);
+  const [showNotifs,setShowNotifs] = useState(false);
+  const [toast,setToast]         = useState(null);
+  const [reservations,setReservations] = useState({});
+  const tickRef = useRef(null);
+  const resTimers = useRef({});
+
+  /* ── Supabase: carregar dados do usuário do banco ── */
+  const loadUserDB = async(userId)=>{
+    const data = await sbLoadUserData(userId);
+    if(!data) return;
+    if(data.wallet){
+      setWallet({
+        balance: parseFloat(data.wallet.balance)||0,
+        points: data.wallet.points||0,
+        coupons: data.wallet.coupons||INITIAL_COUPONS,
+      });
+    }
+    if(data.sessions?.length){
+      setHistory(data.sessions.map(s=>({
+        id:s.id, stationName:s.station_name, date:new Date(s.created_at).toLocaleDateString("pt-BR"),
+        kwh:parseFloat(s.kwh)||0, durationMin:s.duration_min||0,
+        cost:parseFloat(s.cost)||0, discount:parseFloat(s.discount)||0,
+        cashback:parseFloat(s.cashback)||0, paymentMethod:s.payment_method,
+      })));
+    }
+  };
+
+  /* ── Supabase: escutar mudança de sessão de auth ── */
+  useEffect(()=>{
+    if(!SB_READY){
+      // Sem Supabase: usar localStorage como fallback
+      try{const u=JSON.parse(localStorage.getItem(SK_USER));if(u)setUser(u);}catch{}
+      return;
+    }
+    SbAuth.getSession().then(session=>{
+      if(session?.user){
+        const u={id:session.user.id,name:session.user.user_metadata?.name||session.user.email.split("@")[0],email:session.user.email};
+        setUser(u);
+        loadUserDB(u.id);
+      }
+      setAuthLoading(false);
+    });
+    const unsub=SbAuth.onAuthChange((event,session)=>{
+      if(event==="SIGNED_IN"&&session?.user){
+        const u={id:session.user.id,name:session.user.user_metadata?.name||session.user.email.split("@")[0],email:session.user.email};
+        setUser(u);loadUserDB(u.id);
+      } else if(event==="SIGNED_OUT"){
+        setUser(null);
+        setWallet({balance:0,points:0,coupons:INITIAL_COUPONS});
+        setHistory(HISTORY_SEED);
+      }
+    });
+    return unsub;
+  },[]);
+
+  /* ── Sync wallet → Supabase (debounced) ── */
+  const walletSyncTimer=useRef(null);
+  useEffect(()=>{
+    if(!user?.id) return;
+    localStorage.setItem(SK_WALLET,JSON.stringify(wallet));
+    clearTimeout(walletSyncTimer.current);
+    walletSyncTimer.current=setTimeout(()=>sbUpsertWallet(user.id,wallet),1500);
+  },[wallet]);
+
+  useEffect(()=>{localStorage.setItem(SK_HISTORY,JSON.stringify(history));},[history]);
+
+  /* ── Tick de carga em tempo real (DEMO_FACTOR removido) ── */
+  useEffect(()=>{
+    if(!session)return;
+    tickRef.current=setInterval(()=>{
+      setSession(prev=>{
+        if(!prev)return prev;
+        const inc=prev.connector.powerKw/3600; // kWh por segundo real
+        return{...prev,kwh:prev.kwh+inc,elapsedSec:prev.elapsedSec+1};
+      });
+    },1000);
+    return()=>clearInterval(tickRef.current);
+  },[session&&session.id]);
+
+  useEffect(()=>()=>Object.values(resTimers.current).forEach(clearInterval),[]);
+
+  const handleLGPD=()=>{localStorage.setItem(SK_LGPD,"1");setLgpdDone(true);};
+  const handleOnboarded=()=>{localStorage.setItem(SK_ONBOARD,"1");setOnboarded(true);};
+  const handleLogin=(userData)=>{
+    const u=typeof userData==="string"?{name:userData.split("@")[0],email:userData,isNew:false}:userData;
+    if(!SB_READY) localStorage.setItem(SK_USER,JSON.stringify(u));
+    setUser(u);
+    if(u.isNew)showToast("🎉 Bem-vindo à EletroGo, "+u.name+"!");
+    setScreen("home");
+  };
+
+  const showToast=(msg)=>setToast(msg);
+  const handleSelectPlan=(planId)=>setUserPlan(planId);
+
+  const handleStartCharge=(station,connector)=>{
+    const activeCoupon=wallet.coupons.find(c=>c.active&&!c.used);
+    setStations(prev=>prev.map(s=>s.id===station.id?{...s,connectors:s.connectors.map(c=>c.id===connector.id?{...c,status:"carregando"}:c)}:s));
+    setSession({id:"TX-"+Math.floor(1000+Math.random()*9000),station,connector,kwh:0,elapsedSec:0,appliedCouponId:activeCoupon?.id||null});
+    setScreen("charging");
+  };
+
+  const handleStopCharge=()=>{
+    if(!session)return;
+    clearInterval(tickRef.current);
+    const {station,connector,kwh,elapsedSec,appliedCouponId}=session;
+    const rawCost=kwh*connector.priceKwh;
+    const coupon=wallet.coupons.find(c=>c.id===appliedCouponId);
+    let discount=0;
+    if(coupon&&coupon.type==="percent")discount=rawCost*(coupon.value/100);
+    const finalCost=Math.max(0,rawCost-discount);
+    const tier=getTier(wallet.points);
+    const tierCashback=finalCost*tier.cashbackRate;
+    const earnedPoints=Math.round(finalCost);
+    setCompletedSession({id:session.id,station,connector,kwh,elapsedSec,appliedCouponId,rawCost,discount,finalCost,tierCashback,earnedPoints});
+    setSession(null);
+    setScreen("payment");
+  };
+
+  const handlePaymentComplete=(paymentMethod)=>{
+    if(!completedSession)return;
+    const {id,station,connector,kwh,elapsedSec,appliedCouponId,finalCost,discount,tierCashback,earnedPoints}=completedSession;
+    const durationMin=Math.max(1,Math.round(elapsedSec/60));
+    setStations(prev=>prev.map(s=>s.id===station.id?{...s,connectors:s.connectors.map(c=>c.id===connector.id?{...c,status:"disponivel"}:c)}:s));
+    const histEntry={id,stationName:station.name,date:new Date().toLocaleDateString("pt-BR"),kwh,durationMin,cost:finalCost,discount,cashback:tierCashback,paymentMethod};
+    setHistory(prev=>[histEntry,...prev]);
+    // Persistir sessão no Supabase
+    if(user?.id) sbAddSession(user.id,{
+      station_name:station.name, kwh, duration_min:durationMin,
+      cost:finalCost, discount, cashback:tierCashback, payment_method:paymentMethod,
+    });
+    setWallet(prev=>{
+      let coupons=prev.coupons.map(c=>c.id===appliedCouponId?{...c,used:true,active:false}:c);
+      let balance=prev.balance+tierCashback;
+      let points=prev.points+earnedPoints;
+      const cbCoupon=prev.coupons.find(c=>c.type==="cashback"&&!c.used&&kwh>=(c.minKwh||0));
+      if(cbCoupon&&!appliedCouponId){balance+=cbCoupon.value;coupons=coupons.map(c=>c.id===cbCoupon.id?{...c,used:true}:c);}
+      return{...prev,coupons,balance,points};
+    });
+    setPendingReceipt({id,stationName:station.name,connectorType:connector.type,kwh,durationMin,priceKwh:connector.priceKwh,cost:finalCost,discount,cashback:tierCashback,paymentMethod});
+    setCompletedSession(null);
+    setScreen("receipt");
+  };
+
+  const handleToggleCoupon=(couponId)=>{
+    setWallet(prev=>({...prev,coupons:prev.coupons.map(c=>{
+      if(c.used)return c;
+      if(c.id===couponId)return{...c,active:!c.active};
+      return{...c,active:false};
+    })}));
+  };
+
+  const handleLogout=async()=>{
+    await SbAuth.logout();
+    localStorage.removeItem(SK_USER);
+    setUser(null);setScreen("home");setSelectedStation(null);setSession(null);
+    setWallet({balance:0,points:0,coupons:INITIAL_COUPONS});
+    setHistory(HISTORY_SEED);
+  };
+
+  const handleReserve=(station,connector)=>{
+    const key=station.id+"-"+connector.id;
+    setStations(prev=>prev.map(s=>s.id===station.id?{...s,connectors:s.connectors.map(c=>c.id===connector.id?{...c,status:"reservado"}:c)}:s));
+    setReservations(prev=>({...prev,[key]:{secsLeft:900}}));
+    showToast("⏱ Conector reservado por 15 minutos!");
+    resTimers.current[key]=setInterval(()=>{
+      setReservations(prev=>{
+        const cur=(prev[key]?.secsLeft||0)-1;
+        if(cur<=0){
+          clearInterval(resTimers.current[key]);
+          setStations(s=>s.map(st=>st.id===station.id?{...st,connectors:st.connectors.map(c=>c.id===connector.id?{...c,status:"disponivel"}:c)}:st));
+          const{[key]:_,...rest}=prev;return rest;
+        }
+        return{...prev,[key]:{secsLeft:cur}};
+      });
+    },1000);
+  };
+
+  const handleReadNotif=(id)=>setNotifs(prev=>prev.map(n=>n.id===id?{...n,read:true}:n));
+  const unreadCount=notifs.filter(n=>!n.read).length;
+
+  if(authLoading) return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",background:"#0a0e1a",gap:16}}>
+      <div style={{width:48,height:48,border:"3px solid #1e3a5f",borderTop:"3px solid #00d4ff",borderRadius:"50%",animation:"spin 0.9s linear infinite"}}/>
+      <p style={{color:"#8899aa",fontSize:13,letterSpacing:1}}>Carregando...</p>
+    </div>
+  );
+  if(!lgpdDone)  return <LGPDScreen onAccept={handleLGPD}/>;
+  if(!onboarded) return <OnboardingScreen onDone={handleOnboarded}/>;
+  if(!user)      return <AuthScreen onLogin={handleLogin}/>;
+
+  let content;
+  switch(screen){
+    case "home":
+      content=<HomeScreen user={user} stations={stations} onSelectStation={s=>{setSelectedStation(s);setScreen("station");}} wallet={wallet} onGoWallet={()=>setScreen("wallet")} onOpenNotifs={()=>setShowNotifs(true)} unreadCount={unreadCount}/>;
+      break;
+    case "station":
+      content=<StationDetailScreen station={selectedStation} onBack={()=>setScreen("home")} onStartCharge={handleStartCharge} onReserve={handleReserve} wallet={wallet} userPlan={userPlan} reservations={reservations}/>;
+      break;
+    case "charging":
+      content=<ChargingScreen session={session} onStop={handleStopCharge} onBack={()=>setScreen("home")} wallet={wallet}/>;
+      break;
+    case "payment":
+      content=completedSession?<PaymentScreen completedSession={completedSession} wallet={wallet} onConfirm={handlePaymentComplete} onBack={()=>setScreen("home")}/>:null;
+      break;
+    case "receipt":
+      content=pendingReceipt?<ReceiptScreen receipt={pendingReceipt} onDone={()=>{setPendingReceipt(null);setScreen("history");}}/>:null;
+      break;
+    case "wallet":
+      content=<WalletScreen wallet={wallet} onToggleCoupon={handleToggleCoupon} userPlan={userPlan} onGoPlans={()=>setScreen("plans")} onBack={()=>setScreen("home")}/>;
+      break;
+    case "history":
+      content=<HistoryScreen history={history} onBack={()=>setScreen("home")}/>;
+      break;
+    case "profile":
+      content=<ProfileScreen user={user} onLogout={handleLogout} wallet={wallet} userPlan={userPlan} onGoPlans={()=>setScreen("plans")} onBack={()=>setScreen("home")}/>;
+      break;
+    case "plans":
+      content=<PlansScreen onBack={()=>setScreen("wallet")} userPlan={userPlan} onSelectPlan={handleSelectPlan}/>;
+      break;
+    default:
+      content=<HomeScreen user={user} stations={stations} onSelectStation={s=>{setSelectedStation(s);setScreen("station");}} wallet={wallet} onGoWallet={()=>setScreen("wallet")} onOpenNotifs={()=>setShowNotifs(true)} unreadCount={unreadCount}/>;
+  }
+
+  return(
+    <div className="flex flex-col h-full relative">
+      {content}
+      {screen!=="payment"&&screen!=="receipt"&&<BottomNav screen={screen} setScreen={setScreen} hasActiveSession={!!session}/>}
+      {showNotifs&&<NotifPanel notifs={notifs} onRead={handleReadNotif} onClose={()=>setShowNotifs(false)}/>}
+      {toast&&<Toast msg={toast} onDone={()=>setToast(null)}/>}
+      <SupportButton/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+
+<script>
+// ── PWA: registra service worker ──────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err=>console.warn('SW registro falhou (dev mode):', err));
+  });
+}
+</script>
+</body>
+</html>
