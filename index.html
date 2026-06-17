@@ -1033,7 +1033,12 @@ function StationCard({station,onSelect}){
 
 function HomeScreen({user,stations,onSelectStation,wallet,onGoWallet,onOpenNotifs,unreadCount}){
   const [query,setQuery]=useState("");
-  const filtered=stations.filter(s=>s.name.toLowerCase().includes(query.toLowerCase()));
+  const q=query.toLowerCase();
+  const filtered=stations.filter(s=>
+    s.name.toLowerCase().includes(q)||
+    (s.address||"").toLowerCase().includes(q)||
+    (s.badge||"").toLowerCase().includes(q)
+  );
   const firstName=(user.name||(user.email||"").split("@")[0]||"Motorista").split(" ")[0];
   const initials=firstName.charAt(0).toUpperCase();
   const tier=getTier(wallet.points);
