@@ -263,7 +263,7 @@ const SbAuth = {
     if (!error && data?.user) {
       await sb.from("profiles").upsert({id:data.user.id,name,cpf,phone,email});
     }
-    return {user:data?.user||null, error};
+    return {user:data?.user||null, session:data?.session||null, error};
   },
   async resetPassword(email) {
     if (!sb) return {error:null};
@@ -676,7 +676,7 @@ function AuthScreen({onLogin}){
     if(parseInt(captchaVal)!==captcha.ans){setCaptchaErr(true);refreshCaptcha();return;}
     setRLoading(true);setRErr("");setCaptchaErr(false);
     try {
-      const {user,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
+      const {user,session,error}=await SbAuth.register(rEmail,rPass,rName,rCPF,rPhone);
       setRLoading(false);
       if(error){
         const raw=typeof error.message==="string"?error.message:JSON.stringify(error);
@@ -687,10 +687,13 @@ function AuthScreen({onLogin}){
           :raw||"Erro ao criar conta. Tente novamente.";
         setRErr(msg);return;
       }
-      if(user){
+      if(user && session){
+        // Confirmação desativada — entra direto
         onLogin({id:user.id,name:rName,email:rEmail,isNew:true});
+      } else if(user && !session){
+        // Confirmação ativada — aguarda e-mail
+        setRErr("✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta antes de entrar.");
       } else {
-        // Supabase com confirmação de e-mail ativa — cadastro feito, aguarda confirmação
         setRErr("✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta antes de entrar.");
       }
     } catch(e) {
