@@ -269,6 +269,10 @@ const SbAuth = {
     if (!sb) return {error:null};
     return sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
   },
+  async updatePassword(newPass) {
+    if (!sb) return {error:null};
+    return sb.auth.updateUser({password:newPass});
+  },
   async logout() {
     if (sb) await sb.auth.signOut();
   },
@@ -1948,13 +1952,65 @@ function PlansScreen({onBack,userPlan,onSelectPlan}){
 }
 
 /* ════════════════════════════════════════
+   RESET PASSWORD SCREEN
+════════════════════════════════════════ */
+function ResetPasswordScreen({onDone}){
+  const [pass,setPass]=useState("");
+  const [pass2,setPass2]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState("");
+  const [ok,setOk]=useState(false);
+
+  const doReset=async()=>{
+    if(!pass||pass.length<8){setErr("Senha precisa ter ao menos 8 caracteres.");return;}
+    if(pass!==pass2){setErr("As senhas não coincidem.");return;}
+    setLoading(true);setErr("");
+    const {error}=await SbAuth.updatePassword(pass);
+    setLoading(false);
+    if(error){setErr("Erro ao atualizar senha. Tente novamente.");return;}
+    setOk(true);
+    setTimeout(()=>onDone(),2000);
+  };
+
+  return(
+    <div className="flex flex-col items-center justify-center h-full px-6 gap-6" style={{background:"linear-gradient(160deg,#001A4D 0%,#001133 100%)"}}>
+      <div className="w-16 h-16 rounded-3xl flex items-center justify-center text-3xl" style={{background:"linear-gradient(135deg,#FF5C00,#FFAB00)"}}>🔑</div>
+      <div className="text-center">
+        <h2 className="text-white font-extrabold text-xl mb-1">Nova senha</h2>
+        <p className="text-gray-400 text-xs">Escolha uma senha segura para sua conta</p>
+      </div>
+      {ok?(
+        <div className="text-center">
+          <p className="text-[#FFAB00] font-bold text-sm">✅ Senha atualizada! Redirecionando...</p>
+        </div>
+      ):(
+        <div className="w-full max-w-xs flex flex-col gap-3">
+          <input type="password" placeholder="Nova senha" value={pass} onChange={e=>setPass(e.target.value)}
+            className="inp-dark w-full"/>
+          <input type="password" placeholder="Confirmar nova senha" value={pass2} onChange={e=>setPass2(e.target.value)}
+            className="inp-dark w-full"/>
+          {err&&<p className="text-rose-400 text-xs font-semibold">{err}</p>}
+          <button onClick={doReset} disabled={loading}
+            className="w-full py-4 rounded-2xl font-extrabold text-white disabled:opacity-60"
+            style={{background:"linear-gradient(135deg,#FF5C00,#FFAB00)"}}>
+            {loading?"Salvando...":"Salvar nova senha →"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/*
+════════════════════════════════════════
    APP PRINCIPAL
 ════════════════════════════════════════ */
 function App(){
   const [lgpdDone,setLgpdDone]   = useState(()=>!!localStorage.getItem(SK_LGPD));
   const [onboarded,setOnboarded] = useState(()=>!!localStorage.getItem(SK_ONBOARD));
   const [user,setUser]           = useState(null);
-  const [authLoading,setAuthLoading] = useState(SB_READY); // true only when Supabase configured
+  const [authLoading,setAuthLoading] = useState(SB_READY);
+  const [recoveryMode,setRecoveryMode] = useState(false);
   const [screen,setScreen]       = useState("home");
   const [selectedStation,setSelectedStation] = useState(null);
   const [stations,setStations]   = useState(STATIONS);
@@ -2028,12 +2084,18 @@ function App(){
       }
       setAuthLoading(false);
     });
+    const isRecovery={current:false};
     const unsub=SbAuth.onAuthChange((event,session)=>{
-      if(event==="SIGNED_IN"&&session?.user){
+      if(event==="PASSWORD_RECOVERY"){
+        isRecovery.current=true;
+        setRecoveryMode(true);
+      } else if(event==="SIGNED_IN"&&session?.user){
+        if(isRecovery.current) return; // aguarda nova senha
         const u={id:session.user.id,name:session.user.user_metadata?.name||session.user.email.split("@")[0],email:session.user.email};
         setUser(u);loadUserDB(u.id);
       } else if(event==="SIGNED_OUT"){
-        setUser(null);
+        isRecovery.current=false;
+        setUser(null);setRecoveryMode(false);
         setWallet({balance:0,points:0,coupons:INITIAL_COUPONS});
         setHistory([]);
       }
@@ -2174,6 +2236,7 @@ function App(){
       <p style={{color:"#8899aa",fontSize:13,letterSpacing:1}}>Carregando...</p>
     </div>
   );
+  if(recoveryMode) return <ResetPasswordScreen onDone={()=>{setRecoveryMode(false);setScreen("home");}}/>;
   if(!lgpdDone)  return <LGPDScreen onAccept={handleLGPD}/>;
   if(!onboarded) return <OnboardingScreen onDone={handleOnboarded}/>;
   if(!user)      return <AuthScreen onLogin={handleLogin}/>;
